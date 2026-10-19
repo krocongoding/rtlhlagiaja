@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CpbmController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DownloadController;
 use App\Http\Controllers\HouseAssessmentController;
@@ -120,6 +121,18 @@ Route::middleware('auth')->group(function () {
     )
         ->name('houses.sanitation-utility.update')
         ->can('update', 'house');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | CPBM (CALON PENERIMA BANTUAN MASYARAKAT)
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get('/cpbm-search', [CpbmController::class, 'search'])
+        ->name('cpbm.search');
+
+    Route::resource('cpbm', CpbmController::class);
 
 
     /*

@@ -7,6 +7,7 @@ class HouseRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'cpbm_id' => 'nullable|exists:cpbms,id',
             'region_id' => 'required|exists:regions,id',
             'house_code' => 'nullable|string|max:50',
             'nik' => 'nullable|string|max:20',

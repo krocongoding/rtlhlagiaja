@@ -85,6 +85,10 @@
                         <div>
                             <div class="gov-nav-section-label">Data & Pengawasan</div>
                             <div class="gov-nav-menu">
+                                <a href="{{ route('cpbm.index') }}" class="gov-nav-item {{ request()->routeIs('cpbm.*') ? 'active' : '' }}">
+                                    <span>Basis Data CPBM</span>
+                                </a>
+
                                 <a href="{{ route('houses.index') }}" class="gov-nav-item {{ request()->routeIs('houses.index') || (request()->routeIs('houses.*') && !request()->routeIs('houses.create')) ? 'active' : '' }}">
                                     <span>Basis Data RTLH</span>
                                 </a>
@@ -121,6 +125,10 @@
                         <div>
                             <div class="gov-nav-section-label">Pendataan Lapangan</div>
                             <div class="gov-nav-menu">
+                                <a href="{{ route('cpbm.index') }}" class="gov-nav-item {{ request()->routeIs('cpbm.*') ? 'active' : '' }}">
+                                    <span>Basis Data CPBM</span>
+                                </a>
+
                                 <a href="{{ route('houses.index') }}" class="gov-nav-item {{ request()->routeIs('houses.index') || (request()->routeIs('houses.*') && !request()->routeIs('surveyor.rtlh.create')) ? 'active' : '' }}">
                                     <span>Data RTLH Saya</span>
                                 </a>

@@ -3,97 +3,6 @@
     @push('head')
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
         <style>
-            .stepper-container {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                margin-bottom: 24px;
-                background: #ffffff;
-                border: 1px solid var(--slate-200);
-                border-radius: var(--radius-xl);
-                padding: 12px 18px;
-                box-shadow: var(--shadow-sm);
-                gap: 12px;
-                overflow-x: auto;
-            }
-            .stepper-step {
-                display: flex;
-                align-items: center;
-                gap: 12px;
-                flex: 1;
-                cursor: pointer;
-                padding: 8px 12px;
-                border-radius: var(--radius-lg);
-                transition: all 0.2s ease;
-                border: 1px solid transparent;
-                text-decoration: none;
-            }
-            .stepper-step:hover {
-                background: var(--slate-50);
-            }
-            .stepper-step.active {
-                background: #f0fdf4;
-                border-color: #86efac;
-            }
-            .stepper-step.completed {
-                background: #f8fafc;
-            }
-            .stepper-badge {
-                width: 36px;
-                height: 36px;
-                border-radius: 50%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-weight: 800;
-                font-size: 14px;
-                background: var(--slate-100);
-                color: var(--slate-600);
-                flex-shrink: 0;
-                transition: all 0.2s ease;
-            }
-            .stepper-step.active .stepper-badge {
-                background: #16a34a;
-                color: #ffffff;
-                box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.15);
-            }
-            .stepper-step.completed .stepper-badge {
-                background: #0284c7;
-                color: #ffffff;
-            }
-            .stepper-title {
-                font-size: 14px;
-                font-weight: 800;
-                color: var(--slate-800);
-                margin: 0;
-                line-height: 1.2;
-            }
-            .stepper-step.active .stepper-title {
-                color: #15803d;
-            }
-            .stepper-subtitle {
-                font-size: 11px;
-                color: var(--slate-500);
-                margin-top: 2px;
-            }
-            .stepper-divider {
-                color: var(--slate-300);
-                font-size: 14px;
-                flex-shrink: 0;
-            }
-
-            .form-step-pane {
-                display: none;
-            }
-            .form-step-pane.active {
-                display: block;
-                animation: fadeInStep 0.25s ease;
-            }
-            @keyframes fadeInStep {
-                from { opacity: 0; transform: translateY(6px); }
-                to { opacity: 1; transform: translateY(0); }
-            }
-
             .form-section {
                 background: #ffffff;
                 border: 1px solid var(--slate-200);
@@ -237,11 +146,11 @@
     <div class="pagehead">
         <div>
             <div class="kicker">
-                {{ strtoupper($panel ?? 'FORMULIR') }} &bull; 3 LANGKAH INPUT
+                {{ strtoupper($panel ?? 'FORMULIR') }} &bull; FORM SURVEI KONDISI RUMAH
             </div>
             <h1>{{ $house->exists ? 'Edit Data RTLH' : 'Tambah Data RTLH Baru' }}</h1>
             <p class="muted">
-                Formulir bertahap terpadu: Data CPBM, Kondisi Fisik Rumah, dan Sumber Anggaran / Usulan Proposal.
+                Pilih atau cari calon penerima bantuan (CPBM), lalu lengkapi kondisi fisik rumah, utilitas, sanitasi, foto, dan berkas dalam satu formulir utuh.
             </p>
         </div>
 
@@ -276,42 +185,11 @@
                 </h4>
                 <p style="font-size:13.5px; color:#881337; margin:0; line-height:1.6; white-space:pre-wrap; background:#fff; padding:12px 16px; border-radius:var(--radius-md); border:1px solid #fecaca;">{{ $house->revision_notes }}</p>
                 <p class="muted" style="font-size:12px; color:#be123c; margin:8px 0 0 0;">
-                    Mohon periksa dan perbaiki isian data formulir atau foto sesuai poin catatan di atas, kemudian tekan <strong>"Simpan & Kirim Verifikasi"</strong> di langkah ke-3.
+                    Mohon periksa dan perbaiki isian data formulir atau foto sesuai poin catatan di atas, kemudian tekan <strong>"Simpan Data RTLH"</strong>.
                 </p>
             </div>
         </div>
     @endif
-
-    {{-- 3-STEP WIZARD PROGRESS BAR --}}
-    <div class="stepper-container" id="stepper-container">
-        <div class="stepper-step active" id="step-tab-1" onclick="switchStep(1)">
-            <div class="stepper-badge" id="step-badge-1">1</div>
-            <div>
-                <div class="stepper-title">Data CPBM</div>
-                <div class="stepper-subtitle">Calon Penerima Bantuan</div>
-            </div>
-        </div>
-
-        <span class="stepper-divider" style="font-size:18px; line-height:1; font-weight:700;">&rsaquo;</span>
-
-        <div class="stepper-step" id="step-tab-2" onclick="switchStep(2)">
-            <div class="stepper-badge" id="step-badge-2">2</div>
-            <div>
-                <div class="stepper-title">Data Rumah</div>
-                <div class="stepper-subtitle">Fisik, Sanitasi & Lapangan</div>
-            </div>
-        </div>
-
-        <span class="stepper-divider" style="font-size:18px; line-height:1; font-weight:700;">&rsaquo;</span>
-
-        <div class="stepper-step" id="step-tab-3" onclick="switchStep(3)">
-            <div class="stepper-badge" id="step-badge-3">3</div>
-            <div>
-                <div class="stepper-title">Anggaran & Usulan</div>
-                <div class="stepper-subtitle">Sumber Dana & Proposal</div>
-            </div>
-        </div>
-    </div>
 
     <form class="form" id="rtlh-form" enctype="multipart/form-data" method="POST" action="{{ $action }}">
         @csrf
@@ -320,20 +198,93 @@
         @endif
 
         {{-- ========================================================================= --}}
-        {{-- STEP 1: DATA CPBM (CALON PENERIMA BANTUAN MANFAAT) --}}
+        {{-- BAGIAN 1: PENCARIAN & PEMILIHAN DATA CPBM --}}
         {{-- ========================================================================= --}}
-        <div class="form-step-pane active" id="pane-step-1">
-            <div class="form-section">
-                <div class="form-section-header">
+        @php
+            $linkedCpbm = $house->cpbm ?: (old('cpbm_id') ? \App\Models\Cpbm::with('region')->find(old('cpbm_id')) : null);
+            $hasCpbm = $linkedCpbm || old('nik') || old('head_of_household_name') || $house->nik || $house->head_of_household_name;
+        @endphp
+
+        <div class="form-section" style="border: 2px solid var(--primary-500); background: linear-gradient(135deg, rgba(236, 253, 245, 0.4) 0%, #ffffff 100%);">
+            <div class="form-section-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                <div style="display:flex; align-items:center; gap:14px;">
                     <div class="form-section-badge emerald" style="font-weight:800; font-size:13px;">
                         01
                     </div>
                     <div>
-                        <h3 class="form-section-title">Langkah 1: Identitas Calon Penerima Bantuan Manfaat (CPBM)</h3>
-                        <p class="form-section-desc">Identitas kependudukan kepala keluarga dan alamat domisili desa calon penerima manfaat.</p>
+                        <h3 class="form-section-title">Data Calon Penerima Bantuan (CPBM)</h3>
+                        <p class="form-section-desc">Cari dan hubungkan data warga calon penerima bantuan dari basis data CPBM.</p>
                     </div>
                 </div>
 
+                <div>
+                    <button type="button" class="btn small" onclick="openCpbmModal()" style="font-weight:700; background:#f0fdf4; border-color:#86efac; color:#15803d;">
+                        + Input CPBM Baru
+                    </button>
+                </div>
+            </div>
+
+            {{-- KOTAK PENCARIAN CPBM (LIVE SEARCH / AUTOCOMPLETE) --}}
+            <div id="cpbm-search-container" style="margin-bottom:16px; position:relative;">
+                <label style="display:block; font-size:13px; font-weight:700; color:var(--slate-800); margin-bottom:6px;">
+                    Cari Calon Penerima Bantuan (Ketik NIK atau Nama):
+                </label>
+                <div style="position:relative;">
+                    <input
+                        type="text"
+                        id="cpbm_live_search"
+                        placeholder="Contoh: MULYADI atau ketik 16 digit NIK..."
+                        autocomplete="off"
+                        oninput="handleCpbmLiveSearch(this.value)"
+                        style="width:100%; font-size:13.5px; padding:10px 14px 10px 38px; border:1px solid var(--slate-300); border-radius:10px; background:#ffffff;"
+                    >
+                    <span style="position:absolute; left:12px; top:11px; font-size:16px; color:var(--slate-400); pointer-events:none;">🔍</span>
+                </div>
+
+                {{-- HASIL PENCARIAN DROPDOWN --}}
+                <div id="cpbm_search_results" style="display:none; position:absolute; left:0; right:0; top:100%; margin-top:4px; z-index:50; background:#ffffff; border:1px solid var(--slate-300); border-radius:10px; box-shadow:var(--shadow-lg); max-height:260px; overflow-y:auto;">
+                </div>
+            </div>
+
+            {{-- KARTU PRATINJAU CPBM TERPILIH --}}
+            <div id="selected_cpbm_card" style="{{ $hasCpbm ? 'display:block;' : 'display:none;' }} background:#ffffff; border:1px solid #86efac; border-radius:12px; padding:16px 18px; margin-bottom:16px;">
+                <div style="display:flex; justify-content:space-between; align-items:start; flex-wrap:wrap; gap:12px;">
+                    <div style="display:flex; align-items:start; gap:14px;">
+                        <div style="width:42px; height:42px; border-radius:10px; background:linear-gradient(135deg, #10b981 0%, #047857 100%); color:#ffffff; font-weight:900; font-size:17px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                            <span id="disp_cpbm_initial">{{ strtoupper(substr($house->head_of_household_name ?: ($linkedCpbm?->name ?: 'W'), 0, 1)) }}</span>
+                        </div>
+                        <div>
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <strong id="disp_cpbm_name" style="font-size:15px; color:var(--slate-900);">
+                                    {{ old('head_of_household_name', $house->head_of_household_name ?: ($linkedCpbm?->name ?: 'Belum Dipilih')) }}
+                                </strong>
+                                <span class="badge" style="background:#dcfce7; color:#166534; font-size:10px; font-weight:800; padding:2px 8px; border-radius:999px;">
+                                    CPBM Terhubung
+                                </span>
+                            </div>
+                            <div style="font-size:12.5px; color:var(--slate-600); margin-top:3px;">
+                                NIK: <strong id="disp_cpbm_nik" style="font-family:monospace;">{{ old('nik', $house->nik ?: ($linkedCpbm?->nik ?: '-')) }}</strong> &bull;
+                                Alamat: <span id="disp_cpbm_address">{{ old('address', $house->address ?: ($linkedCpbm?->address ?: '-')) }}</span>
+                                @if(old('rt', $house->rt) || old('rw', $house->rw))
+                                    <span id="disp_cpbm_rtrw">(RT {{ old('rt', $house->rt) }} / RW {{ old('rw', $house->rw) }})</span>
+                                @endif
+                            </div>
+                            <div style="font-size:11.5px; color:var(--slate-500); margin-top:2px;">
+                                Wilayah: Kelurahan <strong id="disp_cpbm_village">{{ $house->region?->name ?: ($linkedCpbm?->region?->name ?: '-') }}</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn small" onclick="changeCpbm()" style="font-size:11px; font-weight:700;">
+                        Ganti Warga
+                    </button>
+                </div>
+            </div>
+
+            {{-- FIELD INPUT CPBM (TERISI OTOMATIS SAAT CPBM DIPILIH) --}}
+            <input type="hidden" id="cpbm_id" name="cpbm_id" value="{{ old('cpbm_id', $house->cpbm_id) }}">
+
+            <div id="cpbm-manual-fields" style="{{ $hasCpbm ? 'display:none;' : 'display:block;' }}">
                 <div class="grid2">
                     <div class="form-field">
                         <label for="nik">Nomor Induk Kependudukan (NIK) <span class="req">*</span></label>
@@ -342,7 +293,7 @@
                             id="nik"
                             name="nik"
                             value="{{ old('nik', $house->nik) }}"
-                            placeholder="Contoh: 320914XXXXXXXXXX (16 digit)"
+                            placeholder="Contoh: 327401XXXXXXXXXX (16 digit)"
                             maxlength="20"
                         >
                         <small class="muted">NIK kepala keluarga calon penerima manfaat.</small>
@@ -424,28 +375,11 @@
                     </div>
                 </div>
             </div>
-
-            {{-- STEP 1 FOOTER NAVIGATION --}}
-            <div class="step-navigation-bar">
-                <a href="{{ $panel === 'surveyor' ? route('surveyor.rtlh.index') : route('houses.index') }}" class="btn" style="background:#fff; border-color:var(--slate-300);">
-                    Kembali ke Daftar
-                </a>
-
-                <div style="display:flex; gap:10px; align-items:center;">
-                    <button type="button" class="btn" onclick="submitAsDraft()" style="background:#ffffff; color:var(--slate-700); border-color:var(--slate-300);">
-                        Simpan Draft
-                    </button>
-                    <button type="button" class="btn primary" onclick="validateAndGoStep(2)">
-                        Lanjut: Data Fisik Rumah (Step 2) &rarr;
-                    </button>
-                </div>
-            </div>
         </div>
 
         {{-- ========================================================================= --}}
-        {{-- STEP 2: DATA FISIK RUMAH, STRUKTUR, SANITASI, GPS & FOTO --}}
+        {{-- BAGIAN 2: DATA KONDISI FISIK RUMAH, STRUKTUR, SANITASI, GPS & FOTO --}}
         {{-- ========================================================================= --}}
-        <div class="form-step-pane" id="pane-step-2">
 
             {{-- SUBSECTION 2A: KARAKTERISTIK UMUM RUMAH & KEPEMILIKAN --}}
             <div class="form-section">
@@ -1068,37 +1002,19 @@
                 </div>
             </div>
 
-            {{-- STEP 2 FOOTER NAVIGATION --}}
-            <div class="step-navigation-bar">
-                <button type="button" class="btn" onclick="switchStep(1)" style="background:#fff; border-color:var(--slate-300);">
-                    &larr; Kembali ke Data CPBM (Step 1)
-                </button>
-
-                <div style="display:flex; gap:10px; align-items:center;">
-                    <button type="button" class="btn" onclick="submitAsDraft()" style="background:#ffffff; color:var(--slate-700); border-color:var(--slate-300);">
-                        Simpan Draft
-                    </button>
-                    <button type="button" class="btn primary" onclick="switchStep(3)">
-                        Lanjut: Anggaran & Proposal (Step 3) &rarr;
-                    </button>
+        {{-- ========================================================================= --}}
+        {{-- BAGIAN 3: SUMBER ANGGARAN & BERKAS USULAN PROPOSAL --}}
+        {{-- ========================================================================= --}}
+        <div class="form-section">
+            <div class="form-section-header">
+                <div class="form-section-badge" style="background:#fef3c7; color:#b45309; font-weight:800; font-size:13px;">
+                    03
+                </div>
+                <div>
+                    <h3 class="form-section-title">Sumber Anggaran & Berkas Usulan Proposal</h3>
+                    <p class="form-section-desc">Pendataan sumber pembiayaan, nilai alokasi anggaran, status realisasi, dan upload berkas proposal.</p>
                 </div>
             </div>
-        </div>
-
-        {{-- ========================================================================= --}}
-        {{-- STEP 3: SUMBER ANGGARAN & PROPOSAL USULAN --}}
-        {{-- ========================================================================= --}}
-        <div class="form-step-pane" id="pane-step-3">
-            <div class="form-section">
-                <div class="form-section-header">
-                    <div class="form-section-badge" style="background:#fef3c7; color:#b45309; font-weight:800; font-size:13px;">
-                        03
-                    </div>
-                    <div>
-                        <h3 class="form-section-title">Langkah 3: Sumber Anggaran & Berkas Usulan Proposal</h3>
-                        <p class="form-section-desc">Pendataan sumber pembiayaan, nilai alokasi anggaran, status realisasi, dan upload berkas proposal.</p>
-                    </div>
-                </div>
 
                 <div class="grid2">
                     {{-- SUMBER ANGGARAN --}}
@@ -1351,23 +1267,23 @@
                 </div>
             </div>
 
-            {{-- STEP 3 FOOTER & FINAL SUBMIT BAR --}}
-            <div class="step-navigation-bar" style="background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-radius: var(--radius-xl); box-shadow: var(--shadow-xl);">
-                <button type="button" class="btn" onclick="switchStep(2)" style="background:transparent; color:#cbd5e1; border-color:rgba(255,255,255,0.25);">
-                    &larr; Kembali ke Data Fisik (Step 2)
-                </button>
+            {{-- BOTTOM ACTION BAR --}}
+            <div style="margin-top: 30px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-radius: var(--radius-xl); padding: 16px 24px; box-shadow: var(--shadow-xl);">
+                <a href="{{ $panel === 'surveyor' ? route('surveyor.rtlh.index') : route('houses.index') }}" class="btn" style="background:transparent; color:#cbd5e1; border-color:rgba(255,255,255,0.25);">
+                    &larr; Batal & Kembali
+                </a>
 
-                <div class="actions" style="margin:0; display:flex; gap:10px; align-items:center;">
-                    <button type="button" class="btn" onclick="submitAsDraft()" style="background:#334155; color:#ffffff; border-color:#475569;">
+                <div class="actions" style="margin:0; display:flex; gap:12px; align-items:center;">
+                    <button type="button" class="btn" onclick="submitAsDraft()" style="background:#334155; color:#ffffff; border-color:#475569; font-weight:600;">
                         Simpan Draft
                     </button>
 
                     @if($panel === 'surveyor')
-                        <button type="submit" class="btn primary" name="submit" value="1">
+                        <button type="submit" class="btn primary" name="submit" value="1" style="font-weight:700;">
                             Simpan & Kirim Review
                         </button>
                     @else
-                        <button type="submit" class="btn primary" name="submit" value="1">
+                        <button type="submit" class="btn primary" name="submit" value="1" style="font-weight:700;">
                             Simpan Data RTLH
                         </button>
                     @endif
@@ -1378,59 +1294,271 @@
         <input type="hidden" name="submit" id="submit-flag" value="1">
     </form>
 
+    {{-- MODAL QUICK INPUT CPBM BARU DARI FORM RUMAH --}}
+    <div id="cpbm-quick-modal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.65); backdrop-filter:blur(4px); z-index:9999; align-items:center; justify-content:center; padding:20px;">
+        <div style="background:#ffffff; border-radius:16px; width:100%; max-width:680px; max-height:90vh; overflow-y:auto; box-shadow:var(--shadow-xl); border:1px solid var(--slate-200);">
+            <div style="padding:20px 24px; border-bottom:1px solid var(--slate-200); display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; background:#ffffff; z-index:10;">
+                <div>
+                    <h3 style="font-size:16px; font-weight:800; color:var(--slate-800); margin:0;">Input Cepat Data CPBM Baru</h3>
+                    <p class="muted" style="font-size:12px; margin:2px 0 0 0;">Data warga akan tersimpan ke basis data CPBM dan langsung terhubung di form ini.</p>
+                </div>
+                <button type="button" onclick="closeCpbmModal()" style="background:none; border:none; font-size:24px; cursor:pointer; color:var(--slate-400); line-height:1;">&times;</button>
+            </div>
+            <form id="quick-cpbm-form" onsubmit="submitQuickCpbm(event)" style="padding:24px;">
+                <div id="modal-quick-error" style="display:none; margin-bottom:16px; padding:12px; background:#fef2f2; border:1px solid #fecaca; border-radius:8px; color:#b91c1c; font-size:13px;"></div>
+
+                <div class="grid2">
+                    <div class="form-field">
+                        <label for="modal_nik">NIK <span class="req">*</span></label>
+                        <input type="text" id="modal_nik" required maxlength="16" placeholder="16 Digit NIK">
+                    </div>
+                    <div class="form-field">
+                        <label for="modal_name">Nama Lengkap <span class="req">*</span></label>
+                        <input type="text" id="modal_name" required placeholder="Nama Kepala Keluarga">
+                    </div>
+                </div>
+                <div class="grid2">
+                    <div class="form-field">
+                        <label for="modal_no_kk">Nomor KK</label>
+                        <input type="text" id="modal_no_kk" maxlength="16" placeholder="Nomor KK (opsional)">
+                    </div>
+                    <div class="form-field">
+                        <label for="modal_phone">No. Telepon / HP</label>
+                        <input type="text" id="modal_phone" placeholder="08xxxxxxxxxx">
+                    </div>
+                </div>
+                <div class="form-field">
+                    <label for="modal_address">Alamat Jalan / Gang <span class="req">*</span></label>
+                    <input type="text" id="modal_address" required placeholder="Contoh: Jl. Kesambi No. 10">
+                </div>
+                <div class="grid3">
+                    <div class="form-field">
+                        <label for="modal_rt">RT</label>
+                        <input type="text" id="modal_rt" placeholder="001" maxlength="5">
+                    </div>
+                    <div class="form-field">
+                        <label for="modal_rw">RW</label>
+                        <input type="text" id="modal_rw" placeholder="002" maxlength="5">
+                    </div>
+                    <div class="form-field">
+                        <label for="modal_region_id">Kelurahan <span class="req">*</span></label>
+                        <select id="modal_region_id" required>
+                            <option value="">-- Pilih Kelurahan --</option>
+                            @foreach($regions as $r)
+                                <option value="{{ $r->id }}" data-region-name="{{ $r->name }}">{{ $r->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+                    <button type="button" class="btn" onclick="closeCpbmModal()">Batal</button>
+                    <button type="submit" id="btn-save-quick-cpbm" class="btn primary">Simpan CPBM & Pilih</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     @push('scripts')
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
         <script>
-            let currentStep = 1;
             let formMap, formMarker;
+            let searchTimeout = null;
 
-            function switchStep(step) {
-                if (step < 1 || step > 3) return;
+            // ==========================================
+            // LOGIKA PENCARIAN & PEMILIHAN DATA CPBM
+            // ==========================================
+            function handleCpbmLiveSearch(query) {
+                clearTimeout(searchTimeout);
+                const resultsContainer = document.getElementById('cpbm_search_results');
 
-                // Update active tab buttons
-                for (let i = 1; i <= 3; i++) {
-                    const tab = document.getElementById(`step-tab-${i}`);
-                    const pane = document.getElementById(`pane-step-${i}`);
+                if (!query || query.trim().length < 2) {
+                    if (resultsContainer) {
+                        resultsContainer.style.display = 'none';
+                        resultsContainer.innerHTML = '';
+                    }
+                    return;
+                }
 
-                    if (tab) {
-                        tab.classList.remove('active');
-                        if (i < step) {
-                            tab.classList.add('completed');
-                        } else {
-                            tab.classList.remove('completed');
+                searchTimeout = setTimeout(async () => {
+                    try {
+                        const res = await fetch(`{{ route('cpbm.search') }}?q=${encodeURIComponent(query.trim())}`);
+                        if (!res.ok) throw new Error('Gagal mencari data CPBM');
+                        const data = await res.json();
+
+                        if (!resultsContainer) return;
+                        resultsContainer.innerHTML = '';
+
+                        if (data.length === 0) {
+                            resultsContainer.innerHTML = `
+                                <div style="padding:14px; text-align:center; color:var(--slate-500); font-size:13px;">
+                                    Tidak ada data CPBM cocok dengan <em>"${query}"</em>.<br>
+                                    <button type="button" class="btn small" onclick="openCpbmModal()" style="margin-top:8px; font-weight:700;">+ Input CPBM Baru</button>
+                                </div>
+                            `;
+                            resultsContainer.style.display = 'block';
+                            return;
                         }
+
+                        data.forEach(item => {
+                            const div = document.createElement('div');
+                            div.style.cssText = 'padding:10px 14px; border-bottom:1px solid var(--slate-100); cursor:pointer; display:flex; justify-content:space-between; align-items:center;';
+                            div.onmouseover = () => div.style.background = '#f8fafc';
+                            div.onmouseout = () => div.style.background = '#ffffff';
+
+                            const regionName = item.region ? item.region.name : '-';
+                            div.innerHTML = `
+                                <div>
+                                    <strong style="color:var(--slate-900); font-size:13.5px; display:block;">${item.name}</strong>
+                                    <span style="font-size:11.5px; color:var(--slate-500);">
+                                        NIK: <span style="font-family:monospace; font-weight:700;">${item.nik}</span> &bull; Kelurahan ${regionName}
+                                    </span>
+                                </div>
+                                <span class="badge" style="background:#ecfdf5; color:#047857; font-size:11px; font-weight:700;">Pilih</span>
+                            `;
+                            div.onclick = () => selectCpbm(item);
+                            resultsContainer.appendChild(div);
+                        });
+
+                        resultsContainer.style.display = 'block';
+                    } catch (e) {
+                        console.error('Error CPBM search:', e);
                     }
-
-                    if (pane) {
-                        pane.classList.remove('active');
-                    }
-                }
-
-                const currentTab = document.getElementById(`step-tab-${step}`);
-                const currentPane = document.getElementById(`pane-step-${step}`);
-                if (currentTab) currentTab.classList.add('active');
-                if (currentPane) currentPane.classList.add('active');
-
-                currentStep = step;
-
-                // When entering step 2, initialize Leaflet map if not yet done
-                if (step === 2 && formMap) {
-                    setTimeout(() => {
-                        formMap.invalidateSize();
-                    }, 200);
-                }
-
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                }, 250);
             }
 
+            function selectCpbm(item) {
+                document.getElementById('cpbm_id').value = item.id || '';
+                document.getElementById('nik').value = item.nik || '';
+                document.getElementById('head_of_household_name').value = item.name || '';
+                document.getElementById('address').value = item.address || '';
+                document.getElementById('block').value = item.block || '';
+                document.getElementById('rt').value = item.rt || '';
+                document.getElementById('rw').value = item.rw || '';
+
+                if (item.region_id) {
+                    const regionSelect = document.getElementById('region_id');
+                    if (regionSelect) {
+                        regionSelect.value = item.region_id;
+                        updateCodePreview();
+                    }
+                }
+
+                // Perbarui kartu tampilan terpilih
+                const initial = (item.name || 'W').charAt(0).toUpperCase();
+                document.getElementById('disp_cpbm_initial').textContent = initial;
+                document.getElementById('disp_cpbm_name').textContent = item.name;
+                document.getElementById('disp_cpbm_nik').textContent = item.nik;
+                document.getElementById('disp_cpbm_address').textContent = item.address || '-';
+                const rtrwEl = document.getElementById('disp_cpbm_rtrw');
+                if (rtrwEl) {
+                    rtrwEl.textContent = (item.rt || item.rw) ? `(RT ${item.rt || '-'} / RW ${item.rw || '-'})` : '';
+                }
+                const villageEl = document.getElementById('disp_cpbm_village');
+                if (villageEl) {
+                    villageEl.textContent = item.region ? item.region.name : '-';
+                }
+
+                document.getElementById('selected_cpbm_card').style.display = 'block';
+                document.getElementById('cpbm_search_results').style.display = 'none';
+                document.getElementById('cpbm_live_search').value = '';
+                document.getElementById('cpbm-manual-fields').style.display = 'none';
+            }
+
+            function changeCpbm() {
+                document.getElementById('cpbm_id').value = '';
+                document.getElementById('selected_cpbm_card').style.display = 'none';
+                document.getElementById('cpbm-manual-fields').style.display = 'block';
+                const searchInput = document.getElementById('cpbm_live_search');
+                if (searchInput) {
+                    searchInput.value = '';
+                    searchInput.focus();
+                }
+            }
+
+            function openCpbmModal() {
+                const modal = document.getElementById('cpbm-quick-modal');
+                if (modal) {
+                    modal.style.display = 'flex';
+                    document.getElementById('modal_nik').focus();
+                }
+            }
+
+            function closeCpbmModal() {
+                const modal = document.getElementById('cpbm-quick-modal');
+                if (modal) {
+                    modal.style.display = 'none';
+                    document.getElementById('modal-quick-error').style.display = 'none';
+                    document.getElementById('quick-cpbm-form').reset();
+                }
+            }
+
+            async function submitQuickCpbm(e) {
+                e.preventDefault();
+                const errBox = document.getElementById('modal-quick-error');
+                const btnSave = document.getElementById('btn-save-quick-cpbm');
+                errBox.style.display = 'none';
+                errBox.innerHTML = '';
+                btnSave.disabled = true;
+                btnSave.textContent = 'Menyimpan...';
+
+                const payload = {
+                    nik: document.getElementById('modal_nik').value,
+                    name: document.getElementById('modal_name').value,
+                    no_kk: document.getElementById('modal_no_kk').value,
+                    phone: document.getElementById('modal_phone').value,
+                    address: document.getElementById('modal_address').value,
+                    rt: document.getElementById('modal_rt').value,
+                    rw: document.getElementById('modal_rw').value,
+                    region_id: document.getElementById('modal_region_id').value,
+                };
+
+                try {
+                    const res = await fetch("{{ route('cpbm.store') }}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const resData = await res.json();
+                    if (!res.ok) {
+                        let msg = resData.message || 'Gagal menyimpan CPBM.';
+                        if (resData.errors) {
+                            msg = Object.values(resData.errors).flat().join('<br>');
+                        }
+                        errBox.innerHTML = msg;
+                        errBox.style.display = 'block';
+                        btnSave.disabled = false;
+                        btnSave.textContent = 'Simpan CPBM & Pilih';
+                        return;
+                    }
+
+                    // Berhasil simpan
+                    closeCpbmModal();
+                    selectCpbm(resData.data);
+                } catch (error) {
+                    console.error(error);
+                    errBox.innerHTML = 'Terjadi kesalahan server saat menyimpan CPBM.';
+                    errBox.style.display = 'block';
+                } finally {
+                    btnSave.disabled = false;
+                    btnSave.textContent = 'Simpan CPBM & Pilih';
+                }
+            }
+
+            // ==========================================
+            // LOGIKA FORM RUMAH & SIMPAN DRAFT
+            // ==========================================
             function submitAsDraft() {
                 const form = document.getElementById('rtlh-form');
                 if (!form) return;
 
                 const region = document.getElementById('region_id');
                 if (region && !region.value) {
-                    alert('Untuk menyimpan draft, silakan pilih Wilayah Administratif (Kelurahan) pada Step 1 terlebih dahulu.');
-                    switchStep(1);
+                    alert('Untuk menyimpan draft, silakan pilih Wilayah Administratif (Kelurahan) terlebih dahulu.');
                     region.focus();
                     return;
                 }
@@ -1448,20 +1576,6 @@
                 // Bypass client-side HTML5 validation so incomplete draft fields don't block saving
                 form.noValidate = true;
                 form.submit();
-            }
-
-            function validateAndGoStep(targetStep) {
-                if (targetStep === 2) {
-                    const region = document.getElementById('region_id');
-
-                    if (!region.value) {
-                        alert('Silakan pilih Wilayah Administratif (Kelurahan) terlebih dahulu.');
-                        region.focus();
-                        return;
-                    }
-                }
-
-                switchStep(targetStep);
             }
 
             function selectRealizationCard(val) {
@@ -1501,8 +1615,8 @@
                 const mapEl = document.getElementById('form-map');
                 if (mapEl) {
                     formMap = L.map('form-map', {
-                        maxBounds: KOTA_CIREBON_BOUNDS.pad(0.05), // sedikit padding agar tidak terlalu ketat
-                        maxBoundsViscosity: 1.0,                  // tidak bisa geser keluar batas
+                        maxBounds: KOTA_CIREBON_BOUNDS.pad(0.05),
+                        maxBoundsViscosity: 1.0,
                         minZoom: 12
                     }).setView([initLat, initLng], zoomLevel);
 
@@ -1536,6 +1650,11 @@
                         latInput.value = coord.lat.toFixed(7);
                         lngInput.value = coord.lng.toFixed(7);
                     });
+
+                    // Garansi ukuran peta Leaflet pas pada layout satu halaman
+                    setTimeout(() => {
+                        formMap.invalidateSize();
+                    }, 300);
                 }
 
                 if (regionInput) {
@@ -1589,6 +1708,27 @@
                 });
 
                 updateFormScore();
+
+                // Validasi saat submit
+                const form = document.getElementById('rtlh-form');
+                if (form) {
+                    form.addEventListener('submit', function (e) {
+                        const submitFlag = document.getElementById('submit-flag');
+                        if (submitFlag && submitFlag.value === '0') {
+                            form.noValidate = true;
+                            return true;
+                        }
+
+                        // Final submit: region is mandatory
+                        const region = document.getElementById('region_id');
+                        if (region && !region.value) {
+                            e.preventDefault();
+                            alert('Silakan pilih Wilayah Administratif (Kelurahan) terlebih dahulu.');
+                            region.focus();
+                            return false;
+                        }
+                    });
+                }
             });
 
             function updateCodePreview() {
@@ -1670,43 +1810,6 @@
                     reader.readAsDataURL(input.files[0]);
                 }
             }
-
-            document.addEventListener('DOMContentLoaded', function () {
-                const form = document.getElementById('rtlh-form');
-                if (form) {
-                    form.addEventListener('submit', function (e) {
-                        const submitFlag = document.getElementById('submit-flag');
-                        if (submitFlag && submitFlag.value === '0') {
-                            form.noValidate = true;
-                            return true;
-                        }
-
-                        // Final submit: region is mandatory
-                        const region = document.getElementById('region_id');
-                        if (region && !region.value) {
-                            e.preventDefault();
-                            alert('Silakan pilih Wilayah Administratif (Kelurahan) pada Step 1 terlebih dahulu.');
-                            switchStep(1);
-                            region.focus();
-                            return false;
-                        }
-                    });
-                }
-
-                @if ($errors->any())
-                    const errorKeys = @js(array_keys($errors->messages()));
-                    const step1Keys = ['region_id', 'nik', 'head_of_household_name', 'address', 'block', 'rt', 'rw'];
-                    const step3Keys = ['funding_source', 'budget_amount', 'realization_status', 'proposal_document', 'kk_document', 'akte_document', 'land_document', 'proposal_notes'];
-
-                    if (errorKeys.some(k => step1Keys.includes(k))) {
-                        switchStep(1);
-                    } else if (errorKeys.some(k => step3Keys.includes(k))) {
-                        switchStep(3);
-                    } else {
-                        switchStep(2);
-                    }
-                @endif
-            });
         </script>
     @endpush
 

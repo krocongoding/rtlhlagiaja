@@ -124,6 +124,20 @@ class HouseDataService
                 $data['realization_status'] = $house->realization_status ?: 'not_realized';
             }
 
+            if (!empty($data['cpbm_id'])) {
+                $cpbm = \App\Models\Cpbm::find($data['cpbm_id']);
+                if ($cpbm) {
+                    $data['nik'] = !empty($data['nik']) ? $data['nik'] : $cpbm->nik;
+                    $data['head_of_household_name'] = !empty($data['head_of_household_name']) ? $data['head_of_household_name'] : $cpbm->name;
+                    $data['address'] = !empty($data['address']) ? $data['address'] : $cpbm->address;
+                    $data['rt'] = !empty($data['rt']) ? $data['rt'] : $cpbm->rt;
+                    $data['rw'] = !empty($data['rw']) ? $data['rw'] : $cpbm->rw;
+                    if (empty($data['region_id']) && $cpbm->region_id) {
+                        $data['region_id'] = $cpbm->region_id;
+                    }
+                }
+            }
+
             $house->fill($data);
             $house->save();
 

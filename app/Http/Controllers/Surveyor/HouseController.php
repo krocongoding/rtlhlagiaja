@@ -71,7 +71,7 @@ class HouseController extends Controller
     /**
      * Form tambah data.
      */
-    public function create()
+    public function create(Request $request)
     {
         $cats = MasterCategory::with([
             'values' => function ($query) {
@@ -90,10 +90,25 @@ class HouseController extends Controller
             ->orderBy('name')
             ->get();
 
+        $house = new House();
+        if ($request->filled('cpbm_id')) {
+            $cpbm = \App\Models\Cpbm::with('region')->find($request->integer('cpbm_id'));
+            if ($cpbm) {
+                $house->cpbm_id = $cpbm->id;
+                $house->nik = $cpbm->nik;
+                $house->head_of_household_name = $cpbm->name;
+                $house->address = $cpbm->address;
+                $house->rt = $cpbm->rt;
+                $house->rw = $cpbm->rw;
+                $house->region_id = $cpbm->region_id;
+                $house->setRelation('cpbm', $cpbm);
+            }
+        }
+
         return view(
             'houses.form',
             [
-                'house' => new House(),
+                'house' => $house,
 
                 'regions' => $regions,
 
@@ -237,6 +252,7 @@ class HouseController extends Controller
             ->get();
 
         $house->load([
+            'cpbm',
             'structure',
             'floor',
             'ceiling',

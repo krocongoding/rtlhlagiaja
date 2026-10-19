@@ -9,6 +9,7 @@ class House extends Model
 {
     protected $fillable = [
         'client_uuid',
+        'cpbm_id',
         'region_id',
         'nik',
         'head_of_household_name',
@@ -62,6 +63,11 @@ class House extends Model
             'revised_at' => 'datetime',
             'realized_at' => 'datetime',
         ];
+    }
+
+    public function cpbm(): BelongsTo
+    {
+        return $this->belongsTo(Cpbm::class);
     }
 
     public function region()
