@@ -124,7 +124,7 @@ class HouseController extends Controller
 
         return redirect()
             ->route('houses.show', $house)
-            ->with('success', 'Data RTLH berhasil ditambahkan.');
+            ->with('success', $submit ? 'Data RTLH berhasil ditambahkan.' : 'Data RTLH berhasil disimpan sebagai draft.');
     }
 
     public function edit(House $house)
@@ -179,7 +179,7 @@ class HouseController extends Controller
 
         return redirect()
             ->route('houses.show', $house)
-            ->with('success', 'Data RTLH berhasil diperbarui.');
+            ->with('success', $submit ? 'Data RTLH berhasil diperbarui.' : 'Draft data RTLH berhasil diperbarui.');
     }
 
     public function destroy(House $house)

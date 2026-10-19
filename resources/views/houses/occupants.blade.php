@@ -10,7 +10,7 @@
                 </p>
             </div>
             <a href="{{ route('houses.show', $house) }}" class="btn">
-                <i class="fa-solid fa-arrow-left"></i> Kembali ke Detail
+                Kembali ke Detail
             </a>
         </div>
     </x-slot>
@@ -20,7 +20,7 @@
         @if ($errors->any())
             <div style="padding:16px 20px; background:#fef2f2; border:1px solid #fecaca; border-radius:var(--radius-md); margin-bottom:24px;">
                 <div style="font-weight:700; color:#991b1b; display:flex; align-items:center; gap:8px; margin-bottom:8px;">
-                    <i class="fa-solid fa-triangle-exclamation"></i> Terjadi kesalahan input:
+                    Terjadi kesalahan input:
                 </div>
                 <ul style="margin:0; padding-left:20px; color:#b91c1c; font-size:0.875rem;">
                     @foreach ($errors->all() as $error)
@@ -40,12 +40,12 @@
                 <div class="card-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
                     <div>
                         <div class="card-title">
-                            <i class="fa-solid fa-users" style="color:var(--primary);"></i> Daftar Anggota Penghuni
+                            Daftar Anggota Penghuni
                         </div>
                         <div class="card-desc">Tambahkan dan lengkapi data seluruh anggota keluarga yang menghuni rumah ini.</div>
                     </div>
                     <button type="button" @click="add()" class="btn btn-primary btn-sm">
-                        <i class="fa-solid fa-user-plus"></i> Tambah Penghuni
+                        + Tambah Penghuni
                     </button>
                 </div>
 
@@ -53,13 +53,10 @@
                     {{-- EMPTY STATE --}}
                     <template x-if="occupants.length === 0">
                         <div style="border:2px dashed var(--border-color); border-radius:var(--radius-md); padding:40px 20px; text-align:center; background:#fafafa;">
-                            <div style="width:56px; height:56px; border-radius:50%; background:var(--bg-card); display:flex; align-items:center; justify-content:center; margin:0 auto 12px; color:var(--text-muted); font-size:1.5rem; border:1px solid var(--border-color);">
-                                <i class="fa-solid fa-user-group"></i>
-                            </div>
                             <h4 style="font-size:1rem; font-weight:700; color:var(--text-main); margin-bottom:4px;">Belum Ada Data Penghuni</h4>
                             <p style="color:var(--text-muted); font-size:0.875rem; margin-bottom:16px;">Tambahkan data anggota keluarga penghuni rumah untuk melengkapi berkas.</p>
                             <button type="button" @click="add()" class="btn btn-primary">
-                                <i class="fa-solid fa-plus"></i> Tambahkan Penghuni Pertama
+                                Tambahkan Penghuni Pertama
                             </button>
                         </div>
                     </template>
@@ -81,7 +78,7 @@
                                         </span>
                                     </div>
                                     <button type="button" @click="remove(index)" class="btn btn-danger btn-sm" title="Hapus anggota ini">
-                                        <i class="fa-solid fa-trash"></i> Hapus
+                                        Hapus
                                     </button>
                                 </div>
 
@@ -162,10 +159,10 @@
                 {{-- FOOTER --}}
                 <div class="card-footer" style="display:flex; justify-content:flex-end; gap:12px; background:var(--bg-main);">
                     <a href="{{ route('houses.show', $house) }}" class="btn">
-                        <i class="fa-solid fa-xmark"></i> Batal
+                        Batal
                     </a>
                     <button type="submit" class="btn primary">
-                        <i class="fa-solid fa-floppy-disk"></i> Simpan Penghuni
+                        Simpan Penghuni
                     </button>
                 </div>
             </div>

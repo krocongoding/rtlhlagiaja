@@ -29,6 +29,9 @@ class House extends Model
         'funding_source',
         'budget_amount',
         'proposal_document_path',
+        'kk_document_path',
+        'akte_document_path',
+        'land_document_path',
         'proposal_notes',
         'revision_notes',
         'revised_at',
@@ -233,5 +236,13 @@ class House extends Model
         }
 
         return null;
+    }
+
+    /**
+     * Cek apakah program bantuan rumah sudah terealisasi.
+     */
+    public function isRealized(): bool
+    {
+        return $this->realization_status === 'realized';
     }
 }

@@ -273,8 +273,9 @@ class PublicController extends Controller
     public function detail(House $house)
     {
         abort_unless(
-            $house->is_public &&
-                $house->status === 'published',
+            $house->is_public ||
+            auth()->check() ||
+            in_array($house->status, ['submitted', 'verified', 'published']),
             404
         );
 

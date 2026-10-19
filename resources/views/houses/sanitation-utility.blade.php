@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div>
             <div class="kicker">
-                <i class="fa-solid fa-faucet-detergent"></i> SANITASI & UTILITAS
+                SANITASI & UTILITAS
             </div>
             <h1>Sanitasi & Utilitas — {{ $house->house_code }}</h1>
             <p class="muted">
@@ -12,7 +12,7 @@
 
         <div class="actions">
             <a href="{{ route('houses.show', $house) }}" class="btn">
-                <i class="fa-solid fa-arrow-left"></i> Kembali ke Detail
+                Kembali ke Detail
             </a>
         </div>
     </x-slot>
@@ -20,7 +20,6 @@
     <div style="max-width: 860px; margin: 0 auto;">
         @if ($errors->any())
             <div class="alert danger" style="border-left:4px solid #b91c1c;">
-                <i class="fa-solid fa-triangle-exclamation fa-lg"></i>
                 <div>
                     <strong>Terdapat kesalahan pengisian:</strong>
                     <ul style="margin:6px 0 0 16px; font-size:13px;">
@@ -157,10 +156,10 @@
             {{-- ACTIONS --}}
             <div class="actions" style="justify-content: flex-end;">
                 <a href="{{ route('houses.show', $house) }}" class="btn">
-                    <i class="fa-solid fa-xmark"></i> Batal
+                    Batal
                 </a>
                 <button type="submit" class="btn primary">
-                    <i class="fa-solid fa-floppy-disk"></i> Simpan Sanitasi & Utilitas
+                    Simpan Sanitasi & Utilitas
                 </button>
             </div>
         </form>

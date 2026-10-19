@@ -3,7 +3,7 @@
     <div class="pagehead">
         <div>
             <div class="kicker">
-                <i class="fa-solid fa-clipboard-check"></i> MODUL REVIEW & APPROVAL
+                MODUL REVIEW & APPROVAL
             </div>
             <h1>Antrian Review & Publikasi RTLH</h1>
             <p class="muted">
@@ -13,10 +13,10 @@
 
         <div class="actions">
             <a href="{{ route('admin.dashboard') }}" class="btn">
-                <i class="fa-solid fa-arrow-left"></i> Dashboard Admin
+                Dashboard Admin
             </a>
             <a href="{{ route('houses.index') }}" class="btn">
-                <i class="fa-solid fa-list"></i> Semua Data
+                Semua Data
             </a>
         </div>
     </div>
@@ -24,14 +24,12 @@
     {{-- FLASH MESSAGES & VALIDATION ERRORS --}}
     @if(session('ok') || session('success'))
         <div class="alert ok" style="margin-bottom: 20px;">
-            <i class="fa-solid fa-circle-check fa-lg"></i>
             <div>{{ session('ok') ?? session('success') }}</div>
         </div>
     @endif
 
     @if($errors->any())
         <div class="alert danger" style="margin-bottom: 20px;">
-            <i class="fa-solid fa-triangle-exclamation fa-lg"></i>
             <div>
                 <strong>Gagal memproses aksi:</strong>
                 <ul style="margin:4px 0 0 16px; padding:0;">
@@ -86,7 +84,7 @@
 
                             <td>
                                 <span class="badge" style="background:var(--slate-100); color:var(--slate-700);">
-                                    <i class="fa-solid fa-location-dot"></i> {{ $house->region?->name ?? '-' }}
+                                    {{ $house->region?->name ?? '-' }}
                                 </span>
                             </td>
 
@@ -99,11 +97,11 @@
                             <td>
                                 @if($house->status === 'submitted')
                                     <span class="badge submitted">
-                                        <i class="fa-solid fa-hourglass-half"></i> Menunggu Review
+                                        Menunggu Review
                                     </span>
                                 @elseif($house->status === 'verified')
                                     <span class="badge" style="background:#ede9fe; color:#6d28d9;">
-                                        <i class="fa-solid fa-circle-check"></i> Terverifikasi (Siap Publish)
+                                        Terverifikasi (Siap Publish)
                                     </span>
                                 @else
                                     <span class="badge">
@@ -114,7 +112,7 @@
                                 @if($house->revision_notes)
                                     <div style="margin-top:4px;">
                                         <span class="badge" style="background:#fff1f2; color:#be123c; border:1px solid #fecaca; font-size:10px; cursor:pointer;" title="Catatan sebelumnya: {{ $house->revision_notes }}">
-                                            <i class="fa-solid fa-note-sticky"></i> Ada Catatan Revisi
+                                            Ada Catatan Revisi
                                         </span>
                                     </div>
                                 @endif
@@ -144,7 +142,7 @@
                                 <div class="actions" style="justify-content: flex-end; gap:6px;">
                                     {{-- DETAIL --}}
                                     <a href="{{ route('houses.show', $house) }}" class="btn small" title="Tinjau Detail">
-                                        <i class="fa-solid fa-eye"></i> Detail
+                                        Detail
                                     </a>
 
                                     @if($house->status === 'submitted')
@@ -152,13 +150,13 @@
                                         <form method="POST" action="{{ route('admin.review.verify', $house) }}" style="display:inline;">
                                             @csrf
                                             <button type="submit" class="btn small primary" title="Verifikasi Data">
-                                                <i class="fa-solid fa-check"></i> Verifikasi
+                                                Verifikasi
                                             </button>
                                         </form>
 
                                         {{-- REVISION WITH NOTE --}}
                                         <button type="button" class="btn small danger" title="Kembalikan ke Surveyor dengan Catatan Revisi" onclick="openRevisionModal('{{ route('admin.review.revision', $house) }}', '{{ $house->house_code }}', @js($house->revision_notes ?? ''))">
-                                            <i class="fa-solid fa-rotate-left"></i> Revisi
+                                            Revisi
                                         </button>
 
                                     @elseif($house->status === 'verified')
@@ -166,13 +164,13 @@
                                         <form method="POST" action="{{ route('admin.review.publish', $house) }}" style="display:inline;">
                                             @csrf
                                             <button type="submit" class="btn small" style="background:#059669; color:#fff; border-color:#059669;" title="Terbitkan ke Peta Publik">
-                                                <i class="fa-solid fa-globe"></i> Publish
+                                                Publish
                                             </button>
                                         </form>
 
                                         {{-- REVISION WITH NOTE --}}
                                         <button type="button" class="btn small danger" title="Kembalikan ke Surveyor dengan Catatan Revisi" onclick="openRevisionModal('{{ route('admin.review.revision', $house) }}', '{{ $house->house_code }}', @js($house->revision_notes ?? ''))">
-                                            <i class="fa-solid fa-rotate-left"></i> Revisi
+                                            Revisi
                                         </button>
                                     @endif
                                 </div>
@@ -181,9 +179,6 @@
                     @empty
                         <tr>
                             <td colspan="6" style="text-align: center; padding: 48px 24px;">
-                                <div style="width:56px; height:56px; border-radius:50%; background:#ecfdf5; color:#059669; display:flex; align-items:center; justify-content:center; font-size:24px; margin:0 auto 14px;">
-                                    <i class="fa-solid fa-circle-check"></i>
-                                </div>
                                 <h4 style="font-size:16px; font-weight:700; color:var(--slate-800); margin-bottom:4px;">
                                     Semua Data Bersih & Terverifikasi
                                 </h4>
@@ -214,19 +209,14 @@
     <div id="revision-modal" role="dialog" aria-modal="true" aria-labelledby="revision-modal-title" style="display:none; position:fixed; inset:0; z-index:2000; padding:20px; background:rgba(15, 23, 42, 0.75); align-items:center; justify-content:center; backdrop-filter:blur(4px);">
         <div style="background:#ffffff; border-radius:var(--radius-xl); max-width:540px; width:100%; box-shadow:0 25px 50px -12px rgba(0,0,0,0.25); border:1px solid var(--slate-200); overflow:hidden;">
             <div style="padding:20px 24px; border-bottom:1px solid var(--slate-200); background:#fff1f2; display:flex; justify-content:space-between; align-items:center;">
-                <div style="display:flex; align-items:center; gap:10px;">
-                    <div style="width:36px; height:36px; border-radius:10px; background:#ffe4e6; color:#e11d48; display:flex; align-items:center; justify-content:center; font-size:16px;">
-                        <i class="fa-solid fa-rotate-left"></i>
-                    </div>
-                    <div>
-                        <h3 id="revision-modal-title" style="font-size:16px; font-weight:800; color:#9f1239; margin:0;">
-                            Kembalikan untuk Revisi
-                        </h3>
-                        <p id="revision-house-code" class="muted" style="font-size:12px; margin:2px 0 0 0; font-family:monospace; color:#be123c;"></p>
-                    </div>
+                <div>
+                    <h3 id="revision-modal-title" style="font-size:16px; font-weight:800; color:#9f1239; margin:0;">
+                        Kembalikan untuk Revisi
+                    </h3>
+                    <p id="revision-house-code" class="muted" style="font-size:12px; margin:2px 0 0 0; font-family:monospace; color:#be123c;"></p>
                 </div>
-                <button type="button" onclick="closeRevisionModal()" style="border:none; background:none; color:var(--slate-400); font-size:18px; cursor:pointer; width:32px; height:32px; display:flex; align-items:center; justify-content:center; border-radius:6px;">
-                    <i class="fa-solid fa-xmark"></i>
+                <button type="button" onclick="closeRevisionModal()" style="border:none; background:none; color:var(--slate-400); font-size:22px; line-height:1; cursor:pointer; width:32px; height:32px; display:flex; align-items:center; justify-content:center; border-radius:6px;">
+                    &times;
                 </button>
             </div>
 
@@ -241,7 +231,7 @@
                         name="revision_notes" 
                         rows="4" 
                         required 
-                        minlength="5"
+                        minlength="5" 
                         maxlength="3000"
                         placeholder="Contoh: Foto tampak depan buram, tolong unggah ulang. Koordinat GPS perlu diperbaiki karena tidak sesuai dengan lokasi desa..."
                         style="width:100%; border-radius:var(--radius-md); border:1px solid var(--slate-300); padding:12px; font-size:13px; font-family:inherit; resize:vertical; line-height:1.5; box-sizing:border-box;"
@@ -253,7 +243,7 @@
                         Batal
                     </button>
                     <button type="submit" class="btn danger" style="background:#e11d48; border-color:#e11d48; color:#fff;">
-                        <i class="fa-solid fa-paper-plane"></i> Kirim Catatan Revisi
+                        Kirim Catatan Revisi
                     </button>
                 </div>
             </form>

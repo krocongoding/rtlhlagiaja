@@ -226,4 +226,92 @@ test('houses show renders geospatial mini map and leaflet assets for admin and s
     $responseSurveyor->assertSee('-6.7149029', false);
     $responseSurveyor->assertSee('108.5689549', false);
     $responseSurveyor->assertSee('Buka Google Maps');
+    $responseSurveyor->assertSee('#eab308', false); // Belum Terealisasi yellow color
 });
+
+test('public map view renders realization filters, legend and dynamic marker colors', function () {
+    $response = $this->get(route('public.map'));
+    $response->assertOk();
+    $response->assertSee('id="realization_status"', false);
+    $response->assertSee('Semua Realisasi');
+    $response->assertSee('Sudah Terealisasi');
+    $response->assertSee('Belum Terealisasi');
+    $response->assertSee('pin-realized');
+    $response->assertSee('pin-not-realized');
+});
+
+test('public rtlh api outputs realization status and supports filtering by realization status', function () {
+    $realizedHouse = House::create([
+        'house_code' => 'RTLH-MAP-REAL-01',
+        'region_id' => $this->region->id,
+        'nik' => '3274010101990001',
+        'head_of_household_name' => 'Warga Sudah Realisasi',
+        'survey_year' => 2026,
+        'is_public' => true,
+        'status' => 'published',
+        'realization_status' => 'realized',
+        'latitude' => -6.7149,
+        'longitude' => 108.5689,
+        'created_by' => $this->surveyor->id,
+        'updated_by' => $this->surveyor->id,
+    ]);
+
+    $notRealizedHouse = House::create([
+        'house_code' => 'RTLH-MAP-UNREAL-01',
+        'region_id' => $this->region->id,
+        'nik' => '3274010101990002',
+        'head_of_household_name' => 'Warga Belum Realisasi',
+        'survey_year' => 2026,
+        'is_public' => true,
+        'status' => 'published',
+        'realization_status' => 'not_realized',
+        'latitude' => -6.7150,
+        'longitude' => 108.5690,
+        'created_by' => $this->surveyor->id,
+        'updated_by' => $this->surveyor->id,
+    ]);
+
+    // Test default API list includes realization_status
+    $resAll = $this->getJson('/api/v1/public/rtlh');
+    $resAll->assertOk();
+    $dataAll = collect($resAll->json('data'));
+    $foundRealized = $dataAll->firstWhere('house_code', 'RTLH-MAP-REAL-01');
+    expect($foundRealized)->not->toBeNull();
+    expect($foundRealized['realization_status'])->toBe('realized');
+
+    // Test filter realized only
+    $resRealized = $this->getJson('/api/v1/public/rtlh?realization_status=realized');
+    $resRealized->assertOk();
+    $dataRealized = collect($resRealized->json('data'));
+    expect($dataRealized->pluck('house_code'))->toContain('RTLH-MAP-REAL-01');
+    expect($dataRealized->pluck('house_code'))->not->toContain('RTLH-MAP-UNREAL-01');
+
+    // Test filter not_realized only
+    $resNotRealized = $this->getJson('/api/v1/public/rtlh?realization_status=not_realized');
+    $resNotRealized->assertOk();
+    $dataNotRealized = collect($resNotRealized->json('data'));
+    expect($dataNotRealized->pluck('house_code'))->toContain('RTLH-MAP-UNREAL-01');
+    expect($dataNotRealized->pluck('house_code'))->not->toContain('RTLH-MAP-REAL-01');
+
+    // Test submitted house with coordinates also appears in map API
+    $submittedHouse = House::create([
+        'house_code' => 'RTLH-MAP-SUBMITTED-01',
+        'region_id' => $this->region->id,
+        'nik' => '3274010101990003',
+        'head_of_household_name' => 'Warga Submitted',
+        'survey_year' => 2026,
+        'is_public' => false,
+        'status' => 'submitted',
+        'realization_status' => 'not_realized',
+        'latitude' => -6.7155,
+        'longitude' => 108.5695,
+        'created_by' => $this->surveyor->id,
+        'updated_by' => $this->surveyor->id,
+    ]);
+
+    $resSubmitted = $this->getJson('/api/v1/public/rtlh');
+    $resSubmitted->assertOk();
+    $codes = collect($resSubmitted->json('data'))->pluck('house_code');
+    expect($codes)->toContain('RTLH-MAP-SUBMITTED-01');
+});
+

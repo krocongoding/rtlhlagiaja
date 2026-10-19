@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div>
             <div class="kicker">
-                <i class="fa-solid fa-folder-tree"></i> BASIS DATA INTERNAL
+                BASIS DATA INTERNAL
             </div>
             <h1>Manajemen Data RTLH</h1>
             <p class="muted">
@@ -12,41 +12,26 @@
 
         <div class="actions">
             <a href="{{ route('houses.create') }}" class="btn primary">
-                <i class="fa-solid fa-plus"></i> Tambah Data Rumah
+                Tambah Data Rumah
             </a>
         </div>
     </x-slot>
 
     {{-- METRIK REKAP REALISASI DESA & DAERAH --}}
     <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-bottom: 24px;">
-        <div class="card" style="padding: 18px 20px; display:flex; align-items:center; gap:16px;">
-            <div style="width:48px; height:48px; border-radius:12px; background:#eff6ff; color:#2563eb; display:flex; align-items:center; justify-content:center; font-size:22px;">
-                <i class="fa-solid fa-house-chimney"></i>
-            </div>
-            <div>
-                <span class="muted" style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px;">Total Basis Data RTLH</span>
-                <div style="font-size:24px; font-weight:900; color:var(--slate-900);">{{ number_format($totalHouses ?? $houses->total()) }} <span style="font-size:13px; font-weight:600; color:var(--slate-500);">Unit</span></div>
-            </div>
+        <div class="card" style="padding: 18px 20px;">
+            <span class="muted" style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px;">Total Basis Data RTLH</span>
+            <div style="font-size:26px; font-weight:900; color:var(--slate-900); margin-top:4px;">{{ number_format($totalHouses ?? $houses->total()) }} <span style="font-size:13px; font-weight:600; color:var(--slate-500);">Unit</span></div>
         </div>
 
-        <div class="card" style="padding: 18px 20px; display:flex; align-items:center; gap:16px; border-left: 4px solid #10b981;">
-            <div style="width:48px; height:48px; border-radius:12px; background:#dcfce7; color:#16a34a; display:flex; align-items:center; justify-content:center; font-size:22px;">
-                <i class="fa-solid fa-circle-check"></i>
-            </div>
-            <div>
-                <span style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:#15803d;">Sudah Terealisasi </span>
-                <div style="font-size:24px; font-weight:900; color:#15803d;">{{ number_format($realizedCount ?? 0) }} <span style="font-size:13px; font-weight:600; color:#16a34a;">Unit</span></div>
-            </div>
+        <div class="card" style="padding: 18px 20px; border-left: 4px solid #10b981;">
+            <span style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:#15803d;">Sudah Terealisasi</span>
+            <div style="font-size:26px; font-weight:900; color:#15803d; margin-top:4px;">{{ number_format($realizedCount ?? 0) }} <span style="font-size:13px; font-weight:600; color:#16a34a;">Unit</span></div>
         </div>
 
-        <div class="card" style="padding: 18px 20px; display:flex; align-items:center; gap:16px; border-left: 4px solid #f59e0b;">
-            <div style="width:48px; height:48px; border-radius:12px; background:#fef3c7; color:#d97706; display:flex; align-items:center; justify-content:center; font-size:22px;">
-                <i class="fa-solid fa-clock-rotate-left"></i>
-            </div>
-            <div>
-                <span style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:#b45309;">Belum Terealisasi</span>
-                <div style="font-size:24px; font-weight:900; color:#b45309;">{{ number_format($notRealizedCount ?? 0) }} <span style="font-size:13px; font-weight:600; color:#d97706;">Unit</span></div>
-            </div>
+        <div class="card" style="padding: 18px 20px; border-left: 4px solid #f59e0b;">
+            <span style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:#b45309;">Belum Terealisasi</span>
+            <div style="font-size:26px; font-weight:900; color:#b45309; margin-top:4px;">{{ number_format($notRealizedCount ?? 0) }} <span style="font-size:13px; font-weight:600; color:#d97706;">Unit</span></div>
         </div>
     </div>
 
@@ -54,15 +39,13 @@
     <div class="card" style="margin-bottom: 24px;">
         <form method="GET" action="{{ route('houses.index') }}">
             <div class="toolbar" style="flex-wrap:wrap; gap:12px;">
-                <div style="flex:2; min-width:260px; position:relative;">
+                <div style="flex:2; min-width:260px;">
                     <input
                         type="text"
                         name="search"
                         value="{{ request('search') }}"
                         placeholder="Cari NIK, Nama Kepala Keluarga, Kode RTLH, atau Alamat..."
-                        style="padding-left:36px;"
                     >
-                    <i class="fa-solid fa-magnifying-glass" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--slate-400);"></i>
                 </div>
 
                 @if(isset($villages) && $villages->isNotEmpty())
@@ -98,12 +81,12 @@
                 </div>
 
                 <button type="submit" class="btn primary">
-                    <i class="fa-solid fa-magnifying-glass"></i> Filter
+                    Filter
                 </button>
 
                 @if(request()->hasAny(['search', 'region_id', 'realization_status', 'status']))
                     <a href="{{ route('houses.index') }}" class="btn">
-                        <i class="fa-solid fa-rotate-left"></i> Reset
+                        Reset
                     </a>
                 @endif
             </div>
@@ -149,34 +132,34 @@
                                 @if($house->status === 'revision')
                                     <div style="margin-top:4px;">
                                         <span class="badge" style="background:#fee2e2; color:#b91c1c; border:1px solid #fca5a5; font-size:10px; font-weight:700;" title="{{ $house->revision_notes ? 'Catatan: ' . $house->revision_notes : 'Perlu revisi' }}">
-                                            <i class="fa-solid fa-rotate-left"></i> Perlu Revisi
+                                            Perlu Revisi
                                         </span>
                                     </div>
-                                @elseif($house->status === 'submitted')
-                                    <div style="margin-top:4px;">
-                                        <span class="badge submitted" style="font-size:10px;">
-                                            <i class="fa-solid fa-hourglass-half"></i> Review
-                                        </span>
-                                    </div>
-                                @elseif($house->status === 'verified')
-                                    <div style="margin-top:4px;">
-                                        <span class="badge" style="background:#ede9fe; color:#6d28d9; font-size:10px;">
-                                            <i class="fa-solid fa-check"></i> Verified
-                                        </span>
-                                    </div>
-                                @elseif($house->status === 'published')
-                                    <div style="margin-top:4px;">
-                                        <span class="badge published" style="font-size:10px;">
-                                            <i class="fa-solid fa-globe"></i> Published
-                                        </span>
-                                    </div>
-                                @elseif($house->status === 'draft')
-                                    <div style="margin-top:4px;">
-                                        <span class="badge" style="background:var(--slate-100); color:var(--slate-600); font-size:10px;">
-                                            <i class="fa-solid fa-file-pen"></i> Draft
-                                        </span>
-                                    </div>
-                                @endif
+                                 @elseif($house->status === 'submitted')
+                                     <div style="margin-top:4px;">
+                                         <span class="badge submitted" style="font-size:10px;">
+                                             Review
+                                         </span>
+                                     </div>
+                                 @elseif($house->status === 'verified')
+                                     <div style="margin-top:4px;">
+                                         <span class="badge" style="background:#ede9fe; color:#6d28d9; font-size:10px;">
+                                             Verified
+                                         </span>
+                                     </div>
+                                 @elseif($house->status === 'published')
+                                     <div style="margin-top:4px;">
+                                         <span class="badge published" style="font-size:10px;">
+                                             Published
+                                         </span>
+                                     </div>
+                                 @elseif($house->status === 'draft')
+                                     <div style="margin-top:4px;">
+                                         <span class="badge" style="background:var(--slate-100); color:var(--slate-600); font-size:10px;">
+                                             Draft
+                                         </span>
+                                     </div>
+                                 @endif
                             </td>
                             <td>
                                 @if($house->head_of_household_name || $house->nik)
@@ -188,7 +171,7 @@
                             </td>
                             <td>
                                 <span class="badge" style="background:var(--slate-100); color:var(--slate-700);">
-                                    <i class="fa-solid fa-location-dot"></i> {{ $house->region?->name ?? '-' }}
+                                    {{ $house->region?->name ?? '-' }}
                                 </span>
                             </td>
                             <td>
@@ -205,25 +188,24 @@
                             <td>
                                 @if($house->realization_status === 'realized')
                                     <span class="badge" style="background:#dcfce7; color:#15803d; border:1px solid #86efac; font-weight:700; font-size:12px;">
-                                        <i class="fa-solid fa-circle-check"></i> Sudah Terealisasi
+                                        Sudah Terealisasi
                                     </span>
                                 @else
                                     <span class="badge" style="background:#fef3c7; color:#b45309; border:1px solid #fde047; font-weight:700; font-size:12px;">
-                                        <i class="fa-solid fa-clock"></i> Belum Terealisasi
+                                        Belum Terealisasi
                                     </span>
                                 @endif
                             </td>
                             <td style="text-align: right;">
                                 <a href="{{ route('houses.show', $house) }}" class="btn small primary">
-                                    <i class="fa-solid fa-eye"></i> Detail
+                                    Detail
                                 </a>
                             </td>
                         </tr>
                     @empty
                         <tr>
                             <td colspan="8" style="text-align:center; padding:48px 24px;" class="muted">
-                                <i class="fa-solid fa-folder-open fa-2x" style="color:var(--slate-300); margin-bottom:10px;"></i>
-                                <p>Belum ada data unit rumah RTLH yang tercatat.</p>
+                                <p style="font-size:14px; margin:0;">Belum ada data unit rumah RTLH yang tercatat.</p>
                             </td>
                         </tr>
                     @endforelse
@@ -246,13 +228,9 @@
 
             {{-- Previous --}}
             @if ($houses->onFirstPage())
-                <span class="page-btn disabled">
-                    <i class="fa-solid fa-chevron-left"></i>
-                </span>
+                <span class="page-btn disabled" aria-hidden="true">&lsaquo;</span>
             @else
-                <a href="{{ $houses->previousPageUrl() }}" class="page-btn">
-                    <i class="fa-solid fa-chevron-left"></i>
-                </a>
+                <a href="{{ $houses->previousPageUrl() }}" class="page-btn" rel="prev" aria-label="Sebelumnya">&lsaquo;</a>
             @endif
 
             {{-- Nomor halaman --}}
@@ -275,13 +253,9 @@
 
             {{-- Next --}}
             @if ($houses->hasMorePages())
-                <a href="{{ $houses->nextPageUrl() }}" class="page-btn">
-                    <i class="fa-solid fa-chevron-right"></i>
-                </a>
+                <a href="{{ $houses->nextPageUrl() }}" class="page-btn" rel="next" aria-label="Berikutnya">&rsaquo;</a>
             @else
-                <span class="page-btn disabled">
-                    <i class="fa-solid fa-chevron-right"></i>
-                </span>
+                <span class="page-btn disabled" aria-hidden="true">&rsaquo;</span>
             @endif
 
         </nav>

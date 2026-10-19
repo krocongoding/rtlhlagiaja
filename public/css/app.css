@@ -1900,3 +1900,371 @@ html.dark .stat-widget-icon.rose    { background: rgba(225,29,72,0.15); }
 }
 
 
+
+/* ============================================================
+   GOVERNMENT DASHBOARD COLLAPSIBLE SIDEBAR LAYOUT
+   (Untuk Admin & Surveyor — Melebar Otomatis, Tanpa Blur)
+   ============================================================ */
+.gov-layout {
+  min-height: 100vh;
+  min-height: 100dvh;
+  width: 100%;
+  background: var(--bg-body, #f8fafc);
+  color: var(--text-main, #0f172a);
+  position: relative;
+}
+
+/* Sidebar Kiri - FIXED FULL HEIGHT 100vh (Selalu 100% layar, tidak ngikutin scroll / tidak kepotong) */
+.gov-sidebar {
+  width: 260px;
+  height: 100vh;
+  height: 100dvh;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  background: #0b1329;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  z-index: 100;
+  transform: translateX(0);
+  transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 2px 0 12px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+}
+
+/* Kondisi Collapsed / Melebar (Drawer tidak diklik / ditutup) */
+.gov-layout.sidebar-collapsed .gov-sidebar {
+  transform: translateX(-100%);
+  pointer-events: none;
+}
+
+/* Kop Instansi di Sidebar */
+.gov-sidebar-brand {
+  padding: 18px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.gov-sidebar-logo {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+}
+
+.gov-sidebar-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.gov-brand-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+.gov-brand-sub {
+  font-size: 11px;
+  font-weight: 700;
+  color: #38bdf8;
+  letter-spacing: 0.02em;
+  margin-top: 2px;
+}
+
+/* User Badge Card di Sidebar */
+.gov-sidebar-user {
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.gov-user-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.gov-user-meta {
+  overflow: hidden;
+  line-height: 1.3;
+}
+
+.gov-user-name {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #f1f5f9;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}
+
+/* Navigasi Scrollable Body */
+.gov-sidebar-nav {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 16px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.gov-sidebar-nav::-webkit-scrollbar {
+  width: 4px;
+}
+.gov-sidebar-nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+.gov-sidebar-nav::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+}
+
+.gov-nav-section-label {
+  font-size: 10px;
+  font-weight: 800;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0 10px 4px 10px;
+}
+
+.gov-nav-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.gov-nav-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 12px;
+  border-radius: 8px;
+  color: #cbd5e1;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.18s ease;
+  border: 1px solid transparent;
+}
+
+.gov-nav-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+}
+
+.gov-nav-item.active {
+  background: rgba(14, 165, 233, 0.14);
+  color: #38bdf8;
+  font-weight: 700;
+  border-color: rgba(56, 189, 248, 0.25);
+}
+
+.gov-nav-badge {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: #f43f5e;
+  color: #ffffff;
+}
+
+/* Sidebar Footer (Terkunci di paling bawah 100vh) */
+.gov-sidebar-footer {
+  padding: 12px 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+/* Content Area di Sisi Kanan (Otomatis MELEBAR saat sidebar ditutup) */
+.gov-main-wrapper {
+  margin-left: 260px;
+  width: calc(100% - 260px);
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  transition: margin-left 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+              width 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  background: var(--bg-body, #f8fafc);
+}
+
+/* Saat Collapsed: Main Content Melebar Penuh 100% */
+.gov-layout.sidebar-collapsed .gov-main-wrapper {
+  margin-left: 0;
+  width: 100%;
+}
+
+/* Topbar Petugas */
+.gov-topbar {
+  height: 58px;
+  background: var(--card-bg, #ffffff);
+  border-bottom: 1px solid var(--slate-200, #e2e8f0);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  position: sticky;
+  top: 0;
+  z-index: 90;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.gov-topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+/* Tombol Toggle Drawer Melebar */
+.gov-toggle-btn {
+  background: var(--slate-100, #f1f5f9);
+  border: 1px solid var(--slate-300, #cbd5e1);
+  color: var(--slate-800, #1e293b);
+  padding: 6px 12px;
+  border-radius: 7px;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.gov-toggle-btn:hover {
+  background: var(--slate-200, #e2e8f0);
+  color: var(--slate-900, #0f172a);
+}
+
+.gov-topbar-breadcrumb {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--slate-500, #64748b);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.gov-topbar-breadcrumb strong {
+  color: var(--slate-800, #1e293b);
+}
+
+.gov-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.gov-content {
+  flex: 1;
+  padding: 24px 28px 48px 28px;
+  max-width: 100%;
+}
+
+.gov-footer {
+  padding: 16px 28px;
+  border-top: 1px solid var(--slate-200, #e2e8f0);
+  background: var(--card-bg, #ffffff);
+  font-size: 12px;
+  color: var(--slate-500, #64748b);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* Mobile backdrop */
+.gov-sidebar-backdrop {
+  display: none;
+}
+
+/* Dark Mode Overrides */
+html.dark .gov-topbar {
+  background: #0f172a;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+html.dark .gov-toggle-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #f1f5f9;
+}
+html.dark .gov-toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+html.dark .gov-main-wrapper {
+  background: #090e1d;
+}
+html.dark .gov-footer {
+  background: #0f172a;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Responsif Mobile (< 1024px) */
+@media (max-width: 1023px) {
+  .gov-sidebar {
+    position: fixed;
+    height: 100vh;
+    height: 100dvh;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    transform: translateX(-100%);
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.35);
+  }
+  .gov-layout.mobile-sidebar-open .gov-sidebar {
+    transform: translateX(0);
+    pointer-events: auto;
+  }
+  .gov-layout.sidebar-collapsed .gov-sidebar {
+    transform: translateX(-100%);
+  }
+  .gov-layout.mobile-sidebar-open .gov-sidebar-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 95;
+    backdrop-filter: blur(2px);
+  }
+  .gov-main-wrapper {
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+  .gov-content {
+    padding: 16px;
+  }
+  .gov-topbar {
+    padding: 0 16px;
+  }
+}

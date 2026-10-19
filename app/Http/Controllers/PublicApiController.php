@@ -47,8 +47,10 @@ class PublicApiController extends Controller
                 'sanitation',
                 'utility',
             ])
-            ->where('is_public', true)
-            ->where('status', 'published'); 
+            ->where(function ($q) {
+                $q->where('is_public', true)
+                    ->orWhereIn('status', ['submitted', 'verified', 'published']);
+            }); 
 
         /*
         |--------------------------------------------------------------------------
@@ -94,6 +96,24 @@ class PublicApiController extends Controller
 
         /*
         |--------------------------------------------------------------------------
+        | Filter status realisasi
+        |--------------------------------------------------------------------------
+        */
+
+        if ($request->filled('realization_status')) {
+            $realStatus = $request->input('realization_status');
+            if ($realStatus === 'not_realized') {
+                $query->where(function ($q) {
+                    $q->where('realization_status', 'not_realized')
+                        ->orWhereNull('realization_status');
+                });
+            } else {
+                $query->where('realization_status', $realStatus);
+            }
+        }
+
+        /*
+        |--------------------------------------------------------------------------
         | Pagination
         |--------------------------------------------------------------------------
         */
@@ -121,8 +141,9 @@ class PublicApiController extends Controller
     public function show(House $house)
     {
         abort_unless(
-            $house->is_public &&
-            $house->status === 'published',
+            $house->is_public ||
+            auth()->check() ||
+            in_array($house->status, ['submitted', 'verified', 'published']),
             404
         );
 
@@ -297,6 +318,9 @@ class PublicApiController extends Controller
             [$house->id]
         );
 
+        $lng = $coordinate ? (float) $coordinate->lng : ($house->longitude !== null ? (float) $house->longitude : null);
+        $lat = $coordinate ? (float) $coordinate->lat : ($house->latitude !== null ? (float) $house->latitude : null);
+
         $data = [
             'id' => $house->id,
 
@@ -317,10 +341,12 @@ class PublicApiController extends Controller
 
             'status' => $house->status,
 
-            'coordinates' => $coordinate
+            'realization_status' => $house->realization_status ?: 'not_realized',
+
+            'coordinates' => ($lng !== null && $lat !== null)
                 ? [
-                    (float) $coordinate->lng,
-                    (float) $coordinate->lat,
+                    $lng,
+                    $lat,
                 ]
                 : null,
         ];

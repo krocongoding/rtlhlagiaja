@@ -426,8 +426,28 @@
                         attribution: '&copy; OpenStreetMap'
                     }).addTo(miniMap);
 
-                    L.marker([lat, lng]).addTo(miniMap)
-                        .bindPopup('<strong>{{ $house->house_code }}</strong><br>{{ $house->region?->name ?? "Cirebon" }}')
+                    const isRealized = {{ $house->isRealized() ? 'true' : 'false' }};
+                    const pinColor = isRealized ? '#16a34a' : '#eab308';
+                    const customIcon = L.divIcon({
+                        className: 'custom-house-pin',
+                        html: `<div style="background:${pinColor}; width:20px; height:20px; border-radius:50%; border:3px solid #ffffff; box-shadow:0 2px 8px rgba(0,0,0,0.35);"></div>`,
+                        iconSize: [20, 20],
+                        iconAnchor: [10, 10],
+                        popupAnchor: [0, -12]
+                    });
+
+                    L.marker([lat, lng], { icon: customIcon }).addTo(miniMap)
+                        .bindPopup(`
+                            <div style="font-family:sans-serif; font-size:12px; line-height:1.4;">
+                                <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:4px;">
+                                    <strong style="color:#0f172a; font-family:monospace;">{{ $house->house_code }}</strong>
+                                    <span style="font-size:10px; font-weight:800; padding:2px 6px; border-radius:999px; ${isRealized ? 'background:#dcfce7; color:#15803d;' : 'background:#fef3c7; color:#b45309;'}">
+                                        ${isRealized ? 'Sudah Terealisasi' : 'Belum Terealisasi'}
+                                    </span>
+                                </div>
+                                <span style="color:#475569;">{{ $house->region?->name ?? 'Kabupaten Cirebon' }}</span>
+                            </div>
+                        `)
                         .openPopup();
                 });
             </script>

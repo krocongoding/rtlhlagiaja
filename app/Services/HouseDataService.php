@@ -82,10 +82,18 @@ class HouseDataService
                 $util[$k] = $data[$k] ?? null;
             }
 
-            // Handle proposal document upload if passed
-            if (isset($data['proposal_document']) && $data['proposal_document'] instanceof \Illuminate\Http\UploadedFile) {
-                $docPath = $data['proposal_document']->store('rtlh/proposals', 'public');
-                $data['proposal_document_path'] = $docPath;
+            // Handle document uploads
+            $docs = [
+                'proposal_document' => ['col' => 'proposal_document_path', 'dir' => 'rtlh/proposals'],
+                'kk_document' => ['col' => 'kk_document_path', 'dir' => 'rtlh/documents/kk'],
+                'akte_document' => ['col' => 'akte_document_path', 'dir' => 'rtlh/documents/akte'],
+                'land_document' => ['col' => 'land_document_path', 'dir' => 'rtlh/documents/land'],
+            ];
+            foreach ($docs as $field => $cfg) {
+                if (isset($data[$field]) && $data[$field] instanceof \Illuminate\Http\UploadedFile) {
+                    $docPath = $data[$field]->store($cfg['dir'], 'public');
+                    $data[$cfg['col']] = $docPath;
+                }
             }
 
             // Unset extracted fields from house data array
@@ -94,7 +102,8 @@ class HouseDataService
                 'floor_material_id', 'floor_condition_id', 'wall_material_id', 'wall_condition_id',
                 'roof_frame_material_id', 'roof_frame_condition_id', 'roof_material_id', 'roof_condition_id',
                 'water_source_id', 'wastewater_disposal_id', 'toilet_available', 'toilet_type_id', 'fecal_disposal_type_id', 'water_fecal_distance',
-                'light_opening', 'ventilation', 'lighting_source_id', 'ceiling_condition_id', 'proposal_document'
+                'light_opening', 'ventilation', 'lighting_source_id', 'ceiling_condition_id',
+                'proposal_document', 'kk_document', 'akte_document', 'land_document'
             ] as $k) {
                 unset($data[$k]);
             }

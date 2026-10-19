@@ -22,262 +22,250 @@
 
     @stack('head')
 
-    {{-- Anti-FOUC: apply dark class before first paint --}}
-    <script>if(localStorage.getItem('rtlh-dark-mode')==='1'){document.documentElement.classList.add('dark');}</script>
+    {{-- Anti-FOUC: apply dark class and sidebar collapsed state before first paint --}}
+    <script>
+        if (localStorage.getItem('rtlh-dark-mode') === '1') {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
 </head>
 <body>
-    {{-- TOPBAR NAVIGATION — WORKSPACE PETUGAS --}}
-    <header class="topbar">
-        <div class="container nav">
 
-            {{-- LEFT: LOGO & BRANDING --}}
-            <a href="{{ route('dashboard') }}" class="brand-wrapper" title="Menuju Dashboard">
-                <div class="lapa-brand-logo">
-                    <img src="{{ asset('images/logo.png') }}" alt="Logo RTLH">
+    <div class="gov-layout" id="govLayout">
+
+        {{-- ============================================================
+             SIDEBAR PEMERINTAHAN (KIRI)
+             ============================================================ --}}
+        <aside class="gov-sidebar" id="govSidebar">
+            {{-- KOP INSTANSI & LOGO --}}
+            <a href="{{ route('dashboard') }}" class="gov-sidebar-brand" title="Dashboard Workspace">
+                <div class="gov-sidebar-logo">
+                    <img src="{{ asset('images/logo.png') }}" alt="Logo Kab Cirebon">
                 </div>
-                <div class="brand-info">
-                    <span class="brand-title">
-                        rtlh<span style="color:#38bdf8;">.</span>cirebon
-                    </span>
-                    <span class="brand-subtitle" style="color:#38bdf8; display:flex; align-items:center; gap:4px; font-weight:700;">
-                        <i class="fa-solid fa-shield-halved" style="font-size:9px;"></i>
-                        Workspace Petugas
-                    </span>
+                <div>
+                    <div class="gov-brand-title">RTLH CIREBON</div>
+                    <div class="gov-brand-sub">DPKPP Kab. Cirebon</div>
                 </div>
             </a>
 
-            {{-- CENTER: WORKSPACE NAVIGATION LINKS (ADMIN & SURVEYOR) --}}
-            <nav class="nav-center">
+            {{-- IDENTITAS AKUN / USER INFO --}}
+            @auth
+                <div class="gov-sidebar-user">
+                    <div class="gov-user-avatar">
+                        {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                    </div>
+                    <div class="gov-user-meta">
+                        <span class="gov-user-name" title="{{ auth()->user()->name }}">{{ auth()->user()->name }}</span>
+                        @if(auth()->user()->hasRole('admin'))
+                            <span class="role-pill role-admin">Admin Sistem</span>
+                        @elseif(auth()->user()->hasRole('surveyor'))
+                            <span class="role-pill role-surveyor">Surveyor Lapangan</span>
+                        @else
+                            <span class="role-pill">Petugas</span>
+                        @endif
+                    </div>
+                </div>
+            @endauth
+
+            {{-- MENU NAVIGASI SESUAI ROLE --}}
+            <nav class="gov-sidebar-nav">
                 @auth
                     @if(auth()->user()->hasRole('admin'))
-                        <a href="{{ route('admin.dashboard') }}" class="lapa-nav-link {{ request()->routeIs('admin.dashboard') || (request()->routeIs('dashboard') && auth()->user()->hasRole('admin')) ? 'active' : '' }}">
-                            <i class="fa-solid fa-gauge-high" style="font-size:12px; opacity:0.8;"></i>
-                            <span>Dashboard</span>
-                        </a>
+                        {{-- GRUP: MENU UTAMA --}}
+                        <div>
+                            <div class="gov-nav-section-label">Menu Utama</div>
+                            <div class="gov-nav-menu">
+                                <a href="{{ route('admin.dashboard') }}" class="gov-nav-item {{ request()->routeIs('admin.dashboard') || (request()->routeIs('dashboard') && auth()->user()->hasRole('admin')) ? 'active' : '' }}">
+                                    <span>Dashboard Admin</span>
+                                </a>
+                            </div>
+                        </div>
 
-                        <a href="{{ route('houses.index') }}" class="lapa-nav-link {{ request()->routeIs('houses.index') || (request()->routeIs('houses.*') && !request()->routeIs('houses.create')) ? 'active' : '' }}">
-                            <i class="fa-solid fa-house-chimney" style="font-size:12px; opacity:0.8;"></i>
-                            <span>Data RTLH</span>
-                        </a>
+                        {{-- GRUP: DATA & PENGAWASAN --}}
+                        <div>
+                            <div class="gov-nav-section-label">Data & Pengawasan</div>
+                            <div class="gov-nav-menu">
+                                <a href="{{ route('houses.index') }}" class="gov-nav-item {{ request()->routeIs('houses.index') || (request()->routeIs('houses.*') && !request()->routeIs('houses.create')) ? 'active' : '' }}">
+                                    <span>Basis Data RTLH</span>
+                                </a>
 
-                        <a href="{{ route('houses.create') }}" class="lapa-nav-link {{ request()->routeIs('houses.create') ? 'active' : '' }}">
-                            <i class="fa-solid fa-plus-circle" style="font-size:12px; opacity:0.8;"></i>
-                            <span>Input Baru</span>
-                        </a>
+                                <a href="{{ route('houses.create') }}" class="gov-nav-item {{ request()->routeIs('houses.create') ? 'active' : '' }}">
+                                    <span>Registrasi RTLH Baru</span>
+                                </a>
 
-                        <a href="{{ route('admin.review.index') }}" class="lapa-nav-link {{ request()->routeIs('admin.review.*') ? 'active' : '' }}">
-                            <i class="fa-solid fa-clipboard-check" style="font-size:12px; opacity:0.8;"></i>
-                            <span>Verifikasi</span>
-                        </a>
+                                <a href="{{ route('admin.review.index') }}" class="gov-nav-item {{ request()->routeIs('admin.review.*') ? 'active' : '' }}">
+                                    <span>Verifikasi & Review</span>
+                                </a>
 
-                        <a href="{{ route('admin.surveyors.index') }}" class="lapa-nav-link {{ request()->routeIs('admin.surveyors.*') ? 'active' : '' }}">
-                            <i class="fa-solid fa-users-gear" style="font-size:12px; opacity:0.8;"></i>
-                            <span>Surveyor</span>
-                        </a>
+                                <a href="{{ route('admin.surveyors.index') }}" class="gov-nav-item {{ request()->routeIs('admin.surveyors.*') ? 'active' : '' }}">
+                                    <span>Kelola Surveyor</span>
+                                </a>
 
-                        <a href="{{ route('regions.index') }}" class="lapa-nav-link {{ request()->routeIs('regions.*') ? 'active' : '' }}">
-                            <i class="fa-solid fa-map-location-dot" style="font-size:12px; opacity:0.8;"></i>
-                            <span>Wilayah</span>
-                        </a>
+                                <a href="{{ route('regions.index') }}" class="gov-nav-item {{ request()->routeIs('regions.*') ? 'active' : '' }}">
+                                    <span>Master Wilayah</span>
+                                </a>
+                            </div>
+                        </div>
+
                     @elseif(auth()->user()->hasRole('surveyor'))
-                        <a href="{{ route('surveyor.dashboard') }}" class="lapa-nav-link {{ request()->routeIs('surveyor.dashboard') || (request()->routeIs('dashboard') && auth()->user()->hasRole('surveyor')) ? 'active' : '' }}">
-                            <i class="fa-solid fa-gauge" style="font-size:12px; opacity:0.8;"></i>
-                            <span>Dashboard</span>
-                        </a>
+                        {{-- GRUP: MENU SURVEYOR --}}
+                        <div>
+                            <div class="gov-nav-section-label">Menu Utama</div>
+                            <div class="gov-nav-menu">
+                                <a href="{{ route('surveyor.dashboard') }}" class="gov-nav-item {{ request()->routeIs('surveyor.dashboard') || (request()->routeIs('dashboard') && auth()->user()->hasRole('surveyor')) ? 'active' : '' }}">
+                                    <span>Dashboard Surveyor</span>
+                                </a>
+                            </div>
+                        </div>
 
-                        <a href="{{ route('houses.index') }}" class="lapa-nav-link {{ request()->routeIs('houses.index') || (request()->routeIs('houses.*') && !request()->routeIs('surveyor.rtlh.create')) ? 'active' : '' }}">
-                            <i class="fa-solid fa-folder-tree" style="font-size:12px; opacity:0.8;"></i>
-                            <span>Data RTLH</span>
-                        </a>
+                        <div>
+                            <div class="gov-nav-section-label">Pendataan Lapangan</div>
+                            <div class="gov-nav-menu">
+                                <a href="{{ route('houses.index') }}" class="gov-nav-item {{ request()->routeIs('houses.index') || (request()->routeIs('houses.*') && !request()->routeIs('surveyor.rtlh.create')) ? 'active' : '' }}">
+                                    <span>Data RTLH Saya</span>
+                                </a>
 
-                        <a href="{{ route('surveyor.rtlh.create') }}" class="lapa-nav-link {{ request()->routeIs('surveyor.rtlh.create') ? 'active' : '' }}">
-                            <i class="fa-solid fa-plus-circle" style="font-size:12px; opacity:0.8;"></i>
-                            <span>Input RTLH</span>
-                        </a>
+                                <a href="{{ route('surveyor.rtlh.create') }}" class="gov-nav-item {{ request()->routeIs('surveyor.rtlh.create') ? 'active' : '' }}">
+                                    <span>Input Survei Baru</span>
+                                </a>
+                            </div>
+                        </div>
                     @else
-                        <a href="{{ route('dashboard') }}" class="lapa-nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
-                            <i class="fa-solid fa-gauge-high" style="font-size:12px; opacity:0.8;"></i>
-                            <span>Dashboard</span>
-                        </a>
+                        <div>
+                            <div class="gov-nav-section-label">Navigasi</div>
+                            <div class="gov-nav-menu">
+                                <a href="{{ route('dashboard') }}" class="gov-nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                                    <span>Dashboard</span>
+                                </a>
+                            </div>
+                        </div>
                     @endif
+
+                    {{-- GRUP: PINTASAN PUBLIK --}}
+                    <div>
+                        <div class="gov-nav-section-label">Portal Publik Warga</div>
+                        <div class="gov-nav-menu">
+                            <a href="{{ route('public.home') }}" target="_blank" class="gov-nav-item" title="Buka Beranda Publik di Tab Baru">
+                                <span>Web Publik &rarr;</span>
+                            </a>
+                            <a href="{{ route('public.map') }}" target="_blank" class="gov-nav-item" title="Buka Peta GIS Publik di Tab Baru">
+                                <span>Peta GIS Publik &rarr;</span>
+                            </a>
+                        </div>
+                    </div>
                 @endauth
             </nav>
 
-            {{-- RIGHT: SHORTCUT TO PUBLIC WEB, USER PROFILE, AND CONTROLS --}}
-            <div style="display:flex; align-items:center; gap:12px;">
-
-                {{-- SHORTCUT TO PUBLIC SITE --}}
-                <a href="{{ route('public.home') }}" target="_blank" class="lapa-btn-public-portal" title="Buka Portal Publik Warga di Tab Baru">
-                    <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:11px;"></i>
-                    <span>Lihat Web Publik</span>
-                </a>
-
-                @auth
-                    <div class="user-profile-badge">
-                        <div class="user-avatar">
-                            {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
-                        </div>
-                        <div class="user-details">
-                            <span class="user-name">{{ auth()->user()->name }}</span>
-                            @if(auth()->user()->hasRole('admin'))
-                                <span class="role-pill role-admin">Admin</span>
-                            @elseif(auth()->user()->hasRole('surveyor'))
-                                <span class="role-pill role-surveyor">Surveyor</span>
-                            @else
-                                <span class="role-pill">Petugas</span>
-                            @endif
-                        </div>
-                    </div>
-
-                    <a href="{{ route('profile.edit') }}" class="nav-link" title="Pengaturan Profil">
-                        <i class="fa-solid fa-user-gear"></i>
+            {{-- FOOTER SIDEBAR --}}
+            @auth
+                <div class="gov-sidebar-footer">
+                    <a href="{{ route('profile.edit') }}" class="gov-nav-item" style="padding:6px 10px; font-size:12px; border-radius:6px; color:#94a3b8;" title="Pengaturan Profil">
+                        <span>Profil</span>
                     </a>
 
                     <form method="POST" action="{{ route('logout') }}" style="display:inline;">
                         @csrf
-                        <button type="submit" class="nav-link" style="background:none;border:none;cursor:pointer;" title="Keluar">
-                            <i class="fa-solid fa-right-from-bracket text-red-400"></i>
+                        <button type="submit" class="gov-nav-item" style="background:none; border:none; cursor:pointer; padding:6px 10px; font-size:12px; color:#f87171; border-radius:6px;" title="Keluar">
+                            <span>Keluar</span>
                         </button>
                     </form>
-                @else
-                    <a href="{{ route('login') }}" class="lapa-btn-signin">
-                        Sign in
-                    </a>
-                @endauth
-
-                {{-- DARK MODE TOGGLE --}}
-                <button type="button" class="btn-theme-toggle" onclick="toggleDarkMode()" id="darkToggleBtn" title="Ganti tema">
-                    <i class="fa-solid fa-moon" id="darkToggleIcon"></i>
-                </button>
-
-                {{-- MOBILE HAMBURGER TOGGLE --}}
-                <button type="button" class="lapa-mobile-toggle" onclick="toggleMobileNav()" title="Buka Menu Navigasi">
-                    <i class="fa-solid fa-bars"></i>
-                </button>
-            </div>
-
-        </div>
-
-        {{-- MOBILE COLLAPSIBLE DROPDOWN MENU FOR WORKSPACE --}}
-        <div id="lapaMobileMenu" class="lapa-mobile-menu">
-            @auth
-                @if(auth()->user()->hasRole('admin'))
-                    <a href="{{ route('admin.dashboard') }}" class="lapa-mobile-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-                        <i class="fa-solid fa-gauge-high"></i> Dashboard Admin
-                    </a>
-                    <a href="{{ route('houses.index') }}" class="lapa-mobile-link {{ request()->routeIs('houses.index') ? 'active' : '' }}">
-                        <i class="fa-solid fa-house-chimney"></i> Basis Data RTLH
-                    </a>
-                    <a href="{{ route('houses.create') }}" class="lapa-mobile-link {{ request()->routeIs('houses.create') ? 'active' : '' }}">
-                        <i class="fa-solid fa-plus-circle"></i> Input RTLH Baru
-                    </a>
-                    <a href="{{ route('admin.review.index') }}" class="lapa-mobile-link {{ request()->routeIs('admin.review.*') ? 'active' : '' }}">
-                        <i class="fa-solid fa-clipboard-check"></i> Review & Verifikasi
-                    </a>
-                    <a href="{{ route('admin.surveyors.index') }}" class="lapa-mobile-link {{ request()->routeIs('admin.surveyors.*') ? 'active' : '' }}">
-                        <i class="fa-solid fa-users-gear"></i> Kelola Surveyor
-                    </a>
-                    <a href="{{ route('regions.index') }}" class="lapa-mobile-link {{ request()->routeIs('regions.*') ? 'active' : '' }}">
-                        <i class="fa-solid fa-map-location-dot"></i> Wilayah Administratif
-                    </a>
-                @elseif(auth()->user()->hasRole('surveyor'))
-                    <a href="{{ route('surveyor.dashboard') }}" class="lapa-mobile-link {{ request()->routeIs('surveyor.dashboard') ? 'active' : '' }}">
-                        <i class="fa-solid fa-gauge"></i> Workspace Surveyor
-                    </a>
-                    <a href="{{ route('houses.index') }}" class="lapa-mobile-link {{ request()->routeIs('houses.index') ? 'active' : '' }}">
-                        <i class="fa-solid fa-folder-tree"></i> Data RTLH Saya
-                    </a>
-                    <a href="{{ route('surveyor.rtlh.create') }}" class="lapa-mobile-link {{ request()->routeIs('surveyor.rtlh.create') ? 'active' : '' }}">
-                        <i class="fa-solid fa-plus-circle"></i> Input RTLH Baru
-                    </a>
-                @endif
-
-                <div style="padding-top:10px; border-top:1px solid rgba(255,255,255,0.08); margin-top:8px;">
-                    <a href="{{ route('public.home') }}" target="_blank" class="lapa-mobile-link" style="color:#38bdf8;">
-                        <i class="fa-solid fa-arrow-up-right-from-square"></i> Lihat Portal Publik
-                    </a>
-                    <a href="{{ route('profile.edit') }}" class="lapa-mobile-link">
-                        <i class="fa-solid fa-user-gear"></i> Pengaturan Profil
-                    </a>
-                    <form method="POST" action="{{ route('logout') }}" style="margin-top:6px;">
-                        @csrf
-                        <button type="submit" class="lapa-mobile-link" style="width:100%; background:none; border:none; text-align:left; cursor:pointer; color:#f87171;">
-                            <i class="fa-solid fa-right-from-bracket"></i> Keluar
-                        </button>
-                    </form>
-                </div>
-            @else
-                <div style="padding-top:10px;">
-                    <a href="{{ route('login') }}" class="lapa-btn-signin" style="width:100%; justify-content:center;">
-                        Sign in / Masuk Petugas
-                    </a>
                 </div>
             @endauth
+        </aside>
+
+        {{-- Backdrop untuk mobile saat drawer terbuka --}}
+        <div class="gov-sidebar-backdrop" onclick="toggleGovSidebar()"></div>
+
+        {{-- ============================================================
+             AREA KONTEN UTAMA (KANAN — OTOMATIS MELEBAR SAAT SIDEBAR COLLAPSED)
+             ============================================================ --}}
+        <div class="gov-main-wrapper">
+            {{-- TOPBAR WORKSPACE --}}
+            <header class="gov-topbar">
+                <div class="gov-topbar-left">
+                    {{-- TOMBOL TOGGLE DRAWER (LIPAT / BUKA AGAR MELEBAR) --}}
+                    <button type="button" class="gov-toggle-btn" onclick="toggleGovSidebar()" id="sidebarToggleBtn" title="Lipat atau buka menu samping (konten melebar)">
+                        <span id="sidebarToggleIcon">&#9776;</span>
+                        <span id="sidebarToggleLabel">Menu</span>
+                    </button>
+
+                    <div class="gov-topbar-breadcrumb">
+                        <span>Workspace Petugas</span>
+                        <span>&rsaquo;</span>
+                        <strong>{{ $title ?? 'Kabupaten Cirebon' }}</strong>
+                    </div>
+                </div>
+
+                <div class="gov-topbar-right">
+                    {{-- DARK MODE TOGGLE --}}
+                    <button type="button" class="btn-theme-toggle" onclick="toggleDarkMode()" id="darkToggleBtn" title="Ganti tema" style="font-size:11px; font-weight:700;">
+                        <span id="darkToggleText">Dark</span>
+                    </button>
+
+                    <a href="{{ route('public.home') }}" target="_blank" class="btn small" style="font-size:11.5px; font-weight:700;" title="Buka Portal Publik">
+                        Web Publik
+                    </a>
+                </div>
+            </header>
+
+            {{-- MAIN CONTENT --}}
+            <main class="gov-content fade-in">
+                @isset($header)
+                    <div class="pagehead" style="padding-top:0; padding-bottom:18px;">
+                        {{ $header }}
+                    </div>
+                @endisset
+
+                {{-- FLASH MESSAGES --}}
+                @if(session('ok') || session('success'))
+                    <div class="alert ok">
+                        <div>{{ session('ok') ?? session('success') }}</div>
+                    </div>
+                @endif
+
+                @if(session('error') || session('err'))
+                    <div class="alert err">
+                        <div>{{ session('error') ?? session('err') }}</div>
+                    </div>
+                @endif
+
+                @if(session('status'))
+                    <div class="alert info">
+                        <div>{{ session('status') }}</div>
+                    </div>
+                @endif
+
+                {{ $slot }}
+            </main>
+
+            {{-- FOOTER RESMI WORKSPACE --}}
+            <footer class="gov-footer">
+                <div>
+                    &copy; {{ date('Y') }} <strong>Pemerintah Kabupaten Cirebon</strong> &bull; Dinas Perumahan, Kawasan Permukiman dan Pertanahan
+                </div>
+                <div>
+                    Sistem Pengelolaan Rumah Tidak Layak Huni (RTLH)
+                </div>
+            </footer>
         </div>
-    </header>
 
-    {{-- Main Container --}}
-    <main class="container fade-in" style="flex:1; padding-top:20px; padding-bottom:48px;">
-        @isset($header)
-            <div class="pagehead" style="padding-top:10px; padding-bottom:18px;">
-                {{ $header }}
-            </div>
-        @endisset
-
-        {{-- FLASH MESSAGES --}}
-        @if(session('ok') || session('success'))
-            <div class="alert ok">
-                <i class="fa-solid fa-circle-check fa-lg"></i>
-                <div>{{ session('ok') ?? session('success') }}</div>
-            </div>
-        @endif
-
-        @if(session('error') || session('err'))
-            <div class="alert err">
-                <i class="fa-solid fa-triangle-exclamation fa-lg"></i>
-                <div>{{ session('error') ?? session('err') }}</div>
-            </div>
-        @endif
-
-        @if(session('status'))
-            <div class="alert info">
-                <i class="fa-solid fa-circle-info fa-lg"></i>
-                <div>{{ session('status') }}</div>
-            </div>
-        @endif
-
-        {{ $slot }}
-    </main>
-
-    {{-- Backoffice Workspace Footer --}}
-    <footer class="footer" style="padding: 24px 0; margin-top:auto;">
-        <div class="container" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; font-size:13px; color:#64748b;">
-            <div>
-                &copy; {{ date('Y') }} <strong style="color:#cbd5e1;">Pemerintah Kabupaten Cirebon</strong> &bull; DPKPP Workspace Petugas
-            </div>
-            <div style="display:flex; align-items:center; gap:16px;">
-                <a href="{{ route('public.home') }}" target="_blank" style="color:#38bdf8; text-decoration:none; display:inline-flex; align-items:center; gap:5px;">
-                    <i class="fa-solid fa-globe"></i> Portal Publik
-                </a>
-                <a href="{{ route('profile.edit') }}" style="color:#94a3b8; text-decoration:none; display:inline-flex; align-items:center; gap:5px;">
-                    <i class="fa-solid fa-user-gear"></i> Profil
-                </a>
-            </div>
-        </div>
-    </footer>
+    </div>
 
     <script>
         const DARK_KEY = 'rtlh-dark-mode';
-        const html     = document.documentElement;
-        const icon     = document.getElementById('darkToggleIcon');
+        const SIDEBAR_KEY = 'gov-sidebar-collapsed';
+        const html = document.documentElement;
+        const layout = document.getElementById('govLayout');
 
         function applyDarkMode(dark) {
             if (dark) {
                 html.classList.add('dark');
-                if (icon) icon.className = 'fa-solid fa-sun';
+                const txt = document.getElementById('darkToggleText');
+                if (txt) txt.textContent = 'Light';
             } else {
                 html.classList.remove('dark');
-                if (icon) icon.className = 'fa-solid fa-moon';
+                const txt = document.getElementById('darkToggleText');
+                if (txt) txt.textContent = 'Dark';
             }
             localStorage.setItem(DARK_KEY, dark ? '1' : '0');
         }
@@ -288,12 +276,28 @@
 
         applyDarkMode(localStorage.getItem(DARK_KEY) === '1');
 
-        // ── Mobile Dropdown Menu Toggle ───────────────────
-        function toggleMobileNav() {
-            const menu = document.getElementById('lapaMobileMenu');
-            if (menu) {
-                menu.classList.toggle('open');
+        // ── Collapsible Sidebar Toggle (Melebar Otomatis, Tanpa Blur) ──
+        function applySidebarState(collapsed) {
+            if (window.innerWidth < 1024) {
+                layout.classList.toggle('mobile-sidebar-open', !collapsed);
+            } else {
+                layout.classList.toggle('sidebar-collapsed', collapsed);
+                localStorage.setItem(SIDEBAR_KEY, collapsed ? '1' : '0');
             }
+        }
+
+        function toggleGovSidebar() {
+            if (window.innerWidth < 1024) {
+                layout.classList.toggle('mobile-sidebar-open');
+            } else {
+                const isCollapsed = layout.classList.contains('sidebar-collapsed');
+                applySidebarState(!isCollapsed);
+            }
+        }
+
+        // Apply saved desktop state
+        if (window.innerWidth >= 1024 && localStorage.getItem(SIDEBAR_KEY) === '1') {
+            layout.classList.add('sidebar-collapsed');
         }
     </script>
     @stack('scripts')

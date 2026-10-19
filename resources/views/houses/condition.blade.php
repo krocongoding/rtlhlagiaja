@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div>
             <div class="kicker">
-                <i class="fa-solid fa-house-chimney"></i> KONDISI FISIK & ARSITEKTUR
+                KONDISI FISIK & ARSITEKTUR
             </div>
             <h1>Kondisi Fisik Rumah — {{ $house->house_code }}</h1>
             <p class="muted">
@@ -12,7 +12,7 @@
 
         <div class="actions">
             <a href="{{ route('houses.show', $house) }}" class="btn">
-                <i class="fa-solid fa-arrow-left"></i> Kembali ke Detail
+                Kembali ke Detail
             </a>
         </div>
     </x-slot>
@@ -20,7 +20,6 @@
     <div style="max-width: 860px; margin: 0 auto;">
         @if ($errors->any())
             <div class="alert danger" style="border-left:4px solid #b91c1c;">
-                <i class="fa-solid fa-triangle-exclamation fa-lg"></i>
                 <div>
                     <strong>Terdapat kesalahan pengisian:</strong>
                     <ul style="margin:6px 0 0 16px; font-size:13px;">
@@ -37,7 +36,7 @@
             <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
                 <div>
                     <div style="font-size:12px; font-weight:800; text-transform:uppercase; color:var(--primary-700); letter-spacing:0.5px;">
-                        <i class="fa-solid fa-calculator"></i> Penilaian Skor Otomatis Berdasarkan Kondisi Fisik
+                        Penilaian Skor Otomatis Berdasarkan Kondisi Fisik
                     </div>
                     <p class="muted" style="font-size:12px; margin:4px 0 0 0;">
                         Standar Skor: <strong>Baik (0)</strong>, <strong>Rusak Ringan (1)</strong>, <strong>Rusak Sedang (2)</strong>, <strong>Rusak Berat (3)</strong>.
@@ -309,10 +308,10 @@
             {{-- ACTIONS --}}
             <div class="actions" style="justify-content: flex-end;">
                 <a href="{{ route('houses.show', $house) }}" class="btn">
-                    <i class="fa-solid fa-xmark"></i> Batal
+                    Batal
                 </a>
                 <button type="submit" class="btn primary">
-                    <i class="fa-solid fa-floppy-disk"></i> Simpan Kondisi Fisik & Hitung Skor
+                    Simpan Kondisi Fisik & Hitung Skor
                 </button>
             </div>
         </form>

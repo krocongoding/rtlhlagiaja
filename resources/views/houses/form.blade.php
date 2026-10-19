@@ -237,7 +237,7 @@
     <div class="pagehead">
         <div>
             <div class="kicker">
-                <i class="fa-solid fa-file-circle-plus"></i> {{ strtoupper($panel ?? 'FORMULIR') }} &bull; 3 LANGKAH INPUT
+                {{ strtoupper($panel ?? 'FORMULIR') }} &bull; 3 LANGKAH INPUT
             </div>
             <h1>{{ $house->exists ? 'Edit Data RTLH' : 'Tambah Data RTLH Baru' }}</h1>
             <p class="muted">
@@ -245,16 +245,18 @@
             </p>
         </div>
 
-        <div class="actions">
+        <div class="actions" style="display:flex; gap:10px; align-items:center;">
+            <button type="button" class="btn" onclick="submitAsDraft()" style="background:#ffffff; color:var(--slate-700); font-weight:600;" title="Simpan data saat ini sebagai draft">
+                Simpan Draft
+            </button>
             <a href="{{ $panel === 'surveyor' ? route('surveyor.rtlh.index') : route('houses.index') }}" class="btn">
-                <i class="fa-solid fa-arrow-left"></i> Kembali ke Daftar
+                Kembali ke Daftar
             </a>
         </div>
     </div>
 
     @if ($errors->any())
         <div class="alert danger" style="border-left:4px solid #b91c1c; margin-bottom:20px;">
-            <i class="fa-solid fa-triangle-exclamation fa-lg"></i>
             <div>
                 <strong>Terdapat kesalahan input formulir:</strong>
                 <ul style="margin:6px 0 0 16px; font-size:13px;">
@@ -268,19 +270,14 @@
 
     @if($house->revision_notes)
         <div class="alert danger" style="border-left: 5px solid #e11d48; background: #fff1f2; border-color: #fecaca; margin-bottom: 24px; border-radius: var(--radius-lg); padding: 18px 20px;">
-            <div style="display:flex; align-items:flex-start; gap:14px;">
-                <div style="width:36px; height:36px; border-radius:10px; background:#ffe4e6; color:#e11d48; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0;">
-                    <i class="fa-solid fa-triangle-exclamation"></i>
-                </div>
-                <div>
-                    <h4 style="font-size:15px; font-weight:800; color:#9f1239; margin:0 0 4px 0;">
-                        Instruksi Catatan Revisi dari Verifikator / Admin:
-                    </h4>
-                    <p style="font-size:13.5px; color:#881337; margin:0; line-height:1.6; white-space:pre-wrap; background:#fff; padding:12px 16px; border-radius:var(--radius-md); border:1px solid #fecaca;">{{ $house->revision_notes }}</p>
-                    <p class="muted" style="font-size:12px; color:#be123c; margin:8px 0 0 0;">
-                        <i class="fa-solid fa-circle-info"></i> Mohon periksa dan perbaiki isian data formulir atau foto sesuai poin catatan di atas, kemudian tekan <strong>"Simpan & Kirim Verifikasi"</strong> di langkah ke-3.
-                    </p>
-                </div>
+            <div>
+                <h4 style="font-size:15px; font-weight:800; color:#9f1239; margin:0 0 4px 0;">
+                    Instruksi Catatan Revisi dari Verifikator / Admin:
+                </h4>
+                <p style="font-size:13.5px; color:#881337; margin:0; line-height:1.6; white-space:pre-wrap; background:#fff; padding:12px 16px; border-radius:var(--radius-md); border:1px solid #fecaca;">{{ $house->revision_notes }}</p>
+                <p class="muted" style="font-size:12px; color:#be123c; margin:8px 0 0 0;">
+                    Mohon periksa dan perbaiki isian data formulir atau foto sesuai poin catatan di atas, kemudian tekan <strong>"Simpan & Kirim Verifikasi"</strong> di langkah ke-3.
+                </p>
             </div>
         </div>
     @endif
@@ -295,7 +292,7 @@
             </div>
         </div>
 
-        <i class="fa-solid fa-chevron-right stepper-divider"></i>
+        <span class="stepper-divider" style="font-size:18px; line-height:1; font-weight:700;">&rsaquo;</span>
 
         <div class="stepper-step" id="step-tab-2" onclick="switchStep(2)">
             <div class="stepper-badge" id="step-badge-2">2</div>
@@ -305,7 +302,7 @@
             </div>
         </div>
 
-        <i class="fa-solid fa-chevron-right stepper-divider"></i>
+        <span class="stepper-divider" style="font-size:18px; line-height:1; font-weight:700;">&rsaquo;</span>
 
         <div class="stepper-step" id="step-tab-3" onclick="switchStep(3)">
             <div class="stepper-badge" id="step-badge-3">3</div>
@@ -318,7 +315,7 @@
 
     <form class="form" id="rtlh-form" enctype="multipart/form-data" method="POST" action="{{ $action }}">
         @csrf
-        @if($method !== 'POST')
+        @if ($method !== 'POST')
             @method($method)
         @endif
 
@@ -328,8 +325,8 @@
         <div class="form-step-pane active" id="pane-step-1">
             <div class="form-section">
                 <div class="form-section-header">
-                    <div class="form-section-badge emerald">
-                        <i class="fa-solid fa-user-check"></i>
+                    <div class="form-section-badge emerald" style="font-weight:800; font-size:13px;">
+                        01
                     </div>
                     <div>
                         <h3 class="form-section-title">Langkah 1: Identitas Calon Penerima Bantuan Manfaat (CPBM)</h3>
@@ -347,7 +344,6 @@
                             value="{{ old('nik', $house->nik) }}"
                             placeholder="Contoh: 320914XXXXXXXXXX (16 digit)"
                             maxlength="20"
-                            required
                         >
                         <small class="muted">NIK kepala keluarga calon penerima manfaat.</small>
                     </div>
@@ -360,7 +356,6 @@
                             name="head_of_household_name"
                             value="{{ old('head_of_household_name', $house->head_of_household_name) }}"
                             placeholder="Nama lengkap sesuai KTP / KK"
-                            required
                         >
                         <small class="muted">Nama kepala keluarga yang berhak menerima bantuan.</small>
                     </div>
@@ -433,12 +428,17 @@
             {{-- STEP 1 FOOTER NAVIGATION --}}
             <div class="step-navigation-bar">
                 <a href="{{ $panel === 'surveyor' ? route('surveyor.rtlh.index') : route('houses.index') }}" class="btn" style="background:#fff; border-color:var(--slate-300);">
-                    <i class="fa-solid fa-arrow-left"></i> Kembali ke Daftar
+                    Kembali ke Daftar
                 </a>
 
-                <button type="button" class="btn primary" onclick="validateAndGoStep(2)">
-                    Lanjut: Data Fisik Rumah (Step 2) <i class="fa-solid fa-arrow-right"></i>
-                </button>
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <button type="button" class="btn" onclick="submitAsDraft()" style="background:#ffffff; color:var(--slate-700); border-color:var(--slate-300);">
+                        Simpan Draft
+                    </button>
+                    <button type="button" class="btn primary" onclick="validateAndGoStep(2)">
+                        Lanjut: Data Fisik Rumah (Step 2) &rarr;
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -450,8 +450,8 @@
             {{-- SUBSECTION 2A: KARAKTERISTIK UMUM RUMAH & KEPEMILIKAN --}}
             <div class="form-section">
                 <div class="form-section-header">
-                    <div class="form-section-badge blue">
-                        <i class="fa-solid fa-house-chimney"></i>
+                    <div class="form-section-badge blue" style="font-weight:800; font-size:13px;">
+                        2A
                     </div>
                     <div>
                         <h3 class="form-section-title">Karakteristik & Status Kepemilikan Hunian</h3>
@@ -569,8 +569,8 @@
             <div class="form-section">
                 <div class="form-section-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
                     <div style="display:flex; align-items:center; gap:14px;">
-                        <div class="form-section-badge blue">
-                            <i class="fa-solid fa-cubes-stacked"></i>
+                        <div class="form-section-badge blue" style="font-weight:800; font-size:13px;">
+                            2B
                         </div>
                         <div>
                             <h3 class="form-section-title">Kondisi Struktur Utama Bangunan</h3>
@@ -581,7 +581,7 @@
                     {{-- LIVE AUTO-SCORE BADGE --}}
                     <div style="background:var(--slate-50); border:1px solid var(--slate-200); padding:6px 14px; border-radius:var(--radius-lg); display:flex; align-items:center; gap:12px;">
                         <div style="font-size:11px; font-weight:700; color:var(--slate-600); text-transform:uppercase;">
-                            <i class="fa-solid fa-calculator" style="color:var(--primary-600);"></i> Skor Survei:
+                            Skor Survei:
                         </div>
                         <div style="font-size:18px; font-weight:900; color:var(--primary-700); font-family:monospace;" id="form-live-score">0</div>
                         <span id="form-live-priority" class="badge priority-low" style="font-size:11px;">Prioritas Rendah</span>
@@ -639,7 +639,6 @@
                     {{-- KONDISI TIANG / KOLOM --}}
                     <div class="form-field">
                         <label for="column_condition_id">
-                            <i class="fa-solid fa-arrows-up-down" style="color:#0284c7;"></i>
                             Kondisi Tiang / Kolom Penopang
                         </label>
                         <select id="column_condition_id" name="column_condition_id" class="score-calc-select">
@@ -676,7 +675,6 @@
                 <div class="grid2" style="background:var(--slate-50); border:1px solid var(--slate-200); border-radius:var(--radius-lg); padding:16px; margin-top:8px;">
                     <div class="form-field" style="margin-bottom:0;">
                         <label for="roof_frame_material_id">
-                            <i class="fa-solid fa-shapes" style="color:#16a34a;"></i>
                             Bahan Rangka Atap (Kayu / Metal)
                         </label>
                         <select id="roof_frame_material_id" name="roof_frame_material_id">
@@ -710,8 +708,8 @@
             {{-- SUBSECTION 2C: KOMPONEN ARSITEKTUR (LANTAI, DINDING, PLAFON, PENUTUP ATAP) --}}
             <div class="form-section">
                 <div class="form-section-header">
-                    <div class="form-section-badge purple">
-                        <i class="fa-solid fa-border-all"></i>
+                    <div class="form-section-badge purple" style="font-weight:800; font-size:13px;">
+                        2C
                     </div>
                     <div>
                         <h3 class="form-section-title">Komponen Arsitektur Hunian</h3>
@@ -821,8 +819,8 @@
             {{-- SUBSECTION 2D: SANITASI & UTILITAS --}}
             <div class="form-section">
                 <div class="form-section-header">
-                    <div class="form-section-badge amber">
-                        <i class="fa-solid fa-faucet-detergent"></i>
+                    <div class="form-section-badge amber" style="font-weight:800; font-size:13px;">
+                        2D
                     </div>
                     <div>
                         <h3 class="form-section-title">Pencahayaan, Air & Sanitasi Lingkungan</h3>
@@ -834,7 +832,6 @@
                     {{-- AIR MINUM (TERMASUK 'BELUM ADA') --}}
                     <div class="form-field">
                         <label for="water_source_id">
-                            <i class="fa-solid fa-droplet" style="color:#0284c7;"></i>
                             Sumber Air Minum
                         </label>
                         <select id="water_source_id" name="water_source_id">
@@ -851,7 +848,6 @@
                     {{-- SANITASI AIR KOTOR (AIR KALI, SUNGAI) --}}
                     <div class="form-field">
                         <label for="wastewater_disposal_id">
-                            <i class="fa-solid fa-water" style="color:#d97706;"></i>
                             Sanitasi Air Kotor
                         </label>
                         <select id="wastewater_disposal_id" name="wastewater_disposal_id">
@@ -942,8 +938,8 @@
             <div class="form-section">
                 <div class="form-section-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
                     <div style="display:flex; align-items:center; gap:14px;">
-                        <div class="form-section-badge emerald">
-                            <i class="fa-solid fa-map-location-dot"></i>
+                        <div class="form-section-badge emerald" style="font-weight:800; font-size:13px;">
+                            2E
                         </div>
                         <div>
                             <h3 class="form-section-title">Koordinat Geospasial Lapangan (WGS84)</h3>
@@ -951,7 +947,7 @@
                         </div>
                     </div>
                     <button type="button" class="btn small" onclick="getCurrentLocation()" style="background:#fff; border-color:var(--slate-300);">
-                        <i class="fa-solid fa-crosshairs text-emerald-600" style="color:#059669;"></i> Ambil Titik GPS Saya
+                        Ambil Titik GPS Saya
                     </button>
                 </div>
 
@@ -991,8 +987,8 @@
             {{-- SUBSECTION 2F: DOKUMENTASI FOTO FISIK --}}
             <div class="form-section">
                 <div class="form-section-header">
-                    <div class="form-section-badge rose">
-                        <i class="fa-solid fa-camera"></i>
+                    <div class="form-section-badge rose" style="font-weight:800; font-size:13px;">
+                        2F
                     </div>
                     <div>
                         <h3 class="form-section-title">Dokumentasi Foto Fisik Lapangan</h3>
@@ -1013,13 +1009,13 @@
 
                 <div class="photo-upload-grid">
                     @foreach([
-                        ['photo_front', 'Tampak Depan', 'fa-camera'],
-                        ['photo_angle', 'Tampak Sudut 45°', 'fa-camera'],
-                        ['photo_side', 'Tampak Samping', 'fa-camera'],
-                        ['photo_back', 'Tampak Belakang', 'fa-camera'],
-                        ['photo_family_room', 'Ruang Dalam / Keluarga', 'fa-couch'],
-                        ['photo_bathroom', 'Kamar Mandi / Sanitasi', 'fa-bath']
-                    ] as [$field, $label, $icon])
+                        ['photo_front', 'Tampak Depan'],
+                        ['photo_angle', 'Tampak Sudut 45°'],
+                        ['photo_side', 'Tampak Samping'],
+                        ['photo_back', 'Tampak Belakang'],
+                        ['photo_family_room', 'Ruang Dalam / Keluarga'],
+                        ['photo_bathroom', 'Kamar Mandi / Sanitasi']
+                    ] as [$field, $label])
                         @php
                             $photoType = $typeMap[$field] ?? '';
                             $existingPhoto = $house->photos ? $house->photos->where('type', $photoType)->first() : null;
@@ -1027,10 +1023,7 @@
                         @endphp
 
                         <div class="photo-dropzone" onclick="document.getElementById('{{ $field }}').click()">
-                            <div style="font-size:22px; color:var(--slate-400); margin-bottom:6px;">
-                                <i class="fa-solid {{ $icon }}"></i>
-                            </div>
-                            <strong style="font-size:13px; color:var(--slate-800); display:block;">{{ $label }}</strong>
+                            <strong style="font-size:13px; color:var(--slate-800); display:block; margin-bottom:4px;">{{ $label }}</strong>
                             <span class="muted" style="font-size:11px;">
                                 {{ $existingUrl ? 'Klik ganti foto' : 'Klik unggah foto' }}
                             </span>
@@ -1056,8 +1049,8 @@
             {{-- SUBSECTION 2G: CATATAN LAPANGAN --}}
             <div class="form-section">
                 <div class="form-section-header">
-                    <div class="form-section-badge" style="background:#f1f5f9; color:var(--slate-700);">
-                        <i class="fa-solid fa-notes-medical"></i>
+                    <div class="form-section-badge" style="background:#f1f5f9; color:var(--slate-700); font-weight:800; font-size:13px;">
+                        2G
                     </div>
                     <div>
                         <h3 class="form-section-title">Catatan Tambahan Lapangan</h3>
@@ -1078,12 +1071,17 @@
             {{-- STEP 2 FOOTER NAVIGATION --}}
             <div class="step-navigation-bar">
                 <button type="button" class="btn" onclick="switchStep(1)" style="background:#fff; border-color:var(--slate-300);">
-                    <i class="fa-solid fa-arrow-left"></i> Kembali ke Data CPBM (Step 1)
+                    &larr; Kembali ke Data CPBM (Step 1)
                 </button>
 
-                <button type="button" class="btn primary" onclick="switchStep(3)">
-                    Lanjut: Anggaran & Proposal (Step 3) <i class="fa-solid fa-arrow-right"></i>
-                </button>
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <button type="button" class="btn" onclick="submitAsDraft()" style="background:#ffffff; color:var(--slate-700); border-color:var(--slate-300);">
+                        Simpan Draft
+                    </button>
+                    <button type="button" class="btn primary" onclick="switchStep(3)">
+                        Lanjut: Anggaran & Proposal (Step 3) &rarr;
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -1093,8 +1091,8 @@
         <div class="form-step-pane" id="pane-step-3">
             <div class="form-section">
                 <div class="form-section-header">
-                    <div class="form-section-badge" style="background:#fef3c7; color:#b45309;">
-                        <i class="fa-solid fa-hand-holding-dollar"></i>
+                    <div class="form-section-badge" style="background:#fef3c7; color:#b45309; font-weight:800; font-size:13px;">
+                        03
                     </div>
                     <div>
                         <h3 class="form-section-title">Langkah 3: Sumber Anggaran & Berkas Usulan Proposal</h3>
@@ -1106,7 +1104,6 @@
                     {{-- SUMBER ANGGARAN --}}
                     <div class="form-field">
                         <label for="funding_source">
-                            <i class="fa-solid fa-wallet" style="color:#0284c7;"></i>
                             Sumber Anggaran
                         </label>
                         @php
@@ -1138,7 +1135,6 @@
                     {{-- NILAI KEGIATAN / ANGGARAN --}}
                     <div class="form-field">
                         <label for="budget_amount">
-                            <i class="fa-solid fa-money-bill-wave" style="color:#16a34a;"></i>
                             Nilai Anggaran / Kegiatan (Rp)
                         </label>
                         <input
@@ -1157,7 +1153,7 @@
                 {{-- STATUS REALISASI DENGAN INDIKATOR WARNA KUNING & HIJAU --}}
                 <div style="margin-top:10px; margin-bottom:20px; background:var(--slate-50); border:1px solid var(--slate-200); border-radius:var(--radius-lg); padding:20px;">
                     <label style="font-size:14px; font-weight:800; color:var(--slate-800); display:block; margin-bottom:12px;">
-                        <i class="fa-solid fa-circle-notch"></i> Status Realisasi RTLH
+                        Status Realisasi RTLH
                     </label>
 
                     @php
@@ -1179,7 +1175,7 @@
                                 <div>
                                     <div style="display:flex; align-items:center; gap:8px;">
                                         <span class="badge" style="background:#fef3c7; color:#b45309; border:1px solid #fde047; font-weight:800; font-size:12px;">
-                                            <i class="fa-solid fa-clock"></i> Belum Terealisasi
+                                            Belum Terealisasi
                                         </span>
                                     </div>
                                     <p class="muted" style="margin:6px 0 0 0; font-size:12px; line-height:1.4;">
@@ -1203,7 +1199,7 @@
                                 <div>
                                     <div style="display:flex; align-items:center; gap:8px;">
                                         <span class="badge" style="background:#dcfce7; color:#15803d; border:1px solid #86efac; font-weight:800; font-size:12px;">
-                                            <i class="fa-solid fa-circle-check"></i> Sudah Terealisasi 
+                                            Sudah Terealisasi 
                                         </span>
                                     </div>
                                     <p class="muted" style="margin:6px 0 0 0; font-size:12px; line-height:1.4;">
@@ -1215,35 +1211,131 @@
                     </div>
                 </div>
 
-                {{-- UPLOAD BERKAS PROPOSAL USULAN --}}
-                <div class="form-field">
-                    <label for="proposal_document">
-                        <i class="fa-solid fa-file-arrow-up" style="color:#0284c7;"></i>
-                        Unggah Berkas Proposal Usulan / Surat Pengantar (PDF/DOCX/Scan)
+                {{-- DOKUMEN BERKAS ADMINISTRASI TERPISAH (KK, AKTE, SURAT TANAH, PROPOSAL) --}}
+                <div style="margin-top: 10px; margin-bottom: 24px;">
+                    <label style="font-size:14px; font-weight:800; color:var(--slate-800); display:block; margin-bottom:4px;">
+                        Berkas Dokumen Administrasi & Kepemilikan (Terpisah)
                     </label>
+                    <p class="muted" style="font-size:12px; margin-bottom:16px;">
+                        Unggah masing-masing dokumen secara terpisah dalam format PDF, DOCX, ZIP, atau Gambar scan (Maks. 10 MB per berkas).
+                    </p>
 
-                    <div style="border:2px dashed var(--slate-300); border-radius:var(--radius-lg); padding:24px; text-align:center; background:var(--slate-50); position:relative;">
-                        <i class="fa-solid fa-file-lines fa-3x" style="color:var(--slate-300); margin-bottom:12px; display:block;"></i>
-                        <input
-                            type="file"
-                            id="proposal_document"
-                            name="proposal_document"
-                            accept=".pdf,.doc,.docx,.zip,.rar,.jpg,.jpeg,.png"
-                            style="margin:0 auto; max-width:320px;"
-                        >
-                        <div class="muted" style="font-size:12px; margin-top:8px;">
-                            Format yang didukung: PDF, DOCX, ZIP, atau Gambar scan dokumen. Ukuran maksimal 10 MB.
+                    <div class="grid2" style="gap:20px;">
+                        {{-- 1. BERKAS KARTU KELUARGA (KK) --}}
+                        <div class="form-field" style="margin-bottom:0;">
+                            <label for="kk_document" style="font-weight:700;">
+                                Berkas Kartu Keluarga (KK)
+                            </label>
+
+                            <div style="border:2px dashed var(--slate-300); border-radius:var(--radius-lg); padding:20px; text-align:center; background:var(--slate-50); position:relative;">
+                                <input
+                                    type="file"
+                                    id="kk_document"
+                                    name="kk_document"
+                                    accept=".pdf,.doc,.docx,.zip,.rar,.jpg,.jpeg,.png"
+                                    style="margin:0 auto; width:100%; max-width:280px;"
+                                >
+                                <div class="muted" style="font-size:11.5px; margin-top:8px;">
+                                    Scan / Foto Kartu Keluarga Kepala Keluarga.
+                                </div>
+
+                                @if($house->kk_document_path)
+                                    <div style="margin-top:12px; padding:8px 12px; background:#eff6ff; border-radius:8px; border:1px solid #bfdbfe; display:inline-flex; align-items:center; gap:8px; font-size:11.5px;">
+                                        <span style="font-weight:700; color:#1e40af;">File KK Tersimpan:</span>
+                                        <a href="{{ asset('storage/' . $house->kk_document_path) }}" target="_blank" style="color:#2563eb; text-decoration:underline; font-weight:700;">
+                                            Lihat Dokumen
+                                        </a>
+                                    </div>
+                                @endif
+                            </div>
                         </div>
 
-                        @if($house->proposal_document_path)
-                            <div style="margin-top:12px; padding:10px 16px; background:#eff6ff; border-radius:8px; border:1px solid #bfdbfe; display:inline-flex; align-items:center; gap:8px; font-size:12px;">
-                                <i class="fa-solid fa-paperclip text-blue-600" style="color:#2563eb;"></i>
-                                <span style="font-weight:700; color:#1e40af;">File Proposal Tersimpan:</span>
-                                <a href="{{ asset('storage/' . $house->proposal_document_path) }}" target="_blank" style="color:#2563eb; text-decoration:underline; font-weight:700;">
-                                    Lihat / Unduh Dokumen
-                                </a>
+                        {{-- 2. BERKAS AKTE KELAHIRAN / AKTA --}}
+                        <div class="form-field" style="margin-bottom:0;">
+                            <label for="akte_document" style="font-weight:700;">
+                                Berkas Akte / Akta Kependudukan
+                            </label>
+
+                            <div style="border:2px dashed var(--slate-300); border-radius:var(--radius-lg); padding:20px; text-align:center; background:var(--slate-50); position:relative;">
+                                <input
+                                    type="file"
+                                    id="akte_document"
+                                    name="akte_document"
+                                    accept=".pdf,.doc,.docx,.zip,.rar,.jpg,.jpeg,.png"
+                                    style="margin:0 auto; width:100%; max-width:280px;"
+                                >
+                                <div class="muted" style="font-size:11.5px; margin-top:8px;">
+                                    Scan / Foto Akte Kelahiran / Akta Kependudukan.
+                                </div>
+
+                                @if($house->akte_document_path)
+                                    <div style="margin-top:12px; padding:8px 12px; background:#eff6ff; border-radius:8px; border:1px solid #bfdbfe; display:inline-flex; align-items:center; gap:8px; font-size:11.5px;">
+                                        <span style="font-weight:700; color:#1e40af;">File Akte Tersimpan:</span>
+                                        <a href="{{ asset('storage/' . $house->akte_document_path) }}" target="_blank" style="color:#2563eb; text-decoration:underline; font-weight:700;">
+                                            Lihat Dokumen
+                                        </a>
+                                    </div>
+                                @endif
                             </div>
-                        @endif
+                        </div>
+
+                        {{-- 3. BERKAS SURAT TANAH / SERTIFIKAT --}}
+                        <div class="form-field" style="margin-bottom:0;">
+                            <label for="land_document" style="font-weight:700;">
+                                Berkas Surat Tanah / Sertifikat Kepemilikan Lahan
+                            </label>
+
+                            <div style="border:2px dashed var(--slate-300); border-radius:var(--radius-lg); padding:20px; text-align:center; background:var(--slate-50); position:relative;">
+                                <input
+                                    type="file"
+                                    id="land_document"
+                                    name="land_document"
+                                    accept=".pdf,.doc,.docx,.zip,.rar,.jpg,.jpeg,.png"
+                                    style="margin:0 auto; width:100%; max-width:280px;"
+                                >
+                                <div class="muted" style="font-size:11.5px; margin-top:8px;">
+                                    Sertifikat Hak Milik, Letter C, AJB, atau Surat Keterangan Desa.
+                                </div>
+
+                                @if($house->land_document_path)
+                                    <div style="margin-top:12px; padding:8px 12px; background:#eff6ff; border-radius:8px; border:1px solid #bfdbfe; display:inline-flex; align-items:center; gap:8px; font-size:11.5px;">
+                                        <span style="font-weight:700; color:#1e40af;">File Surat Tanah:</span>
+                                        <a href="{{ asset('storage/' . $house->land_document_path) }}" target="_blank" style="color:#2563eb; text-decoration:underline; font-weight:700;">
+                                            Lihat Dokumen
+                                        </a>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+
+                        {{-- 4. BERKAS PROPOSAL USULAN / SURAT PENGANTAR --}}
+                        <div class="form-field" style="margin-bottom:0;">
+                            <label for="proposal_document" style="font-weight:700;">
+                                Berkas Proposal Usulan / Surat Pengantar Desa
+                            </label>
+
+                            <div style="border:2px dashed var(--slate-300); border-radius:var(--radius-lg); padding:20px; text-align:center; background:var(--slate-50); position:relative;">
+                                <input
+                                    type="file"
+                                    id="proposal_document"
+                                    name="proposal_document"
+                                    accept=".pdf,.doc,.docx,.zip,.rar,.jpg,.jpeg,.png"
+                                    style="margin:0 auto; width:100%; max-width:280px;"
+                                >
+                                <div class="muted" style="font-size:11.5px; margin-top:8px;">
+                                    Berkas Proposal Usulan, RAB, atau Berkas Pendukung Kegiatan.
+                                </div>
+
+                                @if($house->proposal_document_path)
+                                    <div style="margin-top:12px; padding:8px 12px; background:#eff6ff; border-radius:8px; border:1px solid #bfdbfe; display:inline-flex; align-items:center; gap:8px; font-size:11.5px;">
+                                        <span style="font-weight:700; color:#1e40af;">File Proposal:</span>
+                                        <a href="{{ asset('storage/' . $house->proposal_document_path) }}" target="_blank" style="color:#2563eb; text-decoration:underline; font-weight:700;">
+                                            Lihat Dokumen
+                                        </a>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -1262,26 +1354,28 @@
             {{-- STEP 3 FOOTER & FINAL SUBMIT BAR --}}
             <div class="step-navigation-bar" style="background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-radius: var(--radius-xl); box-shadow: var(--shadow-xl);">
                 <button type="button" class="btn" onclick="switchStep(2)" style="background:transparent; color:#cbd5e1; border-color:rgba(255,255,255,0.25);">
-                    <i class="fa-solid fa-arrow-left"></i> Kembali ke Data Fisik (Step 2)
+                    &larr; Kembali ke Data Fisik (Step 2)
                 </button>
 
                 <div class="actions" style="margin:0; display:flex; gap:10px; align-items:center;">
-                    <button type="submit" class="btn" name="submit" value="0" style="background:#334155; color:#ffffff; border-color:#475569;">
-                        <i class="fa-solid fa-floppy-disk"></i> Simpan Draft
+                    <button type="button" class="btn" onclick="submitAsDraft()" style="background:#334155; color:#ffffff; border-color:#475569;">
+                        Simpan Draft
                     </button>
 
                     @if($panel === 'surveyor')
                         <button type="submit" class="btn primary" name="submit" value="1">
-                            <i class="fa-solid fa-paper-plane"></i> Simpan & Kirim Review
+                            Simpan & Kirim Review
                         </button>
                     @else
-                        <button type="submit" class="btn primary">
-                            <i class="fa-solid fa-check"></i> Simpan Data RTLH
+                        <button type="submit" class="btn primary" name="submit" value="1">
+                            Simpan Data RTLH
                         </button>
                     @endif
                 </div>
             </div>
         </div>
+
+        <input type="hidden" name="submit" id="submit-flag" value="1">
     </form>
 
     @push('scripts')
@@ -1329,23 +1423,41 @@
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
 
+            function submitAsDraft() {
+                const form = document.getElementById('rtlh-form');
+                if (!form) return;
+
+                const region = document.getElementById('region_id');
+                if (region && !region.value) {
+                    alert('Untuk menyimpan draft, silakan pilih Wilayah Administratif (Kelurahan) pada Step 1 terlebih dahulu.');
+                    switchStep(1);
+                    region.focus();
+                    return;
+                }
+
+                let submitFlag = document.getElementById('submit-flag');
+                if (!submitFlag) {
+                    submitFlag = document.createElement('input');
+                    submitFlag.type = 'hidden';
+                    submitFlag.id = 'submit-flag';
+                    submitFlag.name = 'submit';
+                    form.appendChild(submitFlag);
+                }
+                submitFlag.value = '0';
+
+                // Bypass client-side HTML5 validation so incomplete draft fields don't block saving
+                form.noValidate = true;
+                form.submit();
+            }
+
             function validateAndGoStep(targetStep) {
                 if (targetStep === 2) {
-                    const nik = document.getElementById('nik');
-                    const nama = document.getElementById('head_of_household_name');
                     const region = document.getElementById('region_id');
 
                     if (!region.value) {
                         alert('Silakan pilih Wilayah Administratif (Kelurahan) terlebih dahulu.');
                         region.focus();
                         return;
-                    }
-
-                    if (!nik.value.trim()) {
-                        if (!confirm('NIK belum diisi. Apakah Anda ingin melanjutkan pengisian data rumah?')) {
-                            nik.focus();
-                            return;
-                        }
                     }
                 }
 
@@ -1558,6 +1670,43 @@
                     reader.readAsDataURL(input.files[0]);
                 }
             }
+
+            document.addEventListener('DOMContentLoaded', function () {
+                const form = document.getElementById('rtlh-form');
+                if (form) {
+                    form.addEventListener('submit', function (e) {
+                        const submitFlag = document.getElementById('submit-flag');
+                        if (submitFlag && submitFlag.value === '0') {
+                            form.noValidate = true;
+                            return true;
+                        }
+
+                        // Final submit: region is mandatory
+                        const region = document.getElementById('region_id');
+                        if (region && !region.value) {
+                            e.preventDefault();
+                            alert('Silakan pilih Wilayah Administratif (Kelurahan) pada Step 1 terlebih dahulu.');
+                            switchStep(1);
+                            region.focus();
+                            return false;
+                        }
+                    });
+                }
+
+                @if ($errors->any())
+                    const errorKeys = @js(array_keys($errors->messages()));
+                    const step1Keys = ['region_id', 'nik', 'head_of_household_name', 'address', 'block', 'rt', 'rw'];
+                    const step3Keys = ['funding_source', 'budget_amount', 'realization_status', 'proposal_document', 'kk_document', 'akte_document', 'land_document', 'proposal_notes'];
+
+                    if (errorKeys.some(k => step1Keys.includes(k))) {
+                        switchStep(1);
+                    } else if (errorKeys.some(k => step3Keys.includes(k))) {
+                        switchStep(3);
+                    } else {
+                        switchStep(2);
+                    }
+                @endif
+            });
         </script>
     @endpush
 

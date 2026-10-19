@@ -3,7 +3,7 @@
         <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:16px; width:100%;">
             <div>
                 <div class="kicker">
-                    <i class="fa-solid fa-clipboard-check"></i> EVALUASI & ASSESSMENT RTLH
+                    EVALUASI & ASSESSMENT RTLH
                 </div>
                 <h1 style="font-size:28px; font-weight:800; color:var(--slate-900); margin:0;">
                     Assessment RTLH — {{ $house->house_code }}
@@ -15,7 +15,7 @@
 
             <div class="actions" style="margin:0;">
                 <a href="{{ route('houses.show', $house) }}" class="btn">
-                    <i class="fa-solid fa-arrow-left"></i> Kembali ke Detail
+                    Kembali ke Detail
                 </a>
             </div>
         </div>
@@ -25,7 +25,6 @@
         {{-- ERROR ALERT --}}
         @if ($errors->any())
             <div class="alert danger" style="border-left:4px solid #b91c1c; margin-bottom:20px;">
-                <i class="fa-solid fa-triangle-exclamation fa-lg"></i>
                 <div>
                     <strong>Terdapat kesalahan input:</strong>
                     <ul style="margin:6px 0 0 16px; font-size:13px;">
@@ -40,7 +39,6 @@
         {{-- SUCCESS ALERT --}}
         @if (session('success'))
             <div class="alert ok" style="margin-bottom:20px;">
-                <i class="fa-solid fa-circle-check fa-lg"></i>
                 <div>{{ session('success') }}</div>
             </div>
         @endif
@@ -50,7 +48,7 @@
             <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
                 <div>
                     <div style="font-size:12px; font-weight:800; text-transform:uppercase; color:var(--primary-700); letter-spacing:0.5px;">
-                        <i class="fa-solid fa-calculator"></i> Standar Skoring Penilaian RTLH (8 Indikator Fisik)
+                        Standar Skoring Penilaian RTLH (8 Indikator Fisik)
                     </div>
                     <div style="display:flex; gap:10px; margin-top:8px; flex-wrap:wrap;">
                         <span class="badge" style="background:#ecfdf5; color:#047857; font-weight:700;">BAIK = 0</span>
@@ -174,7 +172,7 @@
                 <div style="margin-bottom:20px;">
                     <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
                         <span class="badge" style="background:#ede9fe; color:#6d28d9; font-weight:800;">
-                            <i class="fa-solid fa-shield-halved"></i> ASPEK KESELAMATAN STRUKTUR
+                            ASPEK KESELAMATAN STRUKTUR
                         </span>
                         <span class="muted" style="font-size:12px;">(Sloof, Kolom, Balok, Rangka Atap)</span>
                     </div>
@@ -236,7 +234,7 @@
                 <div>
                     <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
                         <span class="badge" style="background:#e0f2fe; color:#0369a1; font-weight:800;">
-                            <i class="fa-solid fa-house-chimney"></i> ASPEK ARSITEKTUR & PENUTUP
+                            ASPEK ARSITEKTUR & PENUTUP
                         </span>
                         <span class="muted" style="font-size:12px;">(Lantai, Dinding, Plafon, Penutup Atap)</span>
                     </div>
@@ -298,11 +296,11 @@
             {{-- ACTION BUTTONS --}}
             <div class="card" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; padding:18px 24px;">
                 <a href="{{ route('houses.show', $house) }}" class="btn">
-                    <i class="fa-solid fa-xmark"></i> Batal
+                    Batal
                 </a>
 
                 <button type="submit" class="btn primary large">
-                    <i class="fa-solid fa-floppy-disk"></i> Simpan Penilaian Assessment
+                    Simpan Penilaian Assessment
                 </button>
             </div>
         </form>
