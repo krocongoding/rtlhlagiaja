@@ -11,13 +11,31 @@
             </p>
         </div>
 
-        <div class="actions">
+        <div class="actions" style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
             <a href="{{ route('admin.surveyors.index') }}" class="btn">
                 <i class="fa-solid fa-arrow-left"></i> Kembali ke Daftar
             </a>
-            <a href="{{ route('admin.surveyors.edit', $surveyor) }}" class="btn primary">
+            <a href="{{ route('admin.surveyors.edit', $surveyor) }}" class="btn">
                 <i class="fa-solid fa-pen"></i> Edit Profile Surveyor
             </a>
+
+            @if($surveyor->id !== auth()->id())
+                @if($surveyor->hasRole('admin'))
+                    <form action="{{ route('admin.surveyors.toggle-admin', $surveyor) }}" method="POST" style="display:inline;" onsubmit="return confirm('Apakah Anda yakin ingin mencabut hak akses Administrator dari {{ $surveyor->name }}?')">
+                        @csrf
+                        <button type="submit" class="btn" style="background:#fef2f2; color:#b91c1c; border-color:#fecaca;" title="Cabut wewenang administrator">
+                            <i class="fa-solid fa-user-xmark"></i> Cabut Hak Admin
+                        </button>
+                    </form>
+                @else
+                    <form action="{{ route('admin.surveyors.toggle-admin', $surveyor) }}" method="POST" style="display:inline;" onsubmit="return confirm('Apakah Anda yakin ingin memberikan hak akses ADMINISTRATOR kepada {{ $surveyor->name }}? Petugas akan memiliki kendali penuh atas seluruh sistem.')">
+                        @csrf
+                        <button type="submit" class="btn primary" style="background:#0284c7; border-color:#0284c7;" title="Promosikan menjadi administrator">
+                            <i class="fa-solid fa-shield-halved"></i> Jadikan Administrator
+                        </button>
+                    </form>
+                @endif
+            @endif
         </div>
     </div>
 
@@ -35,7 +53,7 @@
                 ID PETUGAS: #{{ $surveyor->id }}
             </div>
 
-            <div style="margin-bottom: 16px;">
+            <div style="margin-bottom: 16px; display:flex; flex-direction:column; gap:6px; align-items:center;">
                 @if($surveyor->is_active)
                     <span class="badge" style="background:#ecfdf5; color:#047857; font-weight:700; padding:6px 12px; font-size:12px;">
                         <i class="fa-solid fa-circle" style="font-size:8px;"></i> Akun Aktif
@@ -43,6 +61,16 @@
                 @else
                     <span class="badge" style="background:#fef2f2; color:#b91c1c; font-weight:700; padding:6px 12px; font-size:12px;">
                         <i class="fa-solid fa-circle" style="font-size:8px;"></i> Akun Non-Aktif
+                    </span>
+                @endif
+
+                @if($surveyor->hasRole('admin'))
+                    <span class="badge" style="background:#fef3c7; color:#92400e; font-weight:800; padding:6px 12px; font-size:12px; border:1px solid #fde68a;">
+                        <i class="fa-solid fa-shield-halved"></i> Akses Administrator
+                    </span>
+                @else
+                    <span class="badge" style="background:#f1f5f9; color:#475569; font-weight:700; padding:4px 10px; font-size:11px;">
+                        <i class="fa-solid fa-user"></i> Surveyor Lapangan
                     </span>
                 @endif
             </div>

@@ -58,11 +58,15 @@ test('admin and surveyor can view cpbm index page', function () {
     $responseAdmin->assertOk()
         ->assertSee('Basis Data Calon Penerima Bantuan (CPBM)')
         ->assertSee('Bapak Supardi')
-        ->assertSee('3274011234560001');
+        ->assertSee('327401******0001');
 
     $responseSurveyor = $this->actingAs($this->surveyor)->get(route('cpbm.index'));
     $responseSurveyor->assertOk()
         ->assertSee('Bapak Supardi');
+
+    // Tamu tanpa login ditolak ke halaman login
+    $this->app['auth']->forgetGuards();
+    $this->get(route('cpbm.index'))->assertRedirect(route('login'));
 });
 
 test('user can create a new cpbm with unique NIK', function () {

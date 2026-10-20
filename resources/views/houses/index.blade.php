@@ -164,7 +164,7 @@
                             <td>
                                 @if($house->head_of_household_name || $house->nik)
                                     <div style="font-weight:700; color:var(--slate-900);">{{ $house->head_of_household_name ?: 'Nama belum diisi' }}</div>
-                                    <div class="muted" style="font-size:11px; font-family:monospace;">NIK: {{ $house->nik ?: '-' }}</div>
+                                    <div class="muted" style="font-size:11px; font-family:monospace;">NIK: {{ \App\Support\DataMasker::maskNik($house->nik) }}</div>
                                 @else
                                     <span class="muted" style="font-size:12px;">-</span>
                                 @endif

@@ -114,12 +114,14 @@
                     </tr>
                     <tr>
                         <td style="color:var(--slate-500); font-weight:600;">Alamat / Blok</td>
-                        <td>{{ $house->address ?: ($house->block ? 'Blok ' . $house->block : 'Desa ' . ($house->region?->name ?? '-')) }}</td>
+                        <td>{{ auth()->check() ? ($house->address ?: ($house->block ? 'Blok ' . $house->block : 'Desa ' . ($house->region?->name ?? '-'))) : ('Wilayah Kelurahan ' . ($house->region?->name ?? '-')) }}</td>
                     </tr>
+                    @auth
                     <tr>
                         <td style="color:var(--slate-500); font-weight:600;">RT / RW</td>
                         <td>RT {{ $house->rt ?? '-' }} / RW {{ $house->rw ?? '-' }}</td>
                     </tr>
+                    @endauth
                     <tr>
                         <td style="color:var(--slate-500); font-weight:600;">Kawasan Permukiman</td>
                         <td>{{ $house->settlementCondition?->label ?? '-' }}</td>
@@ -142,26 +144,33 @@
 
         {{-- LOKASI GEOSPASIAL & MINI MAP --}}
         <div class="card">
-            <div style="display:flex; align-items:center; gap:8px; margin-bottom:18px; border-bottom:1px solid var(--slate-100); padding-bottom:12px;">
-                <div class="stat-widget-icon emerald" style="width:36px; height:36px; font-size:16px; margin:0;">
-                    <i class="fa-solid fa-map-location-dot"></i>
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; border-bottom:1px solid var(--slate-100); padding-bottom:12px;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <div class="stat-widget-icon emerald" style="width:36px; height:36px; font-size:16px; margin:0;">
+                        <i class="fa-solid fa-map-location-dot"></i>
+                    </div>
+                    <h3 style="font-size:16px; font-weight:800; color:var(--slate-900); margin:0;">
+                        Titik Koordinat Geospasial
+                    </h3>
                 </div>
-                <h3 style="font-size:16px; font-weight:800; color:var(--slate-900); margin:0;">
-                    Titik Koordinat Geospasial
-                </h3>
+                @if(!empty($isFuzzed))
+                    <span class="badge" style="background:#f0fdf4; color:#166534; font-size:11px; font-weight:700; border:1px solid #bbf7d0;">
+                        <i class="fa-solid fa-shield-halved"></i> Titik Disamarkan ~50m
+                    </span>
+                @endif
             </div>
 
-            @if($house->latitude !== null && $house->longitude !== null)
+            @if(($displayLat ?? $house->latitude) !== null && ($displayLng ?? $house->longitude) !== null)
                 <div id="mini-map" style="height:230px; width:100%; border-radius:var(--radius-md); border:1px solid var(--slate-200); margin-bottom:16px;"></div>
 
                 <div style="display:flex; justify-content:space-between; gap:12px; background:var(--slate-50); padding:12px 16px; border-radius:var(--radius-md); font-size:13px;">
                     <div>
                         <span class="muted">Latitude:</span>
-                        <code style="font-weight:700; color:var(--slate-800); margin-left:4px;">{{ $house->latitude }}</code>
+                        <code style="font-weight:700; color:var(--slate-800); margin-left:4px;">{{ $displayLat ?? $house->latitude }}</code>
                     </div>
                     <div>
                         <span class="muted">Longitude:</span>
-                        <code style="font-weight:700; color:var(--slate-800); margin-left:4px;">{{ $house->longitude }}</code>
+                        <code style="font-weight:700; color:var(--slate-800); margin-left:4px;">{{ $displayLng ?? $house->longitude }}</code>
                     </div>
                 </div>
             @else
@@ -413,12 +422,12 @@
                 if (event.key === 'Escape') closePhotoPreview();
             });
         </script>
-        @if($house->latitude !== null && $house->longitude !== null)
+        @if(($displayLat ?? $house->latitude) !== null && ($displayLng ?? $house->longitude) !== null)
             <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
             <script>
                 document.addEventListener('DOMContentLoaded', function () {
-                    const lat = {{ $house->latitude }};
-                    const lng = {{ $house->longitude }};
+                    const lat = {{ $displayLat ?? $house->latitude }};
+                    const lng = {{ $displayLng ?? $house->longitude }};
                     const miniMap = L.map('mini-map', { zoomControl: false, scrollWheelZoom: false }).setView([lat, lng], 15);
 
                     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {

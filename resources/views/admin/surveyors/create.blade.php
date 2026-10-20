@@ -99,14 +99,27 @@
             </div>
 
             {{-- STATUS AKTIF --}}
-            <div style="margin-bottom: 24px; padding: 16px; background: var(--slate-50); border: 1px solid var(--slate-200); border-radius: 8px;">
+            <div style="margin-bottom: 18px; padding: 16px; background: var(--slate-50); border: 1px solid var(--slate-200); border-radius: 8px;">
                 <label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-weight:700; color:var(--slate-800); margin:0;">
                     <input type="checkbox" name="is_active" value="1" {{ old('is_active', '1') == '1' ? 'checked' : '' }} style="width:18px; height:18px;">
-                    <span>Aktifkan Akun Surveyor Sekarang</span>
+                    <span>Aktifkan Akun Petugas Sekarang</span>
                 </label>
                 <p class="muted" style="margin-top:4px; margin-bottom:0; font-size:12px; padding-left:28px;">
                     Jika diaktifkan, petugas dapat langsung login dan menginput data survei RTLH di portal.
                 </p>
+            </div>
+
+            {{-- HAK AKSES ADMINISTRATOR (OPSIONAL) --}}
+            <div style="margin-bottom: 24px; padding: 16px; background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px;">
+                <label style="display:flex; align-items:flex-start; gap:10px; cursor:pointer; font-weight:700; color:#92400e; margin:0;">
+                    <input type="checkbox" name="is_admin" value="1" {{ old('is_admin') ? 'checked' : '' }} style="width:18px; height:18px; margin-top:2px;">
+                    <div>
+                        <span>Berikan Hak Akses Administrator Sistem (Setara Admin)</span>
+                        <p style="font-weight:400; font-size:12px; color:#b45309; margin:4px 0 0;">
+                            Centang opsi ini jika petugas ini juga bertindak sebagai Administrator (dapat memverifikasi/mempublikasikan data RTLH dan mengelola akun).
+                        </p>
+                    </div>
+                </label>
             </div>
 
             {{-- BUTTONS --}}

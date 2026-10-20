@@ -82,7 +82,7 @@ class HouseDataService
                 $util[$k] = $data[$k] ?? null;
             }
 
-            // Handle document uploads
+            // Handle document uploads to private storage (disk: local -> storage/app/private)
             $docs = [
                 'proposal_document' => ['col' => 'proposal_document_path', 'dir' => 'rtlh/proposals'],
                 'kk_document' => ['col' => 'kk_document_path', 'dir' => 'rtlh/documents/kk'],
@@ -91,7 +91,8 @@ class HouseDataService
             ];
             foreach ($docs as $field => $cfg) {
                 if (isset($data[$field]) && $data[$field] instanceof \Illuminate\Http\UploadedFile) {
-                    $docPath = $data[$field]->store($cfg['dir'], 'public');
+                    // Dokumen kependudukan & legalitas wajib disimpan di storage privat
+                    $docPath = $data[$field]->store($cfg['dir'], 'local');
                     $data[$cfg['col']] = $docPath;
                 }
             }

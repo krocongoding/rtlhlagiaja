@@ -36,7 +36,7 @@ class PublicController extends Controller
     {
         $baseQuery = House::query()
             ->where('houses.is_public', true)
-            ->whereIn('houses.status', ['verified', 'published']);
+            ->where('houses.status', 'published');
 
         /*
         |--------------------------------------------------------------------------
@@ -273,9 +273,8 @@ class PublicController extends Controller
     public function detail(House $house)
     {
         abort_unless(
-            $house->is_public ||
-            auth()->check() ||
-            in_array($house->status, ['submitted', 'verified', 'published']),
+            ($house->is_public && $house->status === 'published') ||
+            auth()->check(),
             404
         );
 
@@ -304,9 +303,19 @@ class PublicController extends Controller
             'photos',
         ]);
 
+        $displayLat = $house->latitude;
+        $displayLng = $house->longitude;
+        $isFuzzed = false;
+
+        // Fuzzing koordinat untuk pengunjung publik (menjaga privasi hunian warga berpenghasilan rendah)
+        if ($displayLat !== null && $displayLng !== null && ! auth()->check()) {
+            [$displayLat, $displayLng] = \App\Support\DataMasker::fuzzCoordinate((float) $displayLat, (float) $displayLng, $house->id);
+            $isFuzzed = true;
+        }
+
         return view(
             'public.detail',
-            compact('house')
+            compact('house', 'displayLat', 'displayLng', 'isFuzzed')
         );
     }
 }

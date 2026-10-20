@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\House;
 use App\Models\Region;
+use App\Support\DataMasker;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -46,11 +47,17 @@ class PublicApiController extends Controller
                 'roof',
                 'sanitation',
                 'utility',
-            ])
-            ->where(function ($q) {
+            ]);
+
+        if (auth()->check()) {
+            $query->where(function ($q) {
                 $q->where('is_public', true)
                     ->orWhereIn('status', ['submitted', 'verified', 'published']);
-            }); 
+            });
+        } else {
+            $query->where('is_public', true)
+                ->where('status', 'published');
+        } 
 
         /*
         |--------------------------------------------------------------------------
@@ -141,9 +148,8 @@ class PublicApiController extends Controller
     public function show(House $house)
     {
         abort_unless(
-            $house->is_public ||
-            auth()->check() ||
-            in_array($house->status, ['submitted', 'verified', 'published']),
+            ($house->is_public && $house->status === 'published') ||
+            auth()->check(),
             404
         );
 
@@ -171,7 +177,7 @@ class PublicApiController extends Controller
     {
         $baseQuery = House::query()
             ->where('houses.is_public', true)
-            ->whereIn('houses.status', ['verified', 'published']);
+            ->where('houses.status', 'published');
 
 
         /*
@@ -321,6 +327,11 @@ class PublicApiController extends Controller
         $lng = $coordinate ? (float) $coordinate->lng : ($house->longitude !== null ? (float) $house->longitude : null);
         $lat = $coordinate ? (float) $coordinate->lat : ($house->latitude !== null ? (float) $house->latitude : null);
 
+        // Jika pengunjung publik (bukan petugas yang login), samarkan koordinat GPS (~50-80m) untuk perlindungan privasi hunian warga
+        if ($lng !== null && $lat !== null && ! auth()->check()) {
+            [$lat, $lng] = DataMasker::fuzzCoordinate($lat, $lng, $house->id);
+        }
+
         $data = [
             'id' => $house->id,
 
@@ -358,10 +369,17 @@ class PublicApiController extends Controller
         */
 
         if ($detail) {
-            $data['address'] = $house->address;
-            $data['block'] = $house->block;
-            $data['rt'] = $house->rt;
-            $data['rw'] = $house->rw;
+            if (auth()->check()) {
+                $data['address'] = $house->address;
+                $data['block'] = $house->block;
+                $data['rt'] = $house->rt;
+                $data['rw'] = $house->rw;
+            } else {
+                $data['address'] = $house->region ? 'Wilayah ' . $house->region->name : 'Kabupaten Cirebon';
+                $data['block'] = null;
+                $data['rt'] = null;
+                $data['rw'] = null;
+            }
             $data['ceiling'] = $house->ceiling;
             $data['structure'] = $house->structure;
             $data['floor'] = $house->floor;
@@ -369,7 +387,11 @@ class PublicApiController extends Controller
             $data['roof'] = $house->roof;
             $data['sanitation'] = $house->sanitation;
             $data['utility'] = $house->utility;
-            $data['latest_assessment'] = $house->latestAssessment;
+            $data['latest_assessment'] = $house->latestAssessment ? [
+                'score' => $house->latestAssessment->score,
+                'priority_level' => $house->latestAssessment->priority_level,
+                'assessment_year' => $house->latestAssessment->assessment_year,
+            ] : null;
         }
 
         return $data;

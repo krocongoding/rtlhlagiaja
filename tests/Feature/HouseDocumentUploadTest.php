@@ -46,7 +46,8 @@ beforeEach(function () {
     );
 });
 
-test('surveyor and admin can upload KK, Akte, Surat Tanah, and Proposal separately', function () {
+test('surveyor and admin can upload KK, Akte, Surat Tanah, and Proposal to private storage', function () {
+    Storage::fake('local');
     Storage::fake('public');
 
     $kkFile = UploadedFile::fake()->create('kartu_keluarga.pdf', 300, 'application/pdf');
@@ -77,22 +78,37 @@ test('surveyor and admin can upload KK, Akte, Surat Tanah, and Proposal separate
     expect($house->land_document_path)->not->toBeNull();
     expect($house->proposal_document_path)->not->toBeNull();
 
-    Storage::disk('public')->assertExists($house->kk_document_path);
-    Storage::disk('public')->assertExists($house->akte_document_path);
-    Storage::disk('public')->assertExists($house->land_document_path);
-    Storage::disk('public')->assertExists($house->proposal_document_path);
+    // Verifikasi dokumen kependudukan masuk ke disk private (local)
+    Storage::disk('local')->assertExists($house->kk_document_path);
+    Storage::disk('local')->assertExists($house->akte_document_path);
+    Storage::disk('local')->assertExists($house->land_document_path);
+    Storage::disk('local')->assertExists($house->proposal_document_path);
 
-    // Verify detail show view renders each document link separately
+    // Verify detail show view renders each document route link
     $showResponse = $this->actingAs($this->admin)->get(route('houses.show', $house));
     $showResponse->assertOk();
-    $showResponse->assertSee('1. Kartu Keluarga (KK)');
-    $showResponse->assertSee('2. Akte / Akta');
-    $showResponse->assertSee('3. Surat Tanah');
-    $showResponse->assertSee('4. Proposal Usulan');
-    $showResponse->assertSee('Buka Dokumen KK');
-    $showResponse->assertSee('Buka Dokumen Akte');
-    $showResponse->assertSee('Buka Surat Tanah');
-    $showResponse->assertSee('Buka Proposal');
+    $showResponse->assertSee(route('houses.documents.show', [$house, 'kk']));
+    $showResponse->assertSee(route('houses.documents.show', [$house, 'akte']));
+    $showResponse->assertSee(route('houses.documents.show', [$house, 'land']));
+    $showResponse->assertSee(route('houses.documents.show', [$house, 'proposal']));
+
+    // Verifikasi akses dokumen: Admin & Pemilik data (Surveyor) boleh membuka
+    $docAdmin = $this->actingAs($this->admin)->get(route('houses.documents.show', [$house, 'kk']));
+    $docAdmin->assertOk();
+
+    $docSurveyor = $this->actingAs($this->surveyor)->get(route('houses.documents.show', [$house, 'kk']));
+    $docSurveyor->assertOk();
+
+    // Verifikasi proteksi: Tamu (tanpa login) ditolak
+    $this->app['auth']->forgetGuards();
+    $docGuest = $this->get(route('houses.documents.show', [$house, 'kk']));
+    $docGuest->assertRedirect(route('login'));
+
+    // Verifikasi proteksi: Surveyor lain ditolak (403 Forbidden)
+    $otherSurveyor = User::factory()->create(['is_active' => true]);
+    $otherSurveyor->roles()->attach(Role::where('slug', 'surveyor')->first());
+    $docOther = $this->actingAs($otherSurveyor)->get(route('houses.documents.show', [$house, 'kk']));
+    $docOther->assertForbidden();
 });
 
 test('house edit form step 3 renders separate upload dropzones for KK, Akte, Surat Tanah, and Proposal', function () {

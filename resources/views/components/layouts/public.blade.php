@@ -228,7 +228,6 @@
                             <li><a href="{{ route('profile.edit') }}">Pengaturan Akun</a></li>
                         @else
                             <li><a href="{{ route('login') }}">Login Petugas Lapangan</a></li>
-                            <li><a href="{{ route('register') }}">Registrasi Surveyor</a></li>
                         @endauth
                     </ul>
                 </div>

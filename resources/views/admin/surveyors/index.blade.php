@@ -137,6 +137,11 @@
                                         <a href="{{ route('admin.surveyors.show', $s) }}" style="font-weight:700; color:var(--slate-900); text-decoration:none;">
                                             {{ $s->name }}
                                         </a>
+                                        @if($s->hasRole('admin'))
+                                            <span class="badge" style="background:#fef3c7; color:#92400e; font-size:10px; font-weight:800; padding:2px 6px; margin-left:4px; border:1px solid #fde68a;">
+                                                <i class="fa-solid fa-shield-halved"></i> Admin
+                                            </span>
+                                        @endif
                                     </div>
                                 </div>
                             </td>

@@ -309,9 +309,17 @@ test('public rtlh api outputs realization status and supports filtering by reali
         'updated_by' => $this->surveyor->id,
     ]);
 
-    $resSubmitted = $this->getJson('/api/v1/public/rtlh');
+    // Petugas (surveyor/admin) dapat melihat submitted house di peta
+    $resSubmitted = $this->actingAs($this->surveyor)->getJson('/api/v1/public/rtlh');
     $resSubmitted->assertOk();
     $codes = collect($resSubmitted->json('data'))->pluck('house_code');
     expect($codes)->toContain('RTLH-MAP-SUBMITTED-01');
+
+    // Pengunjung publik tanpa login tidak boleh melihat submitted house
+    $this->app['auth']->forgetGuards();
+    $resGuest = $this->getJson('/api/v1/public/rtlh');
+    $resGuest->assertOk();
+    $guestCodes = collect($resGuest->json('data'))->pluck('house_code');
+    expect($guestCodes)->not->toContain('RTLH-MAP-SUBMITTED-01');
 });
 

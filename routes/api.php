@@ -37,7 +37,7 @@ Route::prefix('v1/public')->group(function () {
 |--------------------------------------------------------------------------
 */
 
-Route::prefix('v1/auth')->group(function () {
+Route::prefix('v1/auth')->middleware(['throttle:6,1'])->group(function () {
 
     Route::post('/login', [AuthApiController::class, 'login'])
         ->name('api.auth.login');
@@ -55,7 +55,7 @@ Route::prefix('v1/mobile')->group(function () {
     Route::post('/auth/login', [
         MobileAuthController::class,
         'login'
-    ])->name('api.mobile.login');
+    ])->middleware(['throttle:6,1'])->name('api.mobile.login');
 
     Route::middleware('auth:sanctum')->group(function () {
 

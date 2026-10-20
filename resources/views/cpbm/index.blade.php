@@ -123,7 +123,7 @@
                         @endphp
                         <tr>
                             <td>{{ $cpbms->firstItem() + $index }}</td>
-                            <td style="font-family:monospace; font-weight:700;">{{ $cpbm->nik }}</td>
+                            <td style="font-family:monospace; font-weight:700;">{{ \App\Support\DataMasker::maskNik($cpbm->nik) }}</td>
                             <td style="font-weight:700; color:var(--slate-900);">{{ $cpbm->name }}</td>
                             <td>
                                 {{ $cpbm->address }}

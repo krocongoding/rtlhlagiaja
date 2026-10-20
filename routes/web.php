@@ -6,6 +6,7 @@ use App\Http\Controllers\DownloadController;
 use App\Http\Controllers\HouseAssessmentController;
 use App\Http\Controllers\HouseConditionController;
 use App\Http\Controllers\HouseController;
+use App\Http\Controllers\HouseDocumentController;
 use App\Http\Controllers\HouseOccupantController;
 use App\Http\Controllers\HouseRealizationController;
 use App\Http\Controllers\HouseSanitationUtilityController;
@@ -127,12 +128,15 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     | CPBM (CALON PENERIMA BANTUAN MASYARAKAT)
     |--------------------------------------------------------------------------
+    | Diproteksi hanya untuk Admin dan Petugas Surveyor resmi
     */
 
-    Route::get('/cpbm-search', [CpbmController::class, 'search'])
-        ->name('cpbm.search');
+    Route::middleware('role:admin,surveyor')->group(function () {
+        Route::get('/cpbm-search', [CpbmController::class, 'search'])
+            ->name('cpbm.search');
 
-    Route::resource('cpbm', CpbmController::class);
+        Route::resource('cpbm', CpbmController::class);
+    });
 
 
     /*
@@ -167,6 +171,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/houses/{house}', [HouseController::class, 'show'])
         ->name('houses.show')
         ->can('view', 'house');
+
+    Route::get('/houses/{house}/documents/{type}', [HouseDocumentController::class, 'show'])
+        ->name('houses.documents.show');
 
     Route::post('/houses/{house}/realization', [HouseRealizationController::class, 'update'])
         ->name('houses.realization.update');
@@ -336,6 +343,11 @@ Route::middleware([
         SurveyorManagementController::class,
         'toggleStatus',
     ])->name('admin.surveyors.toggle-status');
+
+    Route::post('/surveyors/{surveyor}/toggle-admin', [
+        SurveyorManagementController::class,
+        'toggleAdmin',
+    ])->name('admin.surveyors.toggle-admin');
 });
 
 

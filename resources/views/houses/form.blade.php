@@ -1158,7 +1158,7 @@
                                 @if($house->kk_document_path)
                                     <div style="margin-top:12px; padding:8px 12px; background:#eff6ff; border-radius:8px; border:1px solid #bfdbfe; display:inline-flex; align-items:center; gap:8px; font-size:11.5px;">
                                         <span style="font-weight:700; color:#1e40af;">File KK Tersimpan:</span>
-                                        <a href="{{ asset('storage/' . $house->kk_document_path) }}" target="_blank" style="color:#2563eb; text-decoration:underline; font-weight:700;">
+                                        <a href="{{ route('houses.documents.show', [$house, 'kk']) }}" target="_blank" style="color:#2563eb; text-decoration:underline; font-weight:700;">
                                             Lihat Dokumen
                                         </a>
                                     </div>
@@ -1187,7 +1187,7 @@
                                 @if($house->akte_document_path)
                                     <div style="margin-top:12px; padding:8px 12px; background:#eff6ff; border-radius:8px; border:1px solid #bfdbfe; display:inline-flex; align-items:center; gap:8px; font-size:11.5px;">
                                         <span style="font-weight:700; color:#1e40af;">File Akte Tersimpan:</span>
-                                        <a href="{{ asset('storage/' . $house->akte_document_path) }}" target="_blank" style="color:#2563eb; text-decoration:underline; font-weight:700;">
+                                        <a href="{{ route('houses.documents.show', [$house, 'akte']) }}" target="_blank" style="color:#2563eb; text-decoration:underline; font-weight:700;">
                                             Lihat Dokumen
                                         </a>
                                     </div>
@@ -1216,7 +1216,7 @@
                                 @if($house->land_document_path)
                                     <div style="margin-top:12px; padding:8px 12px; background:#eff6ff; border-radius:8px; border:1px solid #bfdbfe; display:inline-flex; align-items:center; gap:8px; font-size:11.5px;">
                                         <span style="font-weight:700; color:#1e40af;">File Surat Tanah:</span>
-                                        <a href="{{ asset('storage/' . $house->land_document_path) }}" target="_blank" style="color:#2563eb; text-decoration:underline; font-weight:700;">
+                                        <a href="{{ route('houses.documents.show', [$house, 'land']) }}" target="_blank" style="color:#2563eb; text-decoration:underline; font-weight:700;">
                                             Lihat Dokumen
                                         </a>
                                     </div>
@@ -1245,7 +1245,7 @@
                                 @if($house->proposal_document_path)
                                     <div style="margin-top:12px; padding:8px 12px; background:#eff6ff; border-radius:8px; border:1px solid #bfdbfe; display:inline-flex; align-items:center; gap:8px; font-size:11.5px;">
                                         <span style="font-weight:700; color:#1e40af;">File Proposal:</span>
-                                        <a href="{{ asset('storage/' . $house->proposal_document_path) }}" target="_blank" style="color:#2563eb; text-decoration:underline; font-weight:700;">
+                                        <a href="{{ route('houses.documents.show', [$house, 'proposal']) }}" target="_blank" style="color:#2563eb; text-decoration:underline; font-weight:700;">
                                             Lihat Dokumen
                                         </a>
                                     </div>

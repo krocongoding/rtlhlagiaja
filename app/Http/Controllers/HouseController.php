@@ -17,6 +17,10 @@ class HouseController extends Controller
         $query = House::with(['region'])
             ->latest('id');
 
+        if (! auth()->user()->hasRole('admin')) {
+            $query->where('created_by', auth()->id());
+        }
+
         if ($request->filled('search')) {
             $search = $request->string('search')->toString();
 

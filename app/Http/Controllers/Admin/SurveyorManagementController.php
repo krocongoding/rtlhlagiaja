@@ -253,6 +253,11 @@ class SurveyorManagementController extends Controller
             $user->roles()->sync([$surveyorRole->id]);
         }
 
+        if ($request->boolean('is_admin')) {
+            $adminRole = Role::firstOrCreate(['slug' => 'admin'], ['name' => 'Admin']);
+            $user->roles()->syncWithoutDetaching([$adminRole->id]);
+        }
+
         AuditLogger::log(
             $request->user(),
             'CREATE_SURVEYOR',
@@ -333,6 +338,17 @@ class SurveyorManagementController extends Controller
 
         $surveyor->update($updateData);
 
+        if ($request->has('role_settings_submitted')) {
+            $adminRole = Role::firstOrCreate(['slug' => 'admin'], ['name' => 'Admin']);
+            if ($request->boolean('is_admin')) {
+                $surveyor->roles()->syncWithoutDetaching([$adminRole->id]);
+            } else {
+                if ($surveyor->id !== auth()->id()) {
+                    $surveyor->roles()->detach($adminRole->id);
+                }
+            }
+        }
+
         AuditLogger::log(
             $request->user(),
             'UPDATE_SURVEYOR',
@@ -368,5 +384,41 @@ class SurveyorManagementController extends Controller
         );
 
         return back()->with('ok', "Akun surveyor {$surveyor->name} telah {$statusLabel}.");
+    }
+
+    /**
+     * Promosi / cabut hak akses Administrator dari akun surveyor.
+     */
+    public function toggleAdmin(Request $request, User $surveyor)
+    {
+        // Pencegahan lockout: Admin tidak boleh mencabut hak admin akunnya sendiri
+        if ($surveyor->id === auth()->id()) {
+            return back()->with('error', 'Anda tidak dapat mencabut hak akses Administrator dari akun Anda sendiri.');
+        }
+
+        $adminRole = Role::firstOrCreate(['slug' => 'admin'], ['name' => 'Admin']);
+        $oldData = $surveyor->toArray();
+        $isAlreadyAdmin = $surveyor->hasRole('admin');
+
+        if ($isAlreadyAdmin) {
+            $surveyor->roles()->detach($adminRole->id);
+            $action = 'DEMOTE_FROM_ADMIN';
+            $message = "Hak akses Administrator untuk {$surveyor->name} berhasil dicabut. Akun kembali menjadi Surveyor biasa.";
+        } else {
+            $surveyor->roles()->syncWithoutDetaching([$adminRole->id]);
+            $action = 'PROMOTE_TO_ADMIN';
+            $message = "Akses Administrator berhasil diberikan kepada {$surveyor->name}. Akun ini sekarang memiliki kendali penuh setara Admin.";
+        }
+
+        AuditLogger::log(
+            $request->user(),
+            $action,
+            'User',
+            $surveyor->id,
+            $oldData,
+            $surveyor->fresh()->toArray()
+        );
+
+        return back()->with('ok', $message);
     }
 }

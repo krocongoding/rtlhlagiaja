@@ -105,10 +105,30 @@
             </div>
 
             {{-- STATUS AKTIF --}}
-            <div style="margin-bottom: 24px; padding: 16px; background: var(--slate-50); border: 1px solid var(--slate-200); border-radius: 8px;">
+            <div style="margin-bottom: 18px; padding: 16px; background: var(--slate-50); border: 1px solid var(--slate-200); border-radius: 8px;">
                 <label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-weight:700; color:var(--slate-800); margin:0;">
                     <input type="checkbox" name="is_active" value="1" {{ old('is_active', $surveyor->is_active) ? 'checked' : '' }} style="width:18px; height:18px;">
                     <span>Akun Surveyor Aktif</span>
+                </label>
+            </div>
+
+            {{-- HAK AKSES ADMINISTRATOR (SETARA ADMIN) --}}
+            <input type="hidden" name="role_settings_submitted" value="1">
+            <div style="margin-bottom: 24px; padding: 16px; background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px;">
+                <label style="display:flex; align-items:flex-start; gap:10px; cursor:pointer; font-weight:700; color:#92400e; margin:0;">
+                    <input type="checkbox" name="is_admin" value="1" {{ old('is_admin', $surveyor->hasRole('admin')) ? 'checked' : '' }} {{ $surveyor->id === auth()->id() ? 'disabled' : '' }} style="width:18px; height:18px; margin-top:2px;">
+                    <div>
+                        <span>Berikan Hak Akses Administrator Sistem (Setara Admin)</span>
+                        <p style="font-weight:400; font-size:12px; color:#b45309; margin:4px 0 0;">
+                            Pengguna ini akan memiliki wewenang penuh atas Command Center Admin, review & verifikasi data survei, publikasi, master data, dan dokumen kependudukan.
+                        </p>
+                        @if($surveyor->id === auth()->id())
+                            <small style="color:#b91c1c; font-weight:600; display:block; margin-top:4px;">
+                                * Anda sedang mengedit akun Anda sendiri. Hak administrator tidak dapat dicabut dari akun yang sedang aktif.
+                            </small>
+                            <input type="hidden" name="is_admin" value="1">
+                        @endif
+                    </div>
                 </label>
             </div>
 

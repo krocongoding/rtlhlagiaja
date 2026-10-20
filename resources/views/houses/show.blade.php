@@ -406,7 +406,7 @@
                     <span class="muted" style="font-size:11px; font-weight:700; text-transform:uppercase; display:block;">1. Kartu Keluarga (KK)</span>
                     <div style="margin-top:8px;">
                         @if($house->kk_document_path)
-                            <a href="{{ asset('storage/' . $house->kk_document_path) }}" target="_blank" class="btn small primary" style="font-size:11px; padding:3px 10px; width:100%; text-align:center;">
+                            <a href="{{ route('houses.documents.show', [$house, 'kk']) }}" target="_blank" class="btn small primary" style="font-size:11px; padding:3px 10px; width:100%; text-align:center;">
                                 Buka Dokumen KK
                             </a>
                         @else
@@ -420,7 +420,7 @@
                     <span class="muted" style="font-size:11px; font-weight:700; text-transform:uppercase; display:block;">2. Akte / Akta</span>
                     <div style="margin-top:8px;">
                         @if($house->akte_document_path)
-                            <a href="{{ asset('storage/' . $house->akte_document_path) }}" target="_blank" class="btn small primary" style="font-size:11px; padding:3px 10px; width:100%; text-align:center;">
+                            <a href="{{ route('houses.documents.show', [$house, 'akte']) }}" target="_blank" class="btn small primary" style="font-size:11px; padding:3px 10px; width:100%; text-align:center;">
                                 Buka Dokumen Akte
                             </a>
                         @else
@@ -434,7 +434,7 @@
                     <span class="muted" style="font-size:11px; font-weight:700; text-transform:uppercase; display:block;">3. Surat Tanah</span>
                     <div style="margin-top:8px;">
                         @if($house->land_document_path)
-                            <a href="{{ asset('storage/' . $house->land_document_path) }}" target="_blank" class="btn small primary" style="font-size:11px; padding:3px 10px; width:100%; text-align:center;">
+                            <a href="{{ route('houses.documents.show', [$house, 'land']) }}" target="_blank" class="btn small primary" style="font-size:11px; padding:3px 10px; width:100%; text-align:center;">
                                 Buka Surat Tanah
                             </a>
                         @else
@@ -448,7 +448,7 @@
                     <span class="muted" style="font-size:11px; font-weight:700; text-transform:uppercase; display:block;">4. Proposal Usulan</span>
                     <div style="margin-top:8px;">
                         @if($house->proposal_document_path)
-                            <a href="{{ asset('storage/' . $house->proposal_document_path) }}" target="_blank" class="btn small primary" style="font-size:11px; padding:3px 10px; width:100%; text-align:center;">
+                            <a href="{{ route('houses.documents.show', [$house, 'proposal']) }}" target="_blank" class="btn small primary" style="font-size:11px; padding:3px 10px; width:100%; text-align:center;">
                                 Buka Proposal
                             </a>
                         @else

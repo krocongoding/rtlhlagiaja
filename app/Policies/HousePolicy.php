@@ -41,26 +41,21 @@ class HousePolicy
 }
 
     /**
-     * Admin boleh mengubah rumah.
-     * Surveyor juga boleh mengubah data yang memang
-     * menjadi bagian dari pekerjaan survey.
+     * Admin boleh mengubah semua data rumah.
+     * Surveyor hanya boleh mengubah data rumah miliknya sendiri.
      */
     public function update(User $user, House $house): bool
     {
-        return $user->hasAnyRole([
-            'admin',
-            'surveyor',
-        ]);
+        if ($user->hasRole('admin')) {
+            return true;
+        }
+
+        if ($user->hasRole('surveyor')) {
+            return $house->created_by === $user->id;
+        }
+
+        return false;
     }
-
-    public function destroy(House $house)
-{
-    $house->delete();
-
-    return redirect()
-        ->route('houses.index')
-        ->with('success', 'Data RTLH berhasil dihapus.');
-}
 
     /**
      * Hanya Admin yang boleh menghapus data rumah.
