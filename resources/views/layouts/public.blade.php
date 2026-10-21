@@ -1,5 +1,5 @@
 @props([
-    'title' => 'Portal RTLH Kabupaten Cirebon',
+    'title' => 'Portal Teras Rutilahu Kabupaten Cirebon',
 ])
 
 <!DOCTYPE html>
@@ -8,10 +8,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Portal Data dan Sistem Informasi Geografis Rumah Tidak Layak Huni (RTLH) Kabupaten Cirebon">
+    <meta name="description" content="Portal Data dan Sistem Informasi Geografis Rumah Tidak Layak Huni (Rutilahu) - Teras Rutilahu Kabupaten Cirebon">
     <meta name="theme-color" content="#0f172a">
 
-    <title>{{ $title }} | Portal RTLH Kabupaten Cirebon</title>
+    <title>{{ $title }} | Teras Rutilahu Kabupaten Cirebon</title>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -39,11 +39,11 @@
             {{-- LEFT: LOGO & BRANDING --}}
             <a href="{{ route('public.home') }}" class="brand-wrapper">
                 <div class="lapa-brand-logo">
-                    <img src="{{ asset('images/logo.png') }}" alt="Logo RTLH">
+                    <img src="{{ asset('images/logo.png') }}" alt="Logo Teras Rutilahu">
                 </div>
                 <div class="brand-info">
                     <span class="brand-title">
-                        rtlh<span style="color:#38bdf8;">.</span>cirebon
+                        teras<span style="color:#38bdf8;">.</span>rutilahu
                     </span>
                     <span class="brand-subtitle">
                         Portal Informasi Publik
@@ -90,13 +90,6 @@
 
             {{-- RIGHT: SEARCH PILL, CTA BUTTON, AND THEME TOGGLE --}}
             <div style="display:flex; align-items:center; gap:12px;">
-
-                {{-- Search Pill --}}
-                <a href="{{ route('public.datasets') }}" class="lapa-search-pill" title="Cari data RTLH">
-                    <i class="fa-solid fa-magnifying-glass" style="font-size:12px;"></i>
-                    <span class="search-text">Search...</span>
-                    <span class="search-badge">⌘K</span>
-                </a>
 
                 {{-- CTA: MASUK PETUGAS ATAU KE WORKSPACE --}}
                 @auth
@@ -193,11 +186,11 @@
                 <div class="footer-brand">
                     <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
                         <div class="brand-logo" style="width:36px;height:36px;font-size:16px;">
-                            <img src="{{ asset('images/logo.png') }}" alt="Logo RTLH">
+                            <img src="{{ asset('images/logo.png') }}" alt="Logo Teras Rutilahu">
                         </div>
-                        <h4 style="margin:0;">Portal RTLH Cirebon</h4>
+                        <h4 style="margin:0;">Teras Rutilahu Cirebon</h4>
                     </div>
-                    <p>Sistem Informasi Geografis dan Basis Data Terpadu Penanganan Rumah Tidak Layak Huni (RTLH) Kabupaten Cirebon.</p>
+                    <p>Sistem Informasi Geografis dan Basis Data Terpadu Penanganan Rumah Tidak Layak Huni (Rutilahu) Kabupaten Cirebon.</p>
                 </div>
 
                 <div class="footer-col">

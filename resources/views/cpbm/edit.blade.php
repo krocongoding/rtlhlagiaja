@@ -1,4 +1,4 @@
-<x-layouts.app title="Edit Data CPBM | RTLH Cirebon">
+<x-layouts.app title="Edit Data CPBM | Teras Rutilahu Cirebon">
 
     <div class="pagehead">
         <div>

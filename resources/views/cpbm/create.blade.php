@@ -1,4 +1,4 @@
-<x-layouts.app title="Tambah CPBM Baru | RTLH Cirebon">
+<x-layouts.app title="Tambah CPBM Baru | Teras Rutilahu Cirebon">
 
     <div class="pagehead">
         <div>

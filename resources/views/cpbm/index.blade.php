@@ -1,4 +1,4 @@
-<x-layouts.app title="Basis Data CPBM | RTLH Cirebon">
+<x-layouts.app title="Basis Data CPBM | Teras Rutilahu Cirebon">
 
     <div class="pagehead">
         <div>
@@ -222,7 +222,7 @@
                     <input type="text" name="address" required placeholder="Contoh: Jl. Pangeran Drajat Blok Melati" style="width:100%; font-size:13px; padding:8px 12px; border:1px solid var(--slate-300); border-radius:8px;">
                 </div>
 
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px;">
+                <div style="display:grid; grid-template-columns:1fr 1fr 1.5fr; gap:14px; margin-bottom:14px;">
                     <div>
                         <label style="display:block; font-size:12px; font-weight:700; color:var(--slate-700); margin-bottom:4px;">RT</label>
                         <input type="text" name="rt" placeholder="001" maxlength="5" style="width:100%; font-size:13px; padding:8px 12px; border:1px solid var(--slate-300); border-radius:8px;">
@@ -231,6 +231,11 @@
                     <div>
                         <label style="display:block; font-size:12px; font-weight:700; color:var(--slate-700); margin-bottom:4px;">RW</label>
                         <input type="text" name="rw" placeholder="002" maxlength="5" style="width:100%; font-size:13px; padding:8px 12px; border:1px solid var(--slate-300); border-radius:8px;">
+                    </div>
+
+                    <div>
+                        <label style="display:block; font-size:12px; font-weight:700; color:var(--slate-700); margin-bottom:4px;">No. Telepon / WA</label>
+                        <input type="text" name="phone" placeholder="08xxxxxxxxxx" style="width:100%; font-size:13px; padding:8px 12px; border:1px solid var(--slate-300); border-radius:8px;">
                     </div>
                 </div>
 

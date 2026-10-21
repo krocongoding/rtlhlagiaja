@@ -6,7 +6,7 @@
         </div>
         <h2>Masuk Petugas</h2>
         <p class="muted" style="font-size:13px; margin-top:4px;">
-            Sistem Informasi Geografis RTLH Kab. Cirebon
+            Sistem Informasi Geografis Teras Rutilahu Kab. Cirebon
         </p>
     </div>
 

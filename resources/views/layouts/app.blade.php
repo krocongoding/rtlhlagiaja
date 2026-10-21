@@ -1,4 +1,4 @@
-@props(['title' => 'Workspace Petugas | RTLH Cirebon'])
+@props(['title' => 'Workspace Petugas | Teras Rutilahu Cirebon'])
 
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ $title ?? config('app.name', 'Workspace Petugas RTLH Cirebon') }}</title>
+    <title>{{ $title ?? config('app.name', 'Workspace Petugas Teras Rutilahu Cirebon') }}</title>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -43,7 +43,7 @@
                     <img src="{{ asset('images/logo.png') }}" alt="Logo Kab Cirebon">
                 </div>
                 <div>
-                    <div class="gov-brand-title">RTLH CIREBON</div>
+                    <div class="gov-brand-title">TERAS RUTILAHU</div>
                     <div class="gov-brand-sub">DPKPP Kab. Cirebon</div>
                 </div>
             </a>
@@ -224,24 +224,55 @@
                     </div>
                 @endisset
 
-                {{-- FLASH MESSAGES --}}
-                @if(session('ok') || session('success'))
-                    <div class="alert ok">
-                        <div>{{ session('ok') ?? session('success') }}</div>
-                    </div>
-                @endif
+                {{-- FLOATING TOAST NOTIFICATION STACK --}}
+                <div id="toast-container" style="position:fixed; top:24px; right:24px; z-index:9999; display:flex; flex-direction:column; gap:10px; max-width:380px; width:calc(100% - 48px); pointer-events:none;">
+                    @if(session('ok') || session('success'))
+                        <div class="gov-toast toast-success" style="pointer-events:auto;">
+                            <div class="gov-toast-icon"><i class="fa-solid fa-circle-check"></i></div>
+                            <div class="gov-toast-content">
+                                <strong>Operasi Berhasil</strong>
+                                <div>{{ session('ok') ?? session('success') }}</div>
+                            </div>
+                            <button type="button" class="gov-toast-close" onclick="this.parentElement.remove()">&times;</button>
+                        </div>
+                    @endif
 
-                @if(session('error') || session('err'))
-                    <div class="alert err">
-                        <div>{{ session('error') ?? session('err') }}</div>
-                    </div>
-                @endif
+                    @if(session('error') || session('err'))
+                        <div class="gov-toast toast-error" style="pointer-events:auto;">
+                            <div class="gov-toast-icon"><i class="fa-solid fa-circle-xmark"></i></div>
+                            <div class="gov-toast-content">
+                                <strong>Pemberitahuan</strong>
+                                <div>{{ session('error') ?? session('err') }}</div>
+                            </div>
+                            <button type="button" class="gov-toast-close" onclick="this.parentElement.remove()">&times;</button>
+                        </div>
+                    @endif
 
-                @if(session('status'))
-                    <div class="alert info">
-                        <div>{{ session('status') }}</div>
-                    </div>
-                @endif
+                    @if(session('status'))
+                        <div class="gov-toast toast-info" style="pointer-events:auto;">
+                            <div class="gov-toast-icon"><i class="fa-solid fa-circle-info"></i></div>
+                            <div class="gov-toast-content">
+                                <strong>Status Sistem</strong>
+                                <div>{{ session('status') }}</div>
+                            </div>
+                            <button type="button" class="gov-toast-close" onclick="this.parentElement.remove()">&times;</button>
+                        </div>
+                    @endif
+                </div>
+
+                {{-- AUTO DISMISS TOASTS SCRIPT --}}
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        const toasts = document.querySelectorAll('.gov-toast');
+                        toasts.forEach(toast => {
+                            setTimeout(() => {
+                                toast.style.opacity = '0';
+                                toast.style.transform = 'translateX(40px)';
+                                setTimeout(() => toast.remove(), 400);
+                            }, 4500);
+                        });
+                    });
+                </script>
 
                 {{ $slot }}
             </main>

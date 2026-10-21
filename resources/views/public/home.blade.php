@@ -7,12 +7,12 @@
         <div>
             <div class="kicker">
                 <span class="kicker-dot"></span>
-                PORTAL RESMI KABUPATEN CIREBON
+                PORTAL RESMI TERAS RUTILAHU KABUPATEN CIREBON
             </div>
 
             <h1>
                 Basis Data & WebGIS <br>
-                <span class="gradient-text">Rumah Tidak Layak Huni</span>
+                <span class="gradient-text">Teras Rutilahu Cirebon</span>
             </h1>
 
             <p class="lead">
@@ -34,6 +34,12 @@
                     <i class="fa-solid fa-chart-line"></i>
                     Statistik
                 </a>
+            </div>
+
+            {{-- HERO INTERACTIVE QUICK SEARCH --}}
+            <div style="margin-top:20px; max-width:520px;">
+                <form action="{{ route('public.map') }}" method="GET" style="display:flex; gap:8px; background:rgba(255,255,255,0.08); padding:5px 8px; border-radius:14px; border:1px solid rgba(255,255,255,0.18); backdrop-filter:blur(10px);">
+                </form>
             </div>
         </div>
 
@@ -170,6 +176,57 @@
                 <h4 style="font-size: 16px; font-weight: 700; margin-bottom: 6px; color: var(--slate-900);">Program Bantuan</h4>
                 <p class="muted" style="font-size: 13px;">Rujukan utama bagi instansi pemerintah, CSR, dan lembaga sosial untuk penyaluran bantuan.</p>
             </div>
+        </div>
+    </section>
+
+    {{-- CITIZEN FAQ SECTION --}}
+    <section class="card" style="margin-top: 40px; padding: 36px;">
+        <div style="text-align: center; max-width: 680px; margin: 0 auto 32px;">
+            <div class="kicker" style="margin-bottom: 8px;">
+                <i class="fa-solid fa-circle-question"></i> INFORMASI & BANTUAN
+            </div>
+            <h2 style="font-size: 26px; font-weight: 800; color: var(--slate-900);">
+                Pertanyaan yang Sering Diajukan (FAQ)
+            </h2>
+            <p class="muted">Panduan dan transparansi mengenai program pendataan Rumah Tidak Layak Huni.</p>
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:12px; max-width:840px; margin:0 auto;">
+            <details style="background:var(--slate-50); border:1px solid var(--slate-200); border-radius:var(--radius-lg); padding:16px 20px; cursor:pointer;">
+                <summary style="font-weight:700; color:var(--slate-900); font-size:15px; outline:none;">
+                    Apa saja kriteria rumah yang dikategorikan sebagai RTLH?
+                </summary>
+                <p class="muted" style="margin-top:12px; font-size:13.5px; line-height:1.7;">
+                    Sesuai standar teknis Kementerian PUPR dan Dinas Perumahan, kriteria RTLH mencakup tiga aspek pokok: <strong>Keselamatan Bangunan</strong> (struktur pondasi, tiang kolom, balok pengikat, dan rangka atap rusak/lapuk), <strong>Kesehatan & Sanitasi</strong> (pencahayaan/ventilasi minim, belum memiliki jamban keluarga sehat atau tangki septik), serta <strong>Kecukupan Ruang</strong> (luas lantai kurang dari standar 9 m² per jiwa).
+                </p>
+            </details>
+
+            <details style="background:var(--slate-50); border:1px solid var(--slate-200); border-radius:var(--radius-lg); padding:16px 20px; cursor:pointer;">
+                <summary style="font-weight:700; color:var(--slate-900); font-size:15px; outline:none;">
+                    Bagaimana alur penyaluran program bantuan bedah rumah?
+                </summary>
+                <p class="muted" style="margin-top:12px; font-size:13.5px; line-height:1.7;">
+                    Tahapan diawali dengan survei verifikasi faktual oleh petugas lapangan bersertifikat, pemeriksaan administratif dokumen hak milik/kependudukan oleh Dinas, penetapan Surat Keputusan (SK) Calon Penerima Bantuan Menetap (CPBM), hingga penyaluran stimulan bahan bangunan secara transparan.
+                </p>
+            </details>
+
+            <details style="background:var(--slate-50); border:1px solid var(--slate-200); border-radius:var(--radius-lg); padding:16px 20px; cursor:pointer;">
+                <summary style="font-weight:700; color:var(--slate-900); font-size:15px; outline:none;">
+                    Mengapa identitas pemilik rumah disamarkan di portal publik?
+                </summary>
+                <p class="muted" style="margin-top:12px; font-size:13.5px; line-height:1.7;">
+                    Untuk mematuhi Undang-Undang Perlindungan Data Pribadi (UU PDP), identitas kependudukan seperti NIK 16 digit dan nomor kontak disamarkan, serta koordinat peta publik difuzzing secara deterministik guna mencegah penyalahgunaan data warga oleh pihak yang tidak bertanggung jawab.
+                </p>
+            </details>
+
+            <details style="background:var(--slate-50); border:1px solid var(--slate-200); border-radius:var(--radius-lg); padding:16px 20px; cursor:pointer;">
+                <summary style="font-weight:700; color:var(--slate-900); font-size:15px; outline:none;">
+                    Bagaimana jika ada warga prasejahtera yang rumahnya belum terdata?
+                </summary>
+                <p class="muted" style="margin-top:12px; font-size:13.5px; line-height:1.7;">
+                    Warga dapat melaporkan usulan melalui pihak RT/RW atau perangkat Desa/Kelurahan setempat agar dicatatkan dalam usulan basis data CPBM (Calon Penerima Bantuan Manfaat) pada siklus pendataan lapangan berikutnya.
+                </p>
+            </details>
         </div>
     </section>
 

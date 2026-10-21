@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Portal RTLH Cirebon') }} — Autentikasi</title>
+    <title>{{ config('app.name', 'Teras Rutilahu Cirebon') }} — Autentikasi</title>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -26,7 +26,7 @@
                 <img src="{{ asset('images/logo.png') }}" alt="Logo RTLH">
             </div>
             <div style="text-align:left;">
-                <div style="font-size:18px; font-weight:800; color:#ffffff;">RTLH Cirebon</div>
+                <div style="font-size:18px; font-weight:800; color:#ffffff;">Teras Rutilahu</div>
                 <div style="font-size:11px; font-weight:600; color:#94a3b8; text-transform:uppercase;">Kabupaten Cirebon</div>
             </div>
         </a>

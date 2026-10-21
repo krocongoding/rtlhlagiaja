@@ -1,4 +1,4 @@
-<x-layouts.app title="Detail CPBM: {{ $cpbm->name }} | RTLH Cirebon">
+<x-layouts.app title="Detail CPBM: {{ $cpbm->name }} | Teras Rutilahu Cirebon">
 
     <div class="pagehead">
         <div>

@@ -63,6 +63,22 @@ class HouseController extends Controller
                 ->orWhereNull('realization_status');
         })->count();
 
+        // Scope base for quick tab counts
+        $baseScope = House::query();
+        if (! auth()->user()->hasRole('admin')) {
+            $baseScope->where('created_by', auth()->id());
+        }
+
+        $tabCounts = [
+            'all' => (clone $baseScope)->count(),
+            'submitted' => (clone $baseScope)->where('status', 'submitted')->count(),
+            'revision' => (clone $baseScope)->where('status', 'revision')->count(),
+            'verified' => (clone $baseScope)->where('status', 'verified')->count(),
+            'published' => (clone $baseScope)->where('status', 'published')->count(),
+            'draft' => (clone $baseScope)->where('status', 'draft')->count(),
+            'realized' => (clone $baseScope)->where('realization_status', 'realized')->count(),
+        ];
+
         $villages = Region::kotaCirebon()
             ->whereIn('type', ['village', 'desa'])
             ->where('is_active', true)
@@ -74,7 +90,8 @@ class HouseController extends Controller
             'totalHouses',
             'realizedCount',
             'notRealizedCount',
-            'villages'
+            'villages',
+            'tabCounts'
         ));
     }
 

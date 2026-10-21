@@ -57,6 +57,49 @@
                 background: var(--slate-100);
                 color: var(--slate-900);
             }
+
+            /* Pro WebGIS Floating Toolbar */
+            .user-loc-pin {
+                background: transparent;
+                border: none;
+            }
+            .user-pulse {
+                width: 16px;
+                height: 16px;
+                background: #0284c7;
+                border: 3px solid #ffffff;
+                border-radius: 50%;
+                box-shadow: 0 0 0 rgba(2, 132, 199, 0.6);
+                animation: pulseUserLoc 1.8s infinite;
+            }
+            @keyframes pulseUserLoc {
+                0% { box-shadow: 0 0 0 0 rgba(2, 132, 199, 0.7); }
+                70% { box-shadow: 0 0 0 16px rgba(2, 132, 199, 0); }
+                100% { box-shadow: 0 0 0 0 rgba(2, 132, 199, 0); }
+            }
+            .map-layer-btn {
+                border: none;
+                background: transparent;
+                padding: 6px 12px;
+                border-radius: 8px;
+                font-size: 12px;
+                font-weight: 700;
+                color: var(--slate-700);
+                cursor: pointer;
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                transition: all 0.18s ease;
+            }
+            .map-layer-btn:hover {
+                background: rgba(0,0,0,0.06);
+                color: var(--slate-900);
+            }
+            .map-layer-btn.active {
+                background: #0284c7;
+                color: #ffffff;
+                box-shadow: 0 2px 6px rgba(2, 132, 199, 0.35);
+            }
         </style>
     @endpush
 
@@ -151,8 +194,27 @@
         </div>
     </div>
 
-    {{-- MAP CONTAINER --}}
-    <div id="map" class="mapbox"></div>
+    {{-- MAP CONTAINER WITH FLOATING WEBGIS TOOLBAR --}}
+    <div style="position:relative; border-radius:var(--radius-xl); overflow:hidden; box-shadow:var(--shadow-md); border:1px solid var(--slate-200);" id="map-wrapper">
+        {{-- FLOATING TOOLBAR OVER MAP --}}
+        <div class="map-floating-bar" style="position:absolute; top:14px; right:14px; z-index:1000; display:flex; gap:6px; flex-wrap:wrap; background:rgba(255,255,255,0.94); backdrop-filter:blur(10px); padding:6px; border-radius:12px; box-shadow:0 4px 18px rgba(0,0,0,0.15); border:1px solid rgba(226,232,240,0.9);">
+            <button type="button" class="map-layer-btn active" id="btn-layer-osm" onclick="switchTileLayer('osm')" title="Peta Jalan Vektor">
+                <i class="fa-solid fa-map"></i> Peta Jalan
+            </button>
+            <button type="button" class="map-layer-btn" id="btn-layer-satellite" onclick="switchTileLayer('satellite')" title="Citra Satelit Resolusi Tinggi">
+                <i class="fa-solid fa-satellite"></i> Citra Satelit
+            </button>
+            <div style="width:1px; background:#cbd5e1; margin:4px 2px;"></div>
+            <button type="button" class="map-layer-btn" id="btn-locate" onclick="locateUser()" title="Temukan Lokasi Saya Sekarang (GPS)">
+                <i class="fa-solid fa-crosshairs"></i> Lokasi Saya
+            </button>
+            <button type="button" class="map-layer-btn" id="btn-fullscreen" onclick="toggleMapFullscreen()" title="Tampilan Layar Penuh">
+                <i class="fa-solid fa-expand"></i> Layar Penuh
+            </button>
+        </div>
+
+        <div id="map" class="mapbox" style="height:620px; width:100%;"></div>
+    </div>
 
     {{-- MAP INFO & LEGEND --}}
     <div class="grid3" style="margin-top: 24px;">
@@ -199,6 +261,9 @@
     <script>
         let map = null;
         let layer = null;
+        let currentTileLayer = null;
+        let userMarker = null;
+
         const cirebonCenter = [-6.7060, 108.5565];
 
         // Batas wilayah Kota Cirebon
@@ -206,6 +271,17 @@
             L.latLng(-6.7500, 108.5350),  // Southwest corner
             L.latLng(-6.6900, 108.5800)   // Northeast corner
         );
+
+        // Tile Providers
+        const osmTile = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | Kota Cirebon'
+        });
+
+        const satelliteTile = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            maxZoom: 19,
+            attribution: 'Tiles &copy; Esri &mdash; Citra Satelit Esri High-Resolution'
+        });
 
         function escapeHtml(value) {
             return String(value ?? '')
@@ -220,19 +296,110 @@
             map = L.map('map', {
                 maxBounds: KOTA_CIREBON_BOUNDS.pad(0.05),
                 maxBoundsViscosity: 1.0,
-                minZoom: 12
+                minZoom: 11
             }).setView(cirebonCenter, 13);
-            layer = L.layerGroup().addTo(map);
 
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | Kota Cirebon'
-            }).addTo(map);
+            currentTileLayer = osmTile.addTo(map);
+            layer = L.layerGroup().addTo(map);
 
             setTimeout(() => {
                 map.invalidateSize();
             }, 300);
         }
+
+        function switchTileLayer(type) {
+            if (!map) return;
+            map.removeLayer(currentTileLayer);
+
+            const btnOsm = document.getElementById('btn-layer-osm');
+            const btnSat = document.getElementById('btn-layer-satellite');
+
+            if (type === 'satellite') {
+                currentTileLayer = satelliteTile.addTo(map);
+                if (btnSat) btnSat.classList.add('active');
+                if (btnOsm) btnOsm.classList.remove('active');
+            } else {
+                currentTileLayer = osmTile.addTo(map);
+                if (btnOsm) btnOsm.classList.add('active');
+                if (btnSat) btnSat.classList.remove('active');
+            }
+        }
+
+        function locateUser() {
+            if (!navigator.geolocation) {
+                alert('Fitur Geolocation tidak didukung oleh perangkat atau browser Anda.');
+                return;
+            }
+
+            const btn = document.getElementById('btn-locate');
+            const originalHtml = btn ? btn.innerHTML : '';
+            if (btn) btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mendeteksi GPS...';
+
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    const lat = pos.coords.latitude;
+                    const lng = pos.coords.longitude;
+
+                    if (userMarker && map) {
+                        map.removeLayer(userMarker);
+                    }
+
+                    const userIcon = L.divIcon({
+                        className: 'user-loc-pin',
+                        html: '<div class="user-pulse"></div>',
+                        iconSize: [20, 20],
+                        iconAnchor: [10, 10]
+                    });
+
+                    userMarker = L.marker([lat, lng], { icon: userIcon }).addTo(map);
+                    userMarker.bindPopup(`
+                        <div style="font-size:12.5px; line-height:1.4; padding:4px;">
+                            <strong style="color:#0284c7;"><i class="fa-solid fa-location-crosshairs"></i> Posisi Anda Saat Ini</strong>
+                            <div style="color:#64748b; font-size:11px; margin-top:2px;">Akurasi perkiraan: &plusmn;${Math.round(pos.coords.accuracy)} meter</div>
+                        </div>
+                    `).openPopup();
+
+                    map.setView([lat, lng], 16);
+                    if (btn) btn.innerHTML = originalHtml;
+                },
+                (err) => {
+                    alert('Gagal mendeteksi lokasi GPS: ' + (err.message || 'Izin lokasi tidak diberikan.'));
+                    if (btn) btn.innerHTML = originalHtml;
+                },
+                { enableHighAccuracy: true, timeout: 10000 }
+            );
+        }
+
+        function toggleMapFullscreen() {
+            const wrapper = document.getElementById('map-wrapper');
+            const btn = document.getElementById('btn-fullscreen');
+
+            if (!document.fullscreenElement) {
+                if (wrapper.requestFullscreen) {
+                    wrapper.requestFullscreen();
+                } else if (wrapper.webkitRequestFullscreen) {
+                    wrapper.webkitRequestFullscreen();
+                }
+                if (btn) btn.innerHTML = '<i class="fa-solid fa-compress"></i> Perkecil';
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                }
+                if (btn) btn.innerHTML = '<i class="fa-solid fa-expand"></i> Layar Penuh';
+            }
+        }
+
+        document.addEventListener('fullscreenchange', () => {
+            if (map) {
+                setTimeout(() => map.invalidateSize(), 250);
+            }
+            const btn = document.getElementById('btn-fullscreen');
+            if (btn && !document.fullscreenElement) {
+                btn.innerHTML = '<i class="fa-solid fa-expand"></i> Layar Penuh';
+            }
+        });
 
         function fitToCirebon() {
             if (map) {

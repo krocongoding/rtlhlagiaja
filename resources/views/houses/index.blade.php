@@ -35,6 +35,36 @@
         </div>
     </div>
 
+    {{-- QUICK STATUS FILTER TABS --}}
+    @php
+        $currentStatus = request('status');
+        $currentRealized = request('realization_status');
+        $isAllActive = empty($currentStatus) && empty($currentRealized);
+    @endphp
+    <div style="display:flex; gap:8px; overflow-x:auto; padding-bottom:8px; margin-bottom:16px; scrollbar-width:thin;">
+        <a href="{{ route('houses.index') }}" class="btn small {{ $isAllActive ? 'primary' : '' }}" style="{{ $isAllActive ? '' : 'background:#fff; color:var(--slate-700);' }}">
+            Semua ({{ $tabCounts['all'] ?? 0 }})
+        </a>
+        <a href="{{ route('houses.index', ['status' => 'submitted']) }}" class="btn small {{ $currentStatus === 'submitted' ? 'primary' : '' }}" style="{{ $currentStatus === 'submitted' ? '' : 'background:#fff; color:var(--slate-700);' }}">
+            Menunggu Review ({{ $tabCounts['submitted'] ?? 0 }})
+        </a>
+        <a href="{{ route('houses.index', ['status' => 'revision']) }}" class="btn small {{ $currentStatus === 'revision' ? 'primary' : '' }}" style="{{ $currentStatus === 'revision' ? '' : 'background:#fff; color:#b91c1c;' }}">
+            Perlu Revisi ({{ $tabCounts['revision'] ?? 0 }})
+        </a>
+        <a href="{{ route('houses.index', ['status' => 'verified']) }}" class="btn small {{ $currentStatus === 'verified' ? 'primary' : '' }}" style="{{ $currentStatus === 'verified' ? '' : 'background:#fff; color:var(--slate-700);' }}">
+            Terverifikasi ({{ $tabCounts['verified'] ?? 0 }})
+        </a>
+        <a href="{{ route('houses.index', ['status' => 'published']) }}" class="btn small {{ $currentStatus === 'published' ? 'primary' : '' }}" style="{{ $currentStatus === 'published' ? '' : 'background:#fff; color:var(--slate-700);' }}">
+            Published ({{ $tabCounts['published'] ?? 0 }})
+        </a>
+        <a href="{{ route('houses.index', ['status' => 'draft']) }}" class="btn small {{ $currentStatus === 'draft' ? 'primary' : '' }}" style="{{ $currentStatus === 'draft' ? '' : 'background:#fff; color:var(--slate-700);' }}">
+            Draft ({{ $tabCounts['draft'] ?? 0 }})
+        </a>
+        <a href="{{ route('houses.index', ['realization_status' => 'realized']) }}" class="btn small {{ $currentRealized === 'realized' ? 'primary' : '' }}" style="{{ $currentRealized === 'realized' ? '' : 'background:#fff; color:#15803d;' }}">
+            <i class="fa-solid fa-circle-check"></i> Terealisasi ({{ $tabCounts['realized'] ?? 0 }})
+        </a>
+    </div>
+
     {{-- SEARCH & FILTER CARD --}}
     <div class="card" style="margin-bottom: 24px;">
         <form method="GET" action="{{ route('houses.index') }}">
@@ -95,16 +125,21 @@
 
     {{-- TABLE DATA CARD --}}
     <div class="card" style="padding:0; overflow:hidden;">
-        <div style="padding: 18px 24px; border-bottom: 1px solid var(--slate-200); background: var(--slate-50); display:flex; justify-content:space-between; align-items:center;">
+        <div style="padding: 18px 24px; border-bottom: 1px solid var(--slate-200); background: var(--slate-50); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
             <div>
                 <h3 style="font-size:16px; font-weight:800; color:var(--slate-900); margin:0;">
                     Daftar Unit Rumah RTLH
                 </h3>
                 <p class="muted" style="margin:2px 0 0 0; font-size:12px;">Monitoring data CPBM, kondisi rumah, dan realisasi anggaran per kelurahan.</p>
             </div>
-            <span class="badge published">
-                Total {{ number_format($houses->total()) }} Unit
-            </span>
+            <div style="display:flex; align-items:center; gap:8px;">
+                <button type="button" onclick="window.print()" class="btn small" style="background:#fff; font-size:12px;" title="Cetak Rekapitulasi Tampilan Ini">
+                    <i class="fa-solid fa-print"></i> Cetak Rekap
+                </button>
+                <span class="badge published">
+                    Total {{ number_format($houses->total()) }} Unit
+                </span>
+            </div>
         </div>
 
         <div class="tablewrap" style="border:none; border-radius:0;">
@@ -204,8 +239,15 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" style="text-align:center; padding:48px 24px;" class="muted">
-                                <p style="font-size:14px; margin:0;">Belum ada data unit rumah RTLH yang tercatat.</p>
+                            <td colspan="8" style="text-align:center; padding:54px 24px;" class="muted">
+                                <div style="width:48px; height:48px; border-radius:50%; background:var(--slate-100); display:flex; align-items:center; justify-content:center; margin:0 auto 12px; font-size:20px; color:var(--slate-400);">
+                                    <i class="fa-solid fa-folder-open"></i>
+                                </div>
+                                <h4 style="font-size:15px; font-weight:700; color:var(--slate-700); margin:0 0 4px 0;">Tidak Ada Data yang Ditemukan</h4>
+                                <p style="font-size:13px; margin:0 0 16px 0;">Coba sesuaikan kata kunci pencarian atau bersihkan filter yang sedang aktif.</p>
+                                <a href="{{ route('houses.index') }}" class="btn small">
+                                    Bersihkan Filter
+                                </a>
                             </td>
                         </tr>
                     @endforelse

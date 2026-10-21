@@ -2268,3 +2268,112 @@ html.dark .gov-footer {
     padding: 0 16px;
   }
 }
+
+/* ============================================================
+   FLOATING TOAST NOTIFICATION COMPONENT
+   ============================================================ */
+.gov-toast {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 18px;
+  border-radius: var(--radius-lg);
+  background: #ffffff;
+  border: 1px solid var(--slate-200);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.06);
+  animation: toastSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transition: all 0.25s ease;
+}
+
+@keyframes toastSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(40px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+.gov-toast-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.gov-toast-content {
+  flex: 1;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--slate-700);
+}
+
+.gov-toast-content strong {
+  display: block;
+  font-size: 13.5px;
+  font-weight: 800;
+  margin-bottom: 2px;
+}
+
+.gov-toast-close {
+  background: none;
+  border: none;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--slate-400);
+  padding: 0 4px;
+  transition: color 0.15s;
+}
+.gov-toast-close:hover {
+  color: var(--slate-700);
+}
+
+.toast-success {
+  border-left: 4px solid #10b981;
+}
+.toast-success .gov-toast-icon {
+  color: #10b981;
+}
+.toast-success .gov-toast-content strong {
+  color: #065f46;
+}
+
+.toast-error {
+  border-left: 4px solid #e11d48;
+}
+.toast-error .gov-toast-icon {
+  color: #e11d48;
+}
+.toast-error .gov-toast-content strong {
+  color: #9f1239;
+}
+
+.toast-info {
+  border-left: 4px solid #0284c7;
+}
+.toast-info .gov-toast-icon {
+  color: #0284c7;
+}
+.toast-info .gov-toast-content strong {
+  color: #0369a1;
+}
+
+/* Dark mode toast support */
+html.dark .gov-toast {
+  background: #1c2432;
+  border-color: #2d3748;
+}
+html.dark .gov-toast-content {
+  color: #cbd5e1;
+}
+html.dark .toast-success .gov-toast-content strong {
+  color: #34d399;
+}
+html.dark .toast-error .gov-toast-content strong {
+  color: #fb7185;
+}
+html.dark .toast-info .gov-toast-content strong {
+  color: #38bdf8;
+}
