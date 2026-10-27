@@ -11,7 +11,7 @@ class PublicLayout extends Component
      * Create a new component instance.
      */
     public function __construct(
-        public string $title = 'Portal RTLH Kabupaten Cirebon'
+        public string $title = 'Portal RTLH Kota Cirebon'
     ) {}
 
     /**

@@ -108,7 +108,7 @@
             <div class="kicker">
                 <i class="fa-solid fa-earth-asia"></i> SISTEM INFORMASI GEOGRAFIS
             </div>
-            <h1>Peta Sebaran RTLH Kabupaten Cirebon</h1>
+            <h1>Peta Sebaran RTLH Kota Cirebon</h1>
             <p class="muted">
                 Visualisasi titik koordinat rumah tidak layak huni yang telah diverifikasi dan dipublikasikan.
             </p>
@@ -169,7 +169,7 @@
                 <i class="fa-solid fa-rotate-left"></i> Reset
             </button>
 
-            <button type="button" class="btn" onclick="fitToCirebon()" title="Kembali ke fokus Kabupaten Cirebon">
+            <button type="button" class="btn" onclick="fitToCirebon()" title="Kembali ke fokus Kota Cirebon">
                 <i class="fa-solid fa-location-crosshairs"></i> Fokus Cirebon
             </button>
         </form>
@@ -489,7 +489,7 @@
                     const surveyYear = escapeHtml(house.survey_year ?? '-');
                     const address = escapeHtml(house.address ?? '-');
                     const realBadge = isRealized
-                        ? `<span class="badge" style="background:#dcfce7; color:#15803d; border:1px solid #86efac; font-weight:800; font-size:10px;">Sudah Terealisasi</span>`
+                        ? `<span class="badge" style="background:#dcfce7; color:#15803d; border:1px solid #86efac; font-weight:800; font-size:10px;"><i class="fa-solid fa-house-circle-check"></i> Sudah Layak Huni</span>`
                         : `<span class="badge" style="background:#fef9c3; color:#854d0e; border:1px solid #facc15; font-weight:800; font-size:10px;">Belum Terealisasi</span>`;
                     const statusBadge = (house.status === 'published')
                         ? `<span class="badge published" style="font-size:10px;">PUBLIK</span>`

@@ -5,7 +5,7 @@
             <div class="kicker">
                 <i class="fa-solid fa-chart-simple"></i> DASHBOARD ANALITIK
             </div>
-            <h1>Statistik RTLH Kabupaten Cirebon</h1>
+            <h1>Statistik RTLH Kota Cirebon</h1>
             <p class="muted">
                 Rekapitulasi data geospasial dan agregasi data rumah tidak layak huni terverifikasi.
             </p>
@@ -88,7 +88,7 @@
                     <h3 style="font-size:17px; font-weight:800; color:var(--slate-900); margin-bottom:4px;">
                         <i class="fa-solid fa-chart-bar text-sky-600" style="color:#0284c7;"></i> Sebaran Terbesar per Kecamatan
                     </h3>
-                    <p class="muted" style="font-size:13px;">Distribusi unit RTLH pada wilayah kecamatan di Kabupaten Cirebon.</p>
+                    <p class="muted" style="font-size:13px;">Distribusi unit RTLH pada wilayah kecamatan di Kota Cirebon.</p>
                 </div>
             </div>
 

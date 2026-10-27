@@ -225,6 +225,7 @@ class CpbmController extends Controller
         }
 
         $results = Cpbm::with(['district', 'region'])
+            ->withExists('houses')
             ->search($keyword)
             ->limit(15)
             ->get()
@@ -241,7 +242,7 @@ class CpbmController extends Controller
                     'village_name' => $cpbm->region?->name,
                     'region_id' => $cpbm->region_id,
                     'full_address' => $cpbm->full_address,
-                    'has_house' => $cpbm->houses()->exists(),
+                    'has_house' => (bool) $cpbm->houses_exists,
                 ];
             });
 

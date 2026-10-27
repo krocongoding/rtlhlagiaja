@@ -7,7 +7,7 @@
             </div>
             <h1>Workspace Viewer & Eksplorasi Publik</h1>
             <p class="muted">
-                Akses terbuka bagi masyarakat, akademisi, dan instansi untuk menjelajahi data Rumah Tidak Layak Huni di Kabupaten Cirebon.
+                Akses terbuka bagi masyarakat, akademisi, dan instansi untuk menjelajahi data Rumah Tidak Layak Huni di Kota Cirebon.
             </p>
         </div>
     </div>
@@ -19,7 +19,7 @@
             </div>
             <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 8px;">Peta GIS Interaktif</h3>
             <p class="muted" style="font-size: 13px; line-height: 1.6; margin-bottom: 20px;">
-                Visualisasikan sebaran lokasi unit rumah RTLH per kecamatan dan desa di seluruh Kabupaten Cirebon.
+                Visualisasikan sebaran lokasi unit rumah RTLH per kecamatan dan kelurahan di seluruh Kota Cirebon.
             </p>
             <a class="btn primary small" href="{{ route('public.map') }}">
                 <i class="fa-solid fa-arrow-right"></i> Buka Peta

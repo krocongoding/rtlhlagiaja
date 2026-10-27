@@ -1,5 +1,5 @@
 @props([
-    'title' => 'Portal Teras Rutilahu Kabupaten Cirebon',
+    'title' => 'Portal Teras Rutilahu Kota Cirebon',
 ])
 
 <!DOCTYPE html>
@@ -8,10 +8,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Portal Data dan Sistem Informasi Geografis Rumah Tidak Layak Huni (Rutilahu) - Teras Rutilahu Kabupaten Cirebon">
+    <meta name="description" content="Portal Data dan Sistem Informasi Geografis Rumah Tidak Layak Huni (Rutilahu) - Teras Rutilahu Kota Cirebon">
     <meta name="theme-color" content="#0f172a">
 
-    <title>{{ $title }} | Teras Rutilahu Kabupaten Cirebon</title>
+    <title>{{ $title }} | Teras Rutilahu Kota Cirebon</title>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -190,7 +190,7 @@
                         </div>
                         <h4 style="margin:0;">Teras Rutilahu Cirebon</h4>
                     </div>
-                    <p>Sistem Informasi Geografis dan Basis Data Terpadu Penanganan Rumah Tidak Layak Huni (Rutilahu) Kabupaten Cirebon.</p>
+                    <p>Sistem Informasi Geografis dan Basis Data Terpadu Penanganan Rumah Tidak Layak Huni (Rutilahu) Kota Cirebon.</p>
                 </div>
 
                 <div class="footer-col">
@@ -227,7 +227,7 @@
             </div>
 
             <div class="footer-bottom">
-                <div>&copy; {{ date('Y') }} Pemerintah Kabupaten Cirebon. Dinas Perumahan, Kawasan Permukiman dan Pertanahan.</div>
+                <div>&copy; {{ date('Y') }} Pemerintah Kota Cirebon. Dinas Perumahan Rakyat dan Kawasan Permukiman.</div>
                 <div>WebGIS & Data Platform v2.0</div>
             </div>
         </div>

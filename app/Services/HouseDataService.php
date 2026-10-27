@@ -125,6 +125,14 @@ class HouseDataService
                 $data['realization_status'] = $house->realization_status ?: 'not_realized';
             }
 
+            if ($data['realization_status'] === 'realized') {
+                $data['realized_at'] = $house->realized_at ?: now();
+                $data['realized_by'] = $house->realized_by ?: $userId;
+            } else {
+                $data['realized_at'] = null;
+                $data['realized_by'] = null;
+            }
+
             if (!empty($data['cpbm_id'])) {
                 $cpbm = \App\Models\Cpbm::find($data['cpbm_id']);
                 if ($cpbm) {
@@ -173,7 +181,7 @@ class HouseDataService
         });
     }
 
-    public function storePhotos(House $house, array $files, int $userId): void
+    public function storePhotos(House $house, array $files, int $userId, string $phase = 'before'): void
     {
         $map = [
             'photo_front' => 'front',
@@ -187,8 +195,15 @@ class HouseDataService
         foreach ($map as $field => $type) {
             if (empty($files[$field])) continue;
 
-            // Remove existing photo of the same type if updating
-            $existing = $house->photos()->where('type', $type)->first();
+            // Remove existing photo of the same type and phase if updating
+            $existing = $house->photos()->where('type', $type)->where(function ($q) use ($phase) {
+                if ($phase === 'before') {
+                    $q->where('phase', 'before')->orWhereNull('phase');
+                } else {
+                    $q->where('phase', $phase);
+                }
+            })->first();
+
             if ($existing) {
                 if ($existing->path && Storage::disk('public')->exists($existing->path)) {
                     Storage::disk('public')->delete($existing->path);
@@ -196,12 +211,45 @@ class HouseDataService
                 $existing->delete();
             }
 
-            $path = $files[$field]->store('rtlh/' . $house->house_code, 'public');
+            $subDir = $phase === 'after' ? '/after' : '';
+            $path = $files[$field]->store('rtlh/' . $house->house_code . $subDir, 'public');
             $house->photos()->create([
                 'type' => $type,
+                'phase' => $phase,
                 'path' => $path,
                 'disk' => 'public',
                 'uploaded_by' => $userId
+            ]);
+        }
+    }
+
+    public function storeRealizationPhotos(House $house, array $files, int $userId): void
+    {
+        $map = [
+            'photo_after_front' => 'front',
+            'photo_after_side' => 'side',
+            'photo_after_family_room' => 'family_room',
+            'photo_after_bathroom' => 'bathroom',
+        ];
+
+        foreach ($map as $field => $type) {
+            if (empty($files[$field])) continue;
+
+            $existing = $house->photos()->where('type', $type)->where('phase', 'after')->first();
+            if ($existing) {
+                if ($existing->path && Storage::disk('public')->exists($existing->path)) {
+                    Storage::disk('public')->delete($existing->path);
+                }
+                $existing->delete();
+            }
+
+            $path = $files[$field]->store('rtlh/' . $house->house_code . '/after', 'public');
+            $house->photos()->create([
+                'type' => $type,
+                'phase' => 'after',
+                'path' => $path,
+                'disk' => 'public',
+                'uploaded_by' => $userId,
             ]);
         }
     }

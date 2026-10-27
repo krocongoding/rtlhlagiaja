@@ -27,6 +27,7 @@ class House extends Model
         'realized_at',
         'realized_by',
         'realization_notes',
+        'realized_score',
         'funding_source',
         'budget_amount',
         'proposal_document_path',
@@ -149,6 +150,18 @@ class House extends Model
     public function photos()
     {
         return $this->hasMany(HousePhoto::class);
+    }
+
+    public function photosBefore()
+    {
+        return $this->hasMany(HousePhoto::class)->where(function ($q) {
+            $q->where('phase', 'before')->orWhereNull('phase');
+        });
+    }
+
+    public function photosAfter()
+    {
+        return $this->hasMany(HousePhoto::class)->where('phase', 'after');
     }
 
     /*

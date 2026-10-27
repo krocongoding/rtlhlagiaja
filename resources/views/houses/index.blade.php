@@ -6,7 +6,7 @@
             </div>
             <h1>Manajemen Data RTLH</h1>
             <p class="muted">
-                Daftar lengkap rumah tidak layak huni Kabupaten Cirebon beserta status verifikasi dan survei.
+                Daftar lengkap rumah tidak layak huni Kota Cirebon beserta status verifikasi dan survei.
             </p>
         </div>
 

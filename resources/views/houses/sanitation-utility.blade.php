@@ -131,24 +131,20 @@
 
                     <div class="form-group">
                         <label for="light_opening">Bukaan Cahaya / Jendela</label>
-                        <input
-                            type="text"
-                            id="light_opening"
-                            name="light_opening"
-                            value="{{ old('light_opening', $house->utility?->light_opening) }}"
-                            placeholder="Contoh: Ada / Kurang"
-                        >
+                        <select id="light_opening" name="light_opening">
+                            <option value="">-- Pilih Bukaan Cahaya --</option>
+                            <option value="Ada" @selected(strcasecmp(old('light_opening', $house->utility?->light_opening ?? ''), 'Ada') === 0)>Ada</option>
+                            <option value="Tidak Ada" @selected(strcasecmp(old('light_opening', $house->utility?->light_opening ?? ''), 'Tidak Ada') === 0)>Tidak Ada</option>
+                        </select>
                     </div>
 
                     <div class="form-group">
                         <label for="ventilation">Ventilasi Udara</label>
-                        <input
-                            type="text"
-                            id="ventilation"
-                            name="ventilation"
-                            value="{{ old('ventilation', $house->utility?->ventilation) }}"
-                            placeholder="Contoh: Ada / Kurang"
-                        >
+                        <select id="ventilation" name="ventilation">
+                            <option value="">-- Pilih Ventilasi --</option>
+                            <option value="Ada" @selected(strcasecmp(old('ventilation', $house->utility?->ventilation ?? ''), 'Ada') === 0)>Ada</option>
+                            <option value="Tidak Ada" @selected(strcasecmp(old('ventilation', $house->utility?->ventilation ?? ''), 'Tidak Ada') === 0)>Tidak Ada</option>
+                        </select>
                     </div>
                 </div>
             </div>

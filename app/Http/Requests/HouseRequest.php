@@ -4,6 +4,28 @@ use Illuminate\Foundation\Http\FormRequest;
 class HouseRequest extends FormRequest
 {
     public function authorize(): bool { return auth()->check(); }
+
+    protected function prepareForValidation(): void
+    {
+        $merge = [];
+
+        if (!$this->filled('survey_year')) {
+            $merge['survey_year'] = (int) date('Y');
+        }
+
+        if ($this->has('latitude') && $this->input('latitude') === '') {
+            $merge['latitude'] = null;
+        }
+
+        if ($this->has('longitude') && $this->input('longitude') === '') {
+            $merge['longitude'] = null;
+        }
+
+        if (!empty($merge)) {
+            $this->merge($merge);
+        }
+    }
+
     public function rules(): array
     {
         return [

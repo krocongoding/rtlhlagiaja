@@ -5,7 +5,7 @@
             <div class="kicker">
                 <i class="fa-solid fa-database"></i> KATALOG OPEN DATA
             </div>
-            <h1>Data RTLH Kabupaten Cirebon</h1>
+            <h1>Data RTLH Kota Cirebon</h1>
             <p class="muted">
                 Dataset rumah tidak layak huni terverifikasi yang dapat digunakan untuk perencanaan, riset, dan analisis spasial.
             </p>
@@ -231,7 +231,7 @@
                     <code style="font-weight:700; color:var(--primary-700); background:var(--primary-50); padding:2px 8px; border-radius:4px;">region</code>
                     <span class="badge" style="background:var(--slate-100); font-size:11px;">String</span>
                 </div>
-                <p class="muted" style="font-size:13px;">Nama wilayah administratif tingkat kecamatan / desa di Kabupaten Cirebon.</p>
+                <p class="muted" style="font-size:13px;">Nama wilayah administratif tingkat kecamatan / kelurahan di Kota Cirebon.</p>
             </div>
 
             <div style="border:1px solid var(--slate-200); border-radius:var(--radius-md); padding:16px;">

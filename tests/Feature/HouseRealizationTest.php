@@ -185,6 +185,63 @@ test('unauthenticated guest cannot update realization status', function () {
     $response->assertRedirect(route('login'));
 });
 
+test('surveyor cannot update realization of house created by another surveyor', function () {
+    $surveyorRole = Role::firstOrCreate(['slug' => 'surveyor'], ['name' => 'Surveyor']);
+    $otherSurveyor = User::firstOrCreate(
+        ['email' => 'other-surveyor@cirebon-rtlh.test'],
+        ['name' => 'Other Surveyor', 'password' => bcrypt('password'), 'is_active' => true]
+    );
+    if (! $otherSurveyor->hasRole('surveyor')) {
+        $otherSurveyor->roles()->attach($surveyorRole);
+    }
+
+    $house = House::create([
+        'house_code' => 'RTLH-REAL-OTHER-01',
+        'region_id' => $this->region->id,
+        'nik' => '3274010101880099',
+        'head_of_household_name' => 'Warga Milik Orang Lain',
+        'survey_year' => 2026,
+        'status' => 'published',
+        'realization_status' => 'not_realized',
+        'created_by' => $otherSurveyor->id,
+        'updated_by' => $otherSurveyor->id,
+    ]);
+
+    $response = $this->actingAs($this->surveyor)
+        ->post(route('houses.realization.update', $house), [
+            'realization_status' => 'realized',
+            'funding_source' => 'APBD Kota Cirebon',
+            'budget_amount' => 10000000,
+        ]);
+
+    $response->assertForbidden();
+});
+
+test('house data service sets realized_at and realized_by when house is saved with realized status', function () {
+    $house = House::create([
+        'house_code' => 'RTLH-REAL-SRV-01',
+        'region_id' => $this->region->id,
+        'nik' => '3274010101880088',
+        'head_of_household_name' => 'Warga Service Realisasi',
+        'survey_year' => 2026,
+        'status' => 'draft',
+        'realization_status' => 'not_realized',
+        'created_by' => $this->surveyor->id,
+        'updated_by' => $this->surveyor->id,
+    ]);
+
+    $service = app(\App\Services\HouseDataService::class);
+    $updated = $service->save($house, [
+        'region_id' => $this->region->id,
+        'survey_year' => 2026,
+        'realization_status' => 'realized',
+    ], $this->admin->id, false);
+
+    expect($updated->realization_status)->toBe('realized');
+    expect($updated->realized_at)->not->toBeNull();
+    expect($updated->realized_by)->toBe($this->admin->id);
+});
+
 test('houses index can be rendered for admin and surveyor without 500 error', function () {
     $responseAdmin = $this->actingAs($this->admin)->get(route('houses.index'));
     $responseAdmin->assertOk();

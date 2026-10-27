@@ -2377,3 +2377,172 @@ html.dark .toast-error .gov-toast-content strong {
 html.dark .toast-info .gov-toast-content strong {
   color: #38bdf8;
 }
+
+/* ============================================================
+   TOPBAR REVISION NOTIFICATION BELL & DROPDOWN
+   ============================================================ */
+.gov-notif-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-md, 8px);
+  background: var(--slate-100, #f1f5f9);
+  border: 1px solid var(--slate-300, #cbd5e1);
+  color: var(--slate-700, #334155);
+  cursor: pointer;
+  font-size: 15px;
+  transition: all 0.18s ease;
+}
+.gov-notif-btn:hover {
+  background: var(--slate-200, #e2e8f0);
+  color: var(--slate-900, #0f172a);
+}
+.gov-notif-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: #ef4444;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1;
+  padding: 3px 5px;
+  border-radius: 9999px;
+  border: 2px solid #ffffff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+  animation: pulseBadge 2s infinite;
+}
+@keyframes pulseBadge {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+.gov-notif-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 360px;
+  max-width: calc(100vw - 32px);
+  background: var(--card-bg, #ffffff);
+  border: 1px solid var(--slate-200, #e2e8f0);
+  border-radius: 12px;
+  box-shadow: 0 12px 30px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  overflow: hidden;
+}
+.gov-notif-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--slate-100, #f1f5f9);
+  background: var(--slate-50, #f8fafc);
+}
+.gov-notif-list {
+  max-height: 340px;
+  overflow-y: auto;
+}
+.gov-notif-item {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--slate-100, #f1f5f9);
+  transition: background 0.15s ease;
+}
+.gov-notif-item:hover {
+  background: var(--slate-50, #f8fafc);
+}
+.gov-notif-item:last-child {
+  border-bottom: none;
+}
+.gov-notif-code {
+  font-size: 12.5px;
+  font-weight: 800;
+  color: var(--primary-700, #1d4ed8);
+  font-family: monospace;
+  text-decoration: none;
+}
+.gov-notif-code:hover {
+  text-decoration: underline;
+}
+.gov-notif-time {
+  font-size: 11px;
+  color: var(--slate-400, #94a3b8);
+}
+.gov-notif-recipient {
+  font-size: 12px;
+  color: var(--slate-600, #475569);
+  margin-top: 2px;
+}
+.gov-notif-note-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 11.5px;
+  margin-top: 6px;
+  line-height: 1.35;
+}
+.gov-notif-empty {
+  padding: 32px 20px;
+  text-align: center;
+}
+.gov-notif-footer {
+  padding: 10px 16px;
+  text-align: center;
+  background: var(--slate-50, #f8fafc);
+  border-top: 1px solid var(--slate-100, #f1f5f9);
+  font-size: 12px;
+  font-weight: 700;
+}
+.gov-notif-footer a {
+  color: var(--primary-700, #1d4ed8);
+  text-decoration: none;
+}
+.gov-notif-footer a:hover {
+  text-decoration: underline;
+}
+
+/* Dark mode for notif */
+html.dark .gov-notif-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #f1f5f9;
+}
+html.dark .gov-notif-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+html.dark .gov-notif-badge {
+  border-color: #0f172a;
+}
+html.dark .gov-notif-menu {
+  background: #1e293b;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+html.dark .gov-notif-header {
+  background: #0f172a;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+html.dark .gov-notif-item {
+  border-color: rgba(255, 255, 255, 0.06);
+}
+html.dark .gov-notif-item:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+html.dark .gov-notif-recipient {
+  color: #94a3b8;
+}
+html.dark .gov-notif-note-box {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.25);
+  color: #fca5a5;
+}
+html.dark .gov-notif-footer {
+  background: #0f172a;
+  border-color: rgba(255, 255, 255, 0.08);
+}

@@ -483,7 +483,7 @@
                         </select>
                     </div>
 
-                    {{-- STATUS PENGUASAAN TANAH: ORANG TUA, SAUDARA, ANAK --}}
+                    {{-- STATUS PENGUASAAN TANAH: MILIK SENDIRI, SAUDARA, ANAK, ORANG TUA --}}
                     <div class="form-field">
                         <label for="land_status_id">Status Penguasaan Tanah</label>
                         <select id="land_status_id" name="land_status_id">
@@ -494,7 +494,7 @@
                                 </option>
                             @endforeach
                         </select>
-                        <small class="muted">Pilihan penguasaan tanah: Orang Tua, Saudara, atau Anak.</small>
+                        <small class="muted">Pilihan status tanah: Milik Sendiri, Saudara, Anak, atau Orang Tua.</small>
                     </div>
                 </div>
             </div>
@@ -796,7 +796,7 @@
                     </div>
                 </div>
 
-                <div class="grid3">
+                <div class="grid4">
                     <div class="form-field">
                         <label for="toilet_available">Ketersediaan Jamban / KM</label>
                         <select id="toilet_available" name="toilet_available">
@@ -819,7 +819,7 @@
                     </div>
 
                     <div class="form-field">
-                        <label for="fecal_disposal_type_id">TPA Tinja (Tempat Pembuangan Akhir)</label>
+                        <label for="fecal_disposal_type_id">TPA Tinja</label>
                         <select id="fecal_disposal_type_id" name="fecal_disposal_type_id">
                             <option value="">-- Pilih TPA Tinja --</option>
                             @foreach(($cats['FECAL_DISPOSAL']->values ?? []) as $v)
@@ -829,29 +829,36 @@
                             @endforeach
                         </select>
                     </div>
-                </div>
 
-                <div class="grid3">
                     <div class="form-field">
-                        <label for="water_fecal_distance">Jarak Air ke Pembuangan</label>
+                        <label for="water_fecal_distance">Jarak Air ke TPA</label>
                         <input
                             type="text"
                             id="water_fecal_distance"
                             name="water_fecal_distance"
                             value="{{ old('water_fecal_distance', $house->sanitation?->water_fecal_distance) }}"
-                            placeholder="Contoh: < 10 meter / > 10 meter"
+                            placeholder="Contoh: < 10 meter"
                         >
+                    </div>
+                </div>
+
+                <div class="grid3">
+                    <div class="form-field">
+                        <label for="light_opening">Bukaan Cahaya / Jendela</label>
+                        <select id="light_opening" name="light_opening">
+                            <option value="">-- Pilih Bukaan Cahaya --</option>
+                            <option value="Ada" @selected(strcasecmp(old('light_opening', $house->utility?->light_opening ?? ''), 'Ada') === 0)>Ada</option>
+                            <option value="Tidak Ada" @selected(strcasecmp(old('light_opening', $house->utility?->light_opening ?? ''), 'Tidak Ada') === 0)>Tidak Ada</option>
+                        </select>
                     </div>
 
                     <div class="form-field">
-                        <label for="light_opening">Bukaan Cahaya / Jendela</label>
-                        <input
-                            type="text"
-                            id="light_opening"
-                            name="light_opening"
-                            value="{{ old('light_opening', $house->utility?->light_opening) }}"
-                            placeholder="Contoh: Cukup / Kurang"
-                        >
+                        <label for="ventilation">Ventilasi Udara</label>
+                        <select id="ventilation" name="ventilation">
+                            <option value="">-- Pilih Ventilasi --</option>
+                            <option value="Ada" @selected(strcasecmp(old('ventilation', $house->utility?->ventilation ?? ''), 'Ada') === 0)>Ada</option>
+                            <option value="Tidak Ada" @selected(strcasecmp(old('ventilation', $house->utility?->ventilation ?? ''), 'Tidak Ada') === 0)>Tidak Ada</option>
+                        </select>
                     </div>
 
                     <div class="form-field">
@@ -1025,9 +1032,11 @@
                         @php
                             $currentFunding = old('funding_source', $house->funding_source);
                             $fundingOptions = [
+                                'APBD Kota Cirebon',
                                 'APBD Kabupaten Cirebon',
                                 'APBD Provinsi Jawa Barat',
                                 'BSPS (Kementerian PKP / PUPR)',
+                                'BAZNAS Kota Cirebon',
                                 'BAZNAS Kabupaten Cirebon',
                                 'DAK Fisik Perumahan',
                                 'CSR / Swadaya Masyarakat',
@@ -1279,11 +1288,11 @@
                     </button>
 
                     @if($panel === 'surveyor')
-                        <button type="submit" class="btn primary" name="submit" value="1" style="font-weight:700;">
+                        <button type="submit" class="btn primary" onclick="ensureFinalSubmit()" style="font-weight:700;">
                             Simpan & Kirim Review
                         </button>
                     @else
-                        <button type="submit" class="btn primary" name="submit" value="1" style="font-weight:700;">
+                        <button type="submit" class="btn primary" onclick="ensureFinalSubmit()" style="font-weight:700;">
                             Simpan Data RTLH
                         </button>
                     @endif
@@ -1552,6 +1561,13 @@
             // ==========================================
             // LOGIKA FORM RUMAH & SIMPAN DRAFT
             // ==========================================
+            function ensureFinalSubmit() {
+                const submitFlag = document.getElementById('submit-flag');
+                if (submitFlag) {
+                    submitFlag.value = '1';
+                }
+            }
+
             function submitAsDraft() {
                 const form = document.getElementById('rtlh-form');
                 if (!form) return;
@@ -1559,7 +1575,10 @@
                 const region = document.getElementById('region_id');
                 if (region && !region.value) {
                     alert('Untuk menyimpan draft, silakan pilih Wilayah Administratif (Kelurahan) terlebih dahulu.');
+                    region.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     region.focus();
+                    region.style.outline = '2px solid #ef4444';
+                    setTimeout(() => { region.style.outline = ''; }, 3000);
                     return;
                 }
 
@@ -1575,7 +1594,14 @@
 
                 // Bypass client-side HTML5 validation so incomplete draft fields don't block saving
                 form.noValidate = true;
-                form.submit();
+
+                // Gunakan HTMLFormElement.prototype.submit.call(form) untuk memastikan eksekusi native
+                // dan menghindari TypeError jika form memiliki elemen bernama "submit" (DOM named property shadowing)
+                if (typeof HTMLFormElement.prototype.submit === 'function') {
+                    HTMLFormElement.prototype.submit.call(form);
+                } else {
+                    form.submit();
+                }
             }
 
             function selectRealizationCard(val) {

@@ -48,7 +48,7 @@
                 </h1>
 
                 <p class="muted" style="margin-top:4px; font-size:14px;">
-                    {{ $house->region?->name ?? 'Kabupaten Cirebon' }} &bull; Tahun Survei {{ $house->survey_year }}
+                    {{ $house->region?->name ?? 'Kota Cirebon' }} &bull; Tahun Survei {{ $house->survey_year }}
                 </p>
             </div>
 
@@ -562,8 +562,16 @@
                     <span class="muted">Jamban:</span>
                     <strong>{{ $house->sanitation?->toilet_available ? 'Ada' : 'Tidak Punya' }} ({{ $house->sanitation?->toiletType?->label ?: '-' }})</strong>
                 </div>
+                <div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--slate-100); padding-bottom:4px;">
+                    <span class="muted">Bukaan Cahaya / Jendela:</span>
+                    <strong>{{ $house->utility?->light_opening ?: '-' }}</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--slate-100); padding-bottom:4px;">
+                    <span class="muted">Ventilasi Udara:</span>
+                    <strong>{{ $house->utility?->ventilation ?: '-' }}</strong>
+                </div>
                 <div style="display:flex; justify-content:space-between;">
-                    <span class="muted">Penerangan:</span>
+                    <span class="muted">Penerangan / Listrik:</span>
                     <strong>{{ $house->utility?->lightingSource?->label ?: '-' }}</strong>
                 </div>
             </div>
@@ -571,6 +579,89 @@
     </div>
 
     {{-- FOTO DOKUMENTASI FISIK --}}
+    @php
+        $photosBefore = $house->photosBefore;
+        $photosAfter = $house->photosAfter;
+        $frontBefore = $photosBefore->firstWhere('type', 'front') ?: $photosBefore->first();
+        $frontAfter = $photosAfter->firstWhere('type', 'front') ?: $photosAfter->first();
+    @endphp
+
+    {{-- CARD KOMPARASI SEBELUM & SESUDAH BANTUAN (BEFORE & AFTER) --}}
+    @if($photosAfter && $photosAfter->isNotEmpty())
+        <div class="card" style="margin-bottom: 24px; border:2px solid #86efac; background:linear-gradient(180deg, #f0fdf4 0%, #ffffff 100%);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; border-bottom:1px solid #bbf7d0; padding-bottom:12px; flex-wrap:wrap; gap:10px;">
+                <div>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <span class="badge" style="background:#16a34a; color:#ffffff; font-weight:800; font-size:11px;">
+                            <i class="fa-solid fa-arrows-split-up-and-left"></i> TRANSFORMASI SELESAI
+                        </span>
+                        <h3 style="font-size:17px; font-weight:800; color:#14532d; margin:0;">
+                            Dokumentasi Sebelum & Sesudah Bantuan
+                        </h3>
+                    </div>
+                    <p class="muted" style="margin:2px 0 0; font-size:12px;">Perbandingan fisik kondisi awal (RTLH) dengan hasil renovasi bantuan perumahan (Layak Huni).</p>
+                </div>
+
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <div style="background:#ffffff; padding:6px 12px; border-radius:8px; border:1px solid #86efac; font-size:12px; font-weight:700;">
+                        <span class="muted" style="font-weight:normal;">Skor Awal:</span> <span style="color:#b91c1c;">{{ $latestAssessment?->score ?? 'N/A' }}</span>
+                        &rarr; <span class="muted" style="font-weight:normal;">Pasca Bantuan:</span> <span style="color:#15803d;">{{ $house->realized_score ?? 0 }} (Layak Huni)</span>
+                    </div>
+                </div>
+            </div>
+
+            @if($frontBefore && $frontAfter)
+                <div style="margin-bottom:20px;">
+                    <x-before-after-slider
+                        :beforeUrl="\Illuminate\Support\Facades\Storage::disk($frontBefore->disk ?: 'public')->url($frontBefore->path)"
+                        :afterUrl="\Illuminate\Support\Facades\Storage::disk($frontAfter->disk ?: 'public')->url($frontAfter->path)"
+                        title="Tampak Depan Rumah (Geser Slider untuk Membandingkan)"
+                    />
+                </div>
+            @endif
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+                {{-- FOTO SEBELUM --}}
+                <div style="background:#ffffff; border-radius:10px; border:1px solid #fecdd3; padding:14px;">
+                    <div style="font-size:13px; font-weight:800; color:#9f1239; margin-bottom:10px; display:flex; align-items:center; gap:6px;">
+                        <i class="fa-solid fa-circle-exclamation"></i> Foto Sebelum Bantuan (Kondisi Awal RTLH)
+                    </div>
+                    <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(130px, 1fr)); gap:10px;">
+                        @foreach($photosBefore as $pBefore)
+                            @php
+                                $url = \Illuminate\Support\Facades\Storage::disk($pBefore->disk ?: 'public')->url($pBefore->path);
+                                $cap = $pBefore->caption ?: ucfirst(str_replace(['photo_', '_'], ['', ' '], $pBefore->type));
+                            @endphp
+                            <div style="border:1px solid #fda4af; border-radius:6px; overflow:hidden; cursor:zoom-in;" onclick="openPhotoPreview(@js($url), @js('Sebelum: ' . $cap))">
+                                <img src="{{ $url }}" alt="{{ $cap }}" style="width:100%; height:90px; object-fit:cover; display:block;">
+                                <div style="padding:4px 6px; font-size:11px; font-weight:600; color:#881337; background:#fff1f2;">{{ $cap }}</div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+
+                {{-- FOTO SESUDAH --}}
+                <div style="background:#ffffff; border-radius:10px; border:1px solid #bbf7d0; padding:14px;">
+                    <div style="font-size:13px; font-weight:800; color:#166534; margin-bottom:10px; display:flex; align-items:center; gap:6px;">
+                        <i class="fa-solid fa-circle-check"></i> Foto Sesudah Bantuan (Hasil Renovasi)
+                    </div>
+                    <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(130px, 1fr)); gap:10px;">
+                        @foreach($photosAfter as $pAfter)
+                            @php
+                                $url = \Illuminate\Support\Facades\Storage::disk($pAfter->disk ?: 'public')->url($pAfter->path);
+                                $cap = $pAfter->caption ?: ucfirst(str_replace(['photo_', '_'], ['', ' '], $pAfter->type));
+                            @endphp
+                            <div style="border:1px solid #86efac; border-radius:6px; overflow:hidden; cursor:zoom-in;" onclick="openPhotoPreview(@js($url), @js('Sesudah: ' . $cap))">
+                                <img src="{{ $url }}" alt="{{ $cap }}" style="width:100%; height:90px; object-fit:cover; display:block;">
+                                <div style="padding:4px 6px; font-size:11px; font-weight:600; color:#14532d; background:#f0fdf4;">{{ $cap }}</div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
     @if($house->photos && $house->photos->isNotEmpty())
         <div class="card" style="margin-bottom: 24px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; border-bottom:1px solid var(--slate-100); padding-bottom:12px;">
@@ -817,7 +908,7 @@
             </div>
 
             {{-- MODAL BODY --}}
-            <form method="POST" action="{{ route('houses.realization.update', $house) }}" style="overflow-y:auto; flex:1;">
+            <form method="POST" action="{{ route('houses.realization.update', $house) }}" enctype="multipart/form-data" style="overflow-y:auto; flex:1;">
                 @csrf
                 <div style="padding:24px; display:flex; flex-direction:column; gap:18px;">
                     
@@ -860,11 +951,12 @@
                             id="modal_funding_source"
                             name="funding_source"
                             value="{{ old('funding_source', $house->funding_source) }}"
-                            placeholder="Contoh: APBD Kabupaten Cirebon, DAK, BSPS, Baznas, CSR..."
+                            placeholder="Contoh: APBD Kota Cirebon, DAK, BSPS, Baznas, CSR..."
                             list="funding_sources_datalist"
                             style="width:100%; border-radius:var(--radius-md); border:1px solid var(--slate-300); padding:10px 12px; font-size:13px; box-sizing:border-box;"
                         >
                         <datalist id="funding_sources_datalist">
+                            <option value="APBD Kota Cirebon">
                             <option value="APBD Kabupaten Cirebon">
                             <option value="APBD Provinsi Jawa Barat">
                             <option value="APBN (BSPS / KemenPUPR)">
@@ -904,6 +996,58 @@
                                 value="{{ old('realized_at', $house->realized_at ? $house->realized_at->format('Y-m-d') : date('Y-m-d')) }}"
                                 style="width:100%; border-radius:var(--radius-md); border:1px solid var(--slate-300); padding:10px 12px; font-size:13px; box-sizing:border-box;"
                             >
+                        </div>
+                    </div>
+
+                    {{-- SKOR KONDISI PASCA BANTUAN --}}
+                    <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:var(--radius-md); padding:14px;">
+                        <label for="modal_realized_score" style="display:block; font-size:13px; font-weight:700; color:#166534; margin-bottom:4px;">
+                            Skor RTLH Pasca-Bantuan (Rehabilitasi Layak Huni)
+                        </label>
+                        <p class="muted" style="font-size:11px; margin:0 0 8px 0;">Skor 0 menandakan rumah telah 100% layak huni (tidak ada kerusakan struktural & non-struktural).</p>
+                        <input
+                            type="number"
+                            min="0"
+                            max="30"
+                            id="modal_realized_score"
+                            name="realized_score"
+                            value="{{ old('realized_score', $house->realized_score ?? 0) }}"
+                            style="width:140px; border-radius:var(--radius-md); border:1px solid #86efac; padding:8px 12px; font-size:14px; font-weight:700; color:#15803d; box-sizing:border-box;"
+                        >
+                    </div>
+
+                    {{-- UNGGAH FOTO SESUDAH BANTUAN (PASCA-REHABILITASI) --}}
+                    <div style="border:1px dashed var(--slate-300); border-radius:var(--radius-md); padding:16px; background:#f8fafc;">
+                        <div style="font-size:13px; font-weight:800; color:var(--slate-800); margin-bottom:4px;">
+                            📸 Unggah Foto Sesudah Bantuan (Hasil Rehabilitasi)
+                        </div>
+                        <p class="muted" style="font-size:11px; margin:0 0 12px 0;">Unggah foto kondisi rumah setelah selesai dibangun untuk dokumentasi Before & After.</p>
+
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                            <div>
+                                <label style="display:block; font-size:12px; font-weight:700; color:var(--slate-700); margin-bottom:4px;">
+                                    Tampak Depan (Sesudah)
+                                </label>
+                                <input type="file" name="photo_after_front" accept="image/*" style="font-size:12px; width:100%;">
+                            </div>
+                            <div>
+                                <label style="display:block; font-size:12px; font-weight:700; color:var(--slate-700); margin-bottom:4px;">
+                                    Tampak Samping (Sesudah)
+                                </label>
+                                <input type="file" name="photo_after_side" accept="image/*" style="font-size:12px; width:100%;">
+                            </div>
+                            <div>
+                                <label style="display:block; font-size:12px; font-weight:700; color:var(--slate-700); margin-bottom:4px;">
+                                    Ruang Dalam / Keluarga (Sesudah)
+                                </label>
+                                <input type="file" name="photo_after_family_room" accept="image/*" style="font-size:12px; width:100%;">
+                            </div>
+                            <div>
+                                <label style="display:block; font-size:12px; font-weight:700; color:var(--slate-700); margin-bottom:4px;">
+                                    Sanitasi / Kamar Mandi (Sesudah)
+                                </label>
+                                <input type="file" name="photo_after_bathroom" accept="image/*" style="font-size:12px; width:100%;">
+                            </div>
                         </div>
                     </div>
 
@@ -1074,7 +1218,7 @@
                                 ${isRealized ? 'Sudah Terealisasi' : 'Belum Terealisasi'}
                             </span>
                         </div>
-                        <span style="color:#475569;">{{ addslashes($house->head_of_household_name ? 'CPBM: ' . $house->head_of_household_name : ($house->address ?: ($house->region?->name ?? 'Kabupaten Cirebon'))) }}</span>
+                        <span style="color:#475569;">{{ addslashes($house->head_of_household_name ? 'CPBM: ' . $house->head_of_household_name : ($house->address ?: ($house->region?->name ?? 'Kota Cirebon'))) }}</span>
                     </div>
                 `).openPopup();
 

@@ -7,6 +7,7 @@ use App\Http\Controllers\HouseAssessmentController;
 use App\Http\Controllers\HouseConditionController;
 use App\Http\Controllers\HouseController;
 use App\Http\Controllers\HouseDocumentController;
+use App\Http\Controllers\HouseMapController;
 use App\Http\Controllers\HouseOccupantController;
 use App\Http\Controllers\HouseRealizationController;
 use App\Http\Controllers\HouseSanitationUtilityController;
@@ -132,6 +133,9 @@ Route::middleware('auth')->group(function () {
     */
 
     Route::middleware('role:admin,surveyor')->group(function () {
+        Route::get('/map', [HouseMapController::class, 'index'])
+            ->name('houses.map');
+
         Route::get('/cpbm-search', [CpbmController::class, 'search'])
             ->name('cpbm.search');
 
@@ -176,7 +180,8 @@ Route::middleware('auth')->group(function () {
         ->name('houses.documents.show');
 
     Route::post('/houses/{house}/realization', [HouseRealizationController::class, 'update'])
-        ->name('houses.realization.update');
+        ->name('houses.realization.update')
+        ->can('update', 'house');
 
 
     /*

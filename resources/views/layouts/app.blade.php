@@ -44,7 +44,7 @@
                 </div>
                 <div>
                     <div class="gov-brand-title">TERAS RUTILAHU</div>
-                    <div class="gov-brand-sub">DPKPP Kab. Cirebon</div>
+                    <div class="gov-brand-sub">DPRKP Kota Cirebon</div>
                 </div>
             </a>
 
@@ -89,8 +89,12 @@
                                     <span>Basis Data CPBM</span>
                                 </a>
 
-                                <a href="{{ route('houses.index') }}" class="gov-nav-item {{ request()->routeIs('houses.index') || (request()->routeIs('houses.*') && !request()->routeIs('houses.create')) ? 'active' : '' }}">
+                                <a href="{{ route('houses.index') }}" class="gov-nav-item {{ (request()->routeIs('houses.index') || request()->routeIs('houses.*')) && !request()->routeIs('houses.create') && !request()->routeIs('houses.map') ? 'active' : '' }}">
                                     <span>Basis Data RTLH</span>
+                                </a>
+
+                                <a href="{{ route('houses.map') }}" class="gov-nav-item {{ request()->routeIs('houses.map') ? 'active' : '' }}">
+                                    <span>Peta & Sebaran Realisasi</span>
                                 </a>
 
                                 <a href="{{ route('houses.create') }}" class="gov-nav-item {{ request()->routeIs('houses.create') ? 'active' : '' }}">
@@ -129,8 +133,12 @@
                                     <span>Basis Data CPBM</span>
                                 </a>
 
-                                <a href="{{ route('houses.index') }}" class="gov-nav-item {{ request()->routeIs('houses.index') || (request()->routeIs('houses.*') && !request()->routeIs('surveyor.rtlh.create')) ? 'active' : '' }}">
+                                <a href="{{ route('houses.index') }}" class="gov-nav-item {{ (request()->routeIs('houses.index') || request()->routeIs('houses.*')) && !request()->routeIs('surveyor.rtlh.create') && !request()->routeIs('houses.create') && !request()->routeIs('houses.map') ? 'active' : '' }}">
                                     <span>Data RTLH Saya</span>
+                                </a>
+
+                                <a href="{{ route('houses.map') }}" class="gov-nav-item {{ request()->routeIs('houses.map') ? 'active' : '' }}">
+                                    <span>Peta Sebaran Lapangan</span>
                                 </a>
 
                                 <a href="{{ route('surveyor.rtlh.create') }}" class="gov-nav-item {{ request()->routeIs('surveyor.rtlh.create') ? 'active' : '' }}">
@@ -200,11 +208,92 @@
                     <div class="gov-topbar-breadcrumb">
                         <span>Workspace Petugas</span>
                         <span>&rsaquo;</span>
-                        <strong>{{ $title ?? 'Kabupaten Cirebon' }}</strong>
+                        <strong>{{ $title ?? 'Kota Cirebon' }}</strong>
                     </div>
                 </div>
 
                 <div class="gov-topbar-right">
+                    {{-- LONCENG NOTIFIKASI REVISI --}}
+                    @auth
+                        <div class="gov-notif-dropdown-wrapper" style="position:relative;">
+                            <button type="button" class="gov-notif-btn" id="notifDropdownBtn" onclick="toggleNotifDropdown(event)" title="Pemberitahuan Revisi Data" aria-label="Notifikasi Revisi">
+                                <i class="fa-solid fa-bell"></i>
+                                @if(($pendingRevisionCount ?? 0) > 0)
+                                    <span class="gov-notif-badge">{{ $pendingRevisionCount > 99 ? '99+' : $pendingRevisionCount }}</span>
+                                @endif
+                            </button>
+
+                            {{-- DROPDOWN MENU NOTIFIKASI --}}
+                            <div class="gov-notif-menu" id="notifDropdownMenu" style="display:none;">
+                                <div class="gov-notif-header">
+                                    <div style="display:flex; align-items:center; gap:8px;">
+                                        <i class="fa-solid fa-bell" style="color:#d97706;"></i>
+                                        <span style="font-weight:800; font-size:13px; color:var(--slate-900);">Catatan Revisi Admin</span>
+                                    </div>
+                                    @if(($pendingRevisionCount ?? 0) > 0)
+                                        <span class="badge danger" style="font-size:10.5px; font-weight:800; padding:2px 8px; background:#fee2e2; color:#b91c1c; border:1px solid #fca5a5;">
+                                            {{ $pendingRevisionCount }} Perlu Perbaikan
+                                        </span>
+                                    @else
+                                        <span class="badge success" style="font-size:10.5px; font-weight:700; padding:2px 8px; background:#dcfce7; color:#15803d; border:1px solid #bbf7d0;">
+                                            Semua Baik
+                                        </span>
+                                    @endif
+                                </div>
+
+                                <div class="gov-notif-list">
+                                    @forelse(($revisionNotifications ?? []) as $revHouse)
+                                        <div class="gov-notif-item">
+                                            <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:3px;">
+                                                <a href="{{ route('houses.show', $revHouse) }}" class="gov-notif-code">
+                                                    {{ $revHouse->house_code }}
+                                                </a>
+                                                <span class="gov-notif-time">
+                                                    {{ $revHouse->revised_at ? $revHouse->revised_at->diffForHumans() : 'Baru saja' }}
+                                                </span>
+                                            </div>
+
+                                            <div class="gov-notif-recipient">
+                                                <i class="fa-solid fa-user" style="font-size:10px; opacity:0.7;"></i>
+                                                <strong>{{ $revHouse->cpbm?->name ?? $revHouse->head_of_household_name ?? 'Penerima Bantuan' }}</strong>
+                                                <span>• Kel. {{ $revHouse->region?->name ?? '-' }}</span>
+                                            </div>
+
+                                            <div class="gov-notif-note-box">
+                                                <i class="fa-solid fa-circle-exclamation" style="flex-shrink:0; margin-top:2px;"></i>
+                                                <div style="flex:1;">
+                                                    {{ Str::limit($revHouse->revision_notes, 110) }}
+                                                </div>
+                                            </div>
+
+                                            <div style="display:flex; justify-content:flex-end; margin-top:8px;">
+                                                <a href="{{ route('houses.edit', $revHouse) }}" class="btn small primary" style="font-size:11px; padding:3px 10px; font-weight:700;">
+                                                    Perbaiki Data &rarr;
+                                                </a>
+                                            </div>
+                                        </div>
+                                    @empty
+                                        <div class="gov-notif-empty">
+                                            <i class="fa-solid fa-circle-check" style="font-size:32px; color:#10b981; margin-bottom:8px; display:inline-block;"></i>
+                                            <div style="font-weight:700; color:var(--slate-800); font-size:13.5px;">Tidak Ada Revisi</div>
+                                            <div style="font-size:12px; color:var(--slate-500); margin-top:4px;">
+                                                Semua survei Anda telah disetujui atau belum ada catatan revisi dari admin.
+                                            </div>
+                                        </div>
+                                    @endforelse
+                                </div>
+
+                                @if(($pendingRevisionCount ?? 0) > 0)
+                                    <div class="gov-notif-footer">
+                                        <a href="{{ route('houses.index', ['status' => 'revision']) }}">
+                                            Lihat Semua Data Butuh Revisi ({{ $pendingRevisionCount }}) &rarr;
+                                        </a>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    @endauth
+
                     {{-- DARK MODE TOGGLE --}}
                     <button type="button" class="btn-theme-toggle" onclick="toggleDarkMode()" id="darkToggleBtn" title="Ganti tema" style="font-size:11px; font-weight:700;">
                         <span id="darkToggleText">Dark</span>
@@ -280,7 +369,7 @@
             {{-- FOOTER RESMI WORKSPACE --}}
             <footer class="gov-footer">
                 <div>
-                    &copy; {{ date('Y') }} <strong>Pemerintah Kabupaten Cirebon</strong> &bull; Dinas Perumahan, Kawasan Permukiman dan Pertanahan
+                    &copy; {{ date('Y') }} <strong>Pemerintah Kota Cirebon</strong> &bull; Dinas Perumahan Rakyat dan Kawasan Permukiman
                 </div>
                 <div>
                     Sistem Pengelolaan Rumah Tidak Layak Huni (RTLH)
@@ -314,6 +403,33 @@
         }
 
         applyDarkMode(localStorage.getItem(DARK_KEY) === '1');
+
+        // ── Dropdown Notifikasi Revisi Admin ──
+        function toggleNotifDropdown(e) {
+            if (e) e.stopPropagation();
+            const menu = document.getElementById('notifDropdownMenu');
+            if (!menu) return;
+            menu.style.display = (menu.style.display === 'none' || menu.style.display === '') ? 'block' : 'none';
+        }
+
+        document.addEventListener('click', function(e) {
+            const menu = document.getElementById('notifDropdownMenu');
+            const btn = document.getElementById('notifDropdownBtn');
+            if (menu && menu.style.display === 'block') {
+                if (!menu.contains(e.target) && (!btn || !btn.contains(e.target))) {
+                    menu.style.display = 'none';
+                }
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const menu = document.getElementById('notifDropdownMenu');
+                if (menu && menu.style.display === 'block') {
+                    menu.style.display = 'none';
+                }
+            }
+        });
 
         // ── Collapsible Sidebar Toggle (Melebar Otomatis, Tanpa Blur) ──
         function applySidebarState(collapsed) {

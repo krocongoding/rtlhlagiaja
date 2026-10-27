@@ -27,7 +27,7 @@
             </div>
             <div style="text-align:left;">
                 <div style="font-size:18px; font-weight:800; color:#ffffff;">Teras Rutilahu</div>
-                <div style="font-size:11px; font-weight:600; color:#94a3b8; text-transform:uppercase;">Kabupaten Cirebon</div>
+                <div style="font-size:11px; font-weight:600; color:#94a3b8; text-transform:uppercase;">Kota Cirebon</div>
             </div>
         </a>
     </header>
@@ -39,7 +39,7 @@
     </main>
 
     <footer style="text-align:center; padding: 24px 20px; font-size:13px; color:#64748b;">
-        &copy; {{ date('Y') }} Pemerintah Kabupaten Cirebon • Dinas Perumahan, Kawasan Permukiman dan Pertanahan
+        &copy; {{ date('Y') }} Pemerintah Kota Cirebon • Dinas Perumahan Rakyat dan Kawasan Permukiman
     </footer>
 
 </body>

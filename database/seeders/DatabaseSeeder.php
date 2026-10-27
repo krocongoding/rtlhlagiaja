@@ -78,7 +78,7 @@ class DatabaseSeeder extends Seeder
             'SETTLEMENT_CONDITION' => ['Kawasan Permukiman', [['KUMUH', 'KUMUH'], ['TIDAK_KUMUH', 'TIDAK KUMUH']]],
             'ROOM_FUNCTION' => ['Fungsi Ruang', [['PERUMAHAN', 'PERUMAHAN']]],
             'OWNERSHIP_STATUS' => ['Status Penguasaan Rumah', [['OWNED', 'MILIK SENDIRI'], ['RENTED', 'SEWA/KONTRAK'], ['OTHER', 'LAINNYA']]],
-            'LAND_STATUS' => ['Status Penguasaan Tanah', [['OWNED', 'MILIK SENDIRI'], ['OTHER', 'LAINNYA']]],
+            'LAND_STATUS' => ['Status Penguasaan Tanah', [['OWNED', 'MILIK SENDIRI'], ['SIBLING', 'SAUDARA'], ['CHILD', 'ANAK'], ['PARENT', 'ORANG TUA']]],
         ];
 
         foreach ($cats as $code => [$name, $values]) {

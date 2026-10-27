@@ -7,7 +7,7 @@
         <div>
             <div class="kicker">
                 <span class="kicker-dot"></span>
-                PORTAL RESMI TERAS RUTILAHU KABUPATEN CIREBON
+                PORTAL RESMI TERAS RUTILAHU KOTA CIREBON
             </div>
 
             <h1>
@@ -16,7 +16,7 @@
             </h1>
 
             <p class="lead">
-                Platform terpadu pemetaan geospasial, inventarisasi kondisi fisik, dan transparansi data Rumah Tidak Layak Huni (RTLH) untuk percepatan bantuan perumahan di Kabupaten Cirebon.
+                Platform terpadu pemetaan geospasial, inventarisasi kondisi fisik, dan transparansi data Rumah Tidak Layak Huni (RTLH) untuk percepatan bantuan perumahan di Kota Cirebon.
             </p>
 
             <div class="actions">
@@ -165,7 +165,7 @@
                 </div>
                 <div style="font-size: 12px; font-weight: 800; color: var(--primary-700); margin-bottom: 4px;">TAHAP 3</div>
                 <h4 style="font-size: 16px; font-weight: 700; margin-bottom: 6px; color: var(--slate-900);">Publikasi Spasial</h4>
-                <p class="muted" style="font-size: 13px;">Data yang lolos verifikasi diterbitkan ke peta publik dan katalog open data Kabupaten Cirebon.</p>
+                <p class="muted" style="font-size: 13px;">Data yang lolos verifikasi diterbitkan ke peta publik dan katalog open data Kota Cirebon.</p>
             </div>
 
             <div style="text-align: center; position: relative;">

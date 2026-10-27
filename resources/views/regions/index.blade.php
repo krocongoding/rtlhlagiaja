@@ -6,7 +6,7 @@
             </div>
             <h1>Wilayah Administratif</h1>
             <p class="muted">
-                Daftar kecamatan dan desa/kelurahan di lingkungan Pemerintah Kabupaten Cirebon.
+                Daftar kecamatan dan kelurahan di lingkungan Pemerintah Kota Cirebon.
             </p>
         </div>
 

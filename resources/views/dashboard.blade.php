@@ -4,7 +4,7 @@
 
         <div class="mb-6">
             <h1 class="text-2xl font-bold text-gray-900">
-                Dashboard RTLH Kabupaten Cirebon
+                Dashboard RTLH Kota Cirebon
             </h1>
 
             <p class="text-sm text-gray-500 mt-1">

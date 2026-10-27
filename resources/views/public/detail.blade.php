@@ -10,6 +10,11 @@
     <div class="pagehead">
         <div>
             <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+                @if($house->realization_status === 'realized')
+                    <span class="badge" style="background:#dcfce7; color:#15803d; border:1px solid #86efac; font-weight:700;">
+                        <i class="fa-solid fa-house-circle-check"></i> SUDAH TEREALISASI (LAYAK HUNI)
+                    </span>
+                @endif
                 <span class="badge published">
                     <i class="fa-solid fa-circle-check"></i> DATA TERVERIFIKASI
                 </span>
@@ -30,7 +35,7 @@
             </h1>
 
             <p class="muted" style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
-                <span><i class="fa-solid fa-location-dot"></i> {{ $house->region?->name ?? 'Kabupaten Cirebon' }}</span>
+                <span><i class="fa-solid fa-location-dot"></i> {{ $house->region?->name ?? 'Kota Cirebon' }}</span>
                 @if($house->survey_year)
                     <span>•</span>
                     <span><i class="fa-regular fa-calendar"></i> Tahun Survei {{ $house->survey_year }}</span>
@@ -79,7 +84,7 @@
             <div class="stat" style="font-size: 22px; color: #15803d;">
                 <i class="fa-solid fa-badge-check"></i> Published
             </div>
-            <div class="stat-desc">Dinas Perumahan Kab. Cirebon</div>
+            <div class="stat-desc">DPRKP Kota Cirebon</div>
         </div>
     </div>
 
@@ -263,12 +268,16 @@
                     </strong>
                 </div>
                 <div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--slate-200); padding-bottom:6px;">
-                    <span class="muted">Penerangan / Listrik:</span>
-                    <strong>{{ $house->utility?->lightingSource?->label ?? '-' }}</strong>
+                    <span class="muted">Bukaan Cahaya / Jendela:</span>
+                    <strong>{{ $house->utility?->light_opening ?? '-' }}</strong>
                 </div>
-                <div style="display:flex; justify-content:space-between;">
+                <div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--slate-200); padding-bottom:6px;">
                     <span class="muted">Ventilasi Udara:</span>
                     <strong>{{ $house->utility?->ventilation ?? '-' }}</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between;">
+                    <span class="muted">Penerangan / Listrik:</span>
+                    <strong>{{ $house->utility?->lightingSource?->label ?? '-' }}</strong>
                 </div>
             </div>
         </div>
@@ -359,6 +368,135 @@
         </div>
     @endif
 
+    {{-- SEKSI TRANSFORMASI SEBELUM & SESUDAH BANTUAN (JIKA SUDAH TEREALISASI) --}}
+    @php
+        $photosBefore = $house->photosBefore;
+        $photosAfter = $house->photosAfter;
+        $frontBefore = $photosBefore->firstWhere('type', 'front') ?: $photosBefore->first();
+        $frontAfter = $photosAfter->firstWhere('type', 'front') ?: $photosAfter->first();
+    @endphp
+
+    @if($house->realization_status === 'realized')
+        <section class="card" style="margin-top:24px; border:2px solid #86efac; background:linear-gradient(180deg, #f0fdf4 0%, #ffffff 100%);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; border-bottom:1px solid #bbf7d0; padding-bottom:12px; flex-wrap:wrap; gap:12px;">
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <div class="stat-widget-icon emerald" style="width:38px; height:38px; font-size:16px; margin:0;">
+                        <i class="fa-solid fa-arrows-split-up-and-left"></i>
+                    </div>
+                    <div>
+                        <h3 style="font-size:17px; font-weight:800; color:#14532d; margin:0;">
+                            Transformasi Rumah Layak Huni (Before & After)
+                        </h3>
+                        <p class="muted" style="font-size:12px; margin:2px 0 0;">
+                            Bukti akuntabilitas hasil renovasi bantuan perumahan di Kota Cirebon.
+                        </p>
+                    </div>
+                </div>
+
+                <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                    <span class="badge" style="background:#16a34a; color:#ffffff; font-weight:800; padding:6px 12px; font-size:12px;">
+                        <i class="fa-solid fa-circle-check"></i> Selesai 100%
+                    </span>
+                    @if($house->funding_source)
+                        <span class="badge" style="background:#ffffff; color:#166534; border:1px solid #86efac; font-weight:700; font-size:12px; padding:6px 12px;">
+                            <i class="fa-solid fa-hand-holding-dollar"></i> {{ $house->funding_source }}
+                        </span>
+                    @endif
+                </div>
+            </div>
+
+            {{-- METRIC SUMMARY BAR --}}
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:14px; margin-bottom:20px;">
+                <div style="background:#ffffff; border:1px solid #fecdd3; border-radius:10px; padding:14px;">
+                    <div style="font-size:11px; font-weight:800; text-transform:uppercase; color:#be123c; margin-bottom:4px;">
+                        Kondisi Awal (Sebelum)
+                    </div>
+                    <div style="font-size:18px; font-weight:800; color:#9f1239;">
+                        RTLH (Skor {{ $house->latestAssessment?->score ?? 'N/A' }})
+                    </div>
+                    <div class="muted" style="font-size:11px; margin-top:2px;">Prioritas {{ ucfirst($house->latestAssessment?->priority_level ?? 'Tinggi') }}</div>
+                </div>
+
+                <div style="background:#ffffff; border:1px solid #86efac; border-radius:10px; padding:14px;">
+                    <div style="font-size:11px; font-weight:800; text-transform:uppercase; color:#15803d; margin-bottom:4px;">
+                        Kondisi Akhir (Sesudah)
+                    </div>
+                    <div style="font-size:18px; font-weight:800; color:#14532d;">
+                        Rumah Layak Huni (Skor {{ $house->realized_score ?? 0 }})
+                    </div>
+                    <div class="muted" style="font-size:11px; margin-top:2px;">Tuntas Direhabilitasi</div>
+                </div>
+
+                @if($house->budget_amount)
+                    <div style="background:#ffffff; border:1px solid var(--slate-200); border-radius:10px; padding:14px;">
+                        <div style="font-size:11px; font-weight:800; text-transform:uppercase; color:var(--slate-500); margin-bottom:4px;">
+                            Alokasi Bantuan
+                        </div>
+                        <div style="font-size:18px; font-weight:800; color:var(--slate-900);">
+                            Rp {{ number_format((float)$house->budget_amount, 0, ',', '.') }}
+                        </div>
+                        <div class="muted" style="font-size:11px; margin-top:2px;">{{ $house->realized_at ? 'Tahun ' . $house->realized_at->format('Y') : 'Terealisasi' }}</div>
+                    </div>
+                @endif
+            </div>
+
+            {{-- WIDGET SLIDER INTERAKTIF (JIKA ADA FOTO SESUDAH & SEBELUM) --}}
+            @if($frontBefore && $frontAfter)
+                <div style="margin-bottom:20px;">
+                    <div style="font-size:13px; font-weight:800; color:#14532d; margin-bottom:8px; display:flex; align-items:center; gap:6px;">
+                        <i class="fa-solid fa-sliders"></i> Geser Garis Tengah untuk Membandingkan Tampak Depan:
+                    </div>
+                    <x-before-after-slider
+                        :beforeUrl="asset('storage/' . $frontBefore->path)"
+                        :afterUrl="asset('storage/' . $frontAfter->path)"
+                        title="Tampak Depan Rumah"
+                    />
+                </div>
+            @endif
+
+            {{-- SIDE-BY-SIDE GALLERY JIKA ADA FOTO SESUDAH --}}
+            @if($photosAfter->isNotEmpty())
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:16px;">
+                    <div style="background:#ffffff; border-radius:10px; border:1px solid #fecdd3; padding:14px;">
+                        <div style="font-size:13px; font-weight:800; color:#9f1239; margin-bottom:10px; display:flex; align-items:center; gap:6px;">
+                            <i class="fa-solid fa-triangle-exclamation"></i> Foto Sebelum Bantuan
+                        </div>
+                        <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(120px, 1fr)); gap:10px;">
+                            @foreach($photosBefore as $pBefore)
+                                <figure style="margin:0; overflow:hidden; border:1px solid #fda4af; border-radius:6px;">
+                                    <button type="button" onclick="openPhotoPreview(@js(asset('storage/' . $pBefore->path)), @js('Sebelum: ' . ($pBefore->caption ?: ucwords(str_replace('_', ' ', $pBefore->type)))))" style="display:block; width:100%; border:0; padding:0; background:none; cursor:zoom-in;">
+                                        <img src="{{ asset('storage/' . $pBefore->path) }}" alt="{{ $pBefore->caption ?: 'Sebelum' }}" style="display:block; width:100%; height:90px; object-fit:cover;" loading="lazy">
+                                    </button>
+                                    <figcaption style="padding:4px 6px; font-size:10px; font-weight:700; color:#881337; background:#fff1f2; text-align:center;">
+                                        {{ $pBefore->caption ?: ucwords(str_replace('_', ' ', $pBefore->type)) }}
+                                    </figcaption>
+                                </figure>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <div style="background:#ffffff; border-radius:10px; border:1px solid #86efac; padding:14px;">
+                        <div style="font-size:13px; font-weight:800; color:#166534; margin-bottom:10px; display:flex; align-items:center; gap:6px;">
+                            <i class="fa-solid fa-circle-check"></i> Foto Sesudah Bantuan (Layak Huni)
+                        </div>
+                        <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(120px, 1fr)); gap:10px;">
+                            @foreach($photosAfter as $pAfter)
+                                <figure style="margin:0; overflow:hidden; border:1px solid #86efac; border-radius:6px;">
+                                    <button type="button" onclick="openPhotoPreview(@js(asset('storage/' . $pAfter->path)), @js('Sesudah: ' . ($pAfter->caption ?: ucwords(str_replace('_', ' ', $pAfter->type)))))" style="display:block; width:100%; border:0; padding:0; background:none; cursor:zoom-in;">
+                                        <img src="{{ asset('storage/' . $pAfter->path) }}" alt="{{ $pAfter->caption ?: 'Sesudah' }}" style="display:block; width:100%; height:90px; object-fit:cover;" loading="lazy">
+                                    </button>
+                                    <figcaption style="padding:4px 6px; font-size:10px; font-weight:700; color:#14532d; background:#f0fdf4; text-align:center;">
+                                        {{ $pAfter->caption ?: ucwords(str_replace('_', ' ', $pAfter->type)) }}
+                                    </figcaption>
+                                </figure>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+            @endif
+        </section>
+    @endif
+
     {{-- FOTO HASIL SURVEI --}}
     <section class="card" style="margin-top:24px;">
         <div style="display:flex; align-items:center; gap:8px; margin-bottom:16px; border-bottom:1px solid var(--slate-100); padding-bottom:12px;">
@@ -401,7 +539,7 @@
     <div class="alert info" style="margin-top:24px;">
         <i class="fa-solid fa-shield-halved fa-lg"></i>
         <div style="font-size:13px;">
-            Informasi pada halaman ini merupakan ringkasan data publik Rumah Tidak Layak Huni (RTLH) yang diterbitkan oleh Dinas Perumahan, Kawasan Permukiman dan Pertanahan Kabupaten Cirebon. Informasi identitas pribadi dilindungi sesuai ketentuan peraturan yang berlaku.
+            Informasi pada halaman ini merupakan ringkasan data publik Rumah Tidak Layak Huni (RTLH) yang diterbitkan oleh Dinas Perumahan Rakyat dan Kawasan Permukiman Kota Cirebon. Informasi identitas pribadi dilindungi sesuai ketentuan peraturan yang berlaku.
         </div>
     </div>
 
@@ -454,7 +592,7 @@
                                         ${isRealized ? 'Sudah Terealisasi' : 'Belum Terealisasi'}
                                     </span>
                                 </div>
-                                <span style="color:#475569;">{{ $house->region?->name ?? 'Kabupaten Cirebon' }}</span>
+                                <span style="color:#475569;">{{ $house->region?->name ?? 'Kota Cirebon' }}</span>
                             </div>
                         `)
                         .openPopup();

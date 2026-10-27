@@ -151,8 +151,9 @@
     <div class="card" style="padding:0; overflow:hidden; margin-bottom: 28px;">
         <div style="padding: 18px 24px; border-bottom: 1px solid var(--slate-200); background: var(--slate-50); display:flex; justify-content:space-between; align-items:center;">
             <div>
-                <h3 style="font-size: 16px; font-weight: 800; color: var(--slate-900); margin-bottom:2px;">
-                     <img src="{{ asset('images/logo.png') }}" alt="RTLH Cirebon"></i> Riwayat Input Data RTLH
+                <h3 style="font-size: 16px; font-weight: 800; color: var(--slate-900); margin-bottom:2px; display:flex; align-items:center; gap:8px;">
+                    <img src="{{ asset('images/logo.png') }}" alt="RTLH Cirebon" style="width:22px; height:22px; object-fit:contain;">
+                    <span>Riwayat Input Data RTLH</span>
                 </h3>
                 <p class="muted" style="font-size:13px; margin:0;">Daftar unit rumah yang dimasukkan atau diperbarui oleh petugas ini.</p>
             </div>
@@ -247,7 +248,7 @@
         <div style="padding: 18px 24px; border-bottom: 1px solid var(--slate-200); background: var(--slate-50); display:flex; justify-content:space-between; align-items:center;">
             <div>
                 <h3 style="font-size: 16px; font-weight: 800; color: var(--slate-900); margin-bottom:2px;">
-                    <i class="fa-solid fa-timeline text-amber-500" style="color:#f59e0b;"></i> Log Aktivitas & Riwayat Audit (Activity Log)
+                    Log Aktivitas & Riwayat Audit (Activity Log)
                 </h3>
                 <p class="muted" style="font-size:13px; margin:0;">Catatan rekam jejak aktivitas (Tambah, Edit, Submit) yang dilakukan oleh akun surveyor ini.</p>
             </div>

@@ -47,6 +47,7 @@ class PublicApiController extends Controller
                 'roof',
                 'sanitation',
                 'utility',
+                'cpbm',
             ]);
 
         if (auth()->check()) {
@@ -121,6 +122,16 @@ class PublicApiController extends Controller
 
         /*
         |--------------------------------------------------------------------------
+        | Filter data surveyor yang login (mine)
+        |--------------------------------------------------------------------------
+        */
+
+        if ($request->boolean('mine') && auth()->check()) {
+            $query->where('created_by', auth()->id());
+        }
+
+        /*
+        |--------------------------------------------------------------------------
         | Pagination
         |--------------------------------------------------------------------------
         */
@@ -163,6 +174,7 @@ class PublicApiController extends Controller
             'sanitation',
             'utility',
             'latestAssessment',
+            'photos',
         ]);
 
         return response()->json([
@@ -362,6 +374,19 @@ class PublicApiController extends Controller
                 : null,
         ];
 
+        if (auth()->check()) {
+            $data['head_of_household_name'] = $house->head_of_household_name ?: ($house->cpbm?->name ?? 'Penerima Bantuan');
+            $data['created_by'] = $house->created_by;
+            $data['address'] = $house->address;
+            $data['block'] = $house->block;
+            $data['rt'] = $house->rt;
+            $data['rw'] = $house->rw;
+            $data['funding_source'] = $house->funding_source;
+            $data['budget_amount'] = $house->budget_amount ? (float) $house->budget_amount : null;
+            $data['realized_at'] = $house->realized_at ? $house->realized_at->format('d/m/Y') : null;
+            $data['realized_score'] = $house->realized_score;
+        }
+
         /*
         |--------------------------------------------------------------------------
         | Detail tambahan
@@ -375,7 +400,7 @@ class PublicApiController extends Controller
                 $data['rt'] = $house->rt;
                 $data['rw'] = $house->rw;
             } else {
-                $data['address'] = $house->region ? 'Wilayah ' . $house->region->name : 'Kabupaten Cirebon';
+                $data['address'] = $house->region ? 'Wilayah ' . $house->region->name : 'Kota Cirebon';
                 $data['block'] = null;
                 $data['rt'] = null;
                 $data['rw'] = null;
@@ -392,6 +417,35 @@ class PublicApiController extends Controller
                 'priority_level' => $house->latestAssessment->priority_level,
                 'assessment_year' => $house->latestAssessment->assessment_year,
             ] : null;
+
+            if ($house->relationLoaded('photos')) {
+                $photosBefore = $house->photos->filter(fn ($p) => $p->phase === 'before' || empty($p->phase))->map(fn ($p) => [
+                    'type' => $p->type,
+                    'url' => $p->path ? asset('storage/' . $p->path) : null,
+                    'caption' => $p->caption,
+                ])->values();
+
+                $photosAfter = $house->photos->filter(fn ($p) => $p->phase === 'after')->map(fn ($p) => [
+                    'type' => $p->type,
+                    'url' => $p->path ? asset('storage/' . $p->path) : null,
+                    'caption' => $p->caption,
+                ])->values();
+
+                $data['photos_before'] = $photosBefore;
+                $data['photos_after'] = $photosAfter;
+                $data['has_transformation'] = $house->realization_status === 'realized' && $photosAfter->isNotEmpty();
+            }
+
+            if ($house->realization_status === 'realized') {
+                $data['realization'] = [
+                    'status' => 'realized',
+                    'funding_source' => $house->funding_source,
+                    'budget_amount' => $house->budget_amount,
+                    'realized_at' => $house->realized_at?->toDateString(),
+                    'realized_score' => $house->realized_score ?? 0,
+                    'realization_notes' => $house->realization_notes,
+                ];
+            }
         }
 
         return $data;
