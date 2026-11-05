@@ -1,4 +1,4 @@
-<x-layouts.app title="Surveyor Field Workspace">
+<x-app-layout title="Surveyor Field Workspace">
 
     <div class="pagehead">
         <div>
@@ -350,4 +350,4 @@
         });
     </script>
 
-</x-layouts.app>
+</x-app-layout>

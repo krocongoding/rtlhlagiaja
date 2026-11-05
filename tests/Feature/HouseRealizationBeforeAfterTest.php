@@ -9,29 +9,9 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
 beforeEach(function () {
-    $adminRole = Role::firstOrCreate(['slug' => 'admin'], ['name' => 'Admin']);
-    $surveyorRole = Role::firstOrCreate(['slug' => 'surveyor'], ['name' => 'Surveyor']);
-
-    $this->admin = User::firstOrCreate(
-        ['email' => 'admin-before-after@cirebon-rtlh.test'],
-        ['name' => 'Admin BA', 'password' => bcrypt('password'), 'is_active' => true]
-    );
-    if (! $this->admin->hasRole('admin')) {
-        $this->admin->roles()->attach($adminRole);
-    }
-
-    $this->surveyor = User::firstOrCreate(
-        ['email' => 'surveyor-before-after@cirebon-rtlh.test'],
-        ['name' => 'Surveyor BA', 'password' => bcrypt('password'), 'is_active' => true]
-    );
-    if (! $this->surveyor->hasRole('surveyor')) {
-        $this->surveyor->roles()->attach($surveyorRole);
-    }
-
-    $this->region = Region::firstOrCreate(
-        ['code' => '32.74.01.1001'],
-        ['name' => 'Kesenden', 'type' => 'village', 'level' => 2, 'is_active' => true]
-    );
+    $this->admin = createAdminUser('admin-before-after@cirebon-rtlh.test', 'Admin BA');
+    $this->surveyor = createSurveyorUser('surveyor-before-after@cirebon-rtlh.test', 'Surveyor BA');
+    $this->region = getTestVillage();
 });
 
 test('house photos support before and after phases with dedicated scopes', function () {

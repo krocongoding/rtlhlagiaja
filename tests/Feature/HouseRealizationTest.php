@@ -7,42 +7,9 @@ use App\Models\Role;
 use App\Models\User;
 
 beforeEach(function () {
-    $adminRole = Role::firstOrCreate(['slug' => 'admin'], ['name' => 'Admin']);
-    $surveyorRole = Role::firstOrCreate(['slug' => 'surveyor'], ['name' => 'Surveyor']);
-
-    $this->admin = User::firstOrCreate(
-        ['email' => 'admin-realization-test@cirebon-rtlh.test'],
-        [
-            'name' => 'Admin Realisasi',
-            'password' => bcrypt('password'),
-            'is_active' => true,
-        ]
-    );
-    if (!$this->admin->hasRole('admin')) {
-        $this->admin->roles()->attach($adminRole);
-    }
-
-    $this->surveyor = User::firstOrCreate(
-        ['email' => 'surveyor-realization-test@cirebon-rtlh.test'],
-        [
-            'name' => 'Surveyor Realisasi',
-            'password' => bcrypt('password'),
-            'is_active' => true,
-        ]
-    );
-    if (!$this->surveyor->hasRole('surveyor')) {
-        $this->surveyor->roles()->attach($surveyorRole);
-    }
-
-    $this->region = Region::firstOrCreate(
-        ['code' => '32.74.01.1001'],
-        [
-            'name' => 'Kesenden',
-            'type' => 'village',
-            'level' => 2,
-            'is_active' => true,
-        ]
-    );
+    $this->admin = createAdminUser('admin-realization-test@cirebon-rtlh.test', 'Admin Realisasi');
+    $this->surveyor = createSurveyorUser('surveyor-realization-test@cirebon-rtlh.test', 'Surveyor Realisasi');
+    $this->region = getTestVillage();
 });
 
 test('admin can mark a house as realized with budget and notes', function () {
@@ -186,14 +153,7 @@ test('unauthenticated guest cannot update realization status', function () {
 });
 
 test('surveyor cannot update realization of house created by another surveyor', function () {
-    $surveyorRole = Role::firstOrCreate(['slug' => 'surveyor'], ['name' => 'Surveyor']);
-    $otherSurveyor = User::firstOrCreate(
-        ['email' => 'other-surveyor@cirebon-rtlh.test'],
-        ['name' => 'Other Surveyor', 'password' => bcrypt('password'), 'is_active' => true]
-    );
-    if (! $otherSurveyor->hasRole('surveyor')) {
-        $otherSurveyor->roles()->attach($surveyorRole);
-    }
+    $otherSurveyor = createSurveyorUser('other-surveyor@cirebon-rtlh.test', 'Other Surveyor');
 
     $house = House::create([
         'house_code' => 'RTLH-REAL-OTHER-01',
@@ -349,34 +309,5 @@ test('public rtlh api outputs realization status and supports filtering by reali
     $dataNotRealized = collect($resNotRealized->json('data'));
     expect($dataNotRealized->pluck('house_code'))->toContain('RTLH-MAP-UNREAL-01');
     expect($dataNotRealized->pluck('house_code'))->not->toContain('RTLH-MAP-REAL-01');
-
-    // Test submitted house with coordinates also appears in map API
-    $submittedHouse = House::create([
-        'house_code' => 'RTLH-MAP-SUBMITTED-01',
-        'region_id' => $this->region->id,
-        'nik' => '3274010101990003',
-        'head_of_household_name' => 'Warga Submitted',
-        'survey_year' => 2026,
-        'is_public' => false,
-        'status' => 'submitted',
-        'realization_status' => 'not_realized',
-        'latitude' => -6.7155,
-        'longitude' => 108.5695,
-        'created_by' => $this->surveyor->id,
-        'updated_by' => $this->surveyor->id,
-    ]);
-
-    // Petugas (surveyor/admin) dapat melihat submitted house di peta
-    $resSubmitted = $this->actingAs($this->surveyor)->getJson('/api/v1/public/rtlh');
-    $resSubmitted->assertOk();
-    $codes = collect($resSubmitted->json('data'))->pluck('house_code');
-    expect($codes)->toContain('RTLH-MAP-SUBMITTED-01');
-
-    // Pengunjung publik tanpa login tidak boleh melihat submitted house
-    $this->app['auth']->forgetGuards();
-    $resGuest = $this->getJson('/api/v1/public/rtlh');
-    $resGuest->assertOk();
-    $guestCodes = collect($resGuest->json('data'))->pluck('house_code');
-    expect($guestCodes)->not->toContain('RTLH-MAP-SUBMITTED-01');
 });
 

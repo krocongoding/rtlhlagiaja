@@ -31,13 +31,11 @@ class AppServiceProvider extends ServiceProvider
                 return;
             }
 
+            // Notifikasi revisi hanya ditujukan langsung kepada user/surveyor pemilik data yang direvisi
             $query = House::query()
                 ->where('status', 'revision')
+                ->where('created_by', $user->id)
                 ->with(['region', 'reviser', 'cpbm']);
-
-            if (!$user->hasRole('admin')) {
-                $query->where('created_by', $user->id);
-            }
 
             $pendingRevisionCount = (clone $query)->count();
             $revisionNotifications = $query->latest('revised_at')->latest('updated_at')->take(5)->get();

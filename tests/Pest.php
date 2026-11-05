@@ -35,16 +35,43 @@ expect()->extend('toBeOne', function () {
 
 /*
 |--------------------------------------------------------------------------
-| Functions
+| Test Helper Functions
 |--------------------------------------------------------------------------
 |
-| While Pest is very powerful out-of-the-box, you may have some testing code specific to your
-| project that you don't want to repeat in every file. Here you can also expose helpers as
-| global functions to help you to reduce the number of lines of code in your test files.
+| Common helpers for seeding roles, test users, and regions across tests.
 |
 */
 
-function something()
+function createAdminUser(string $email = 'admin-test@cirebon-rtlh.test', string $name = 'Admin Test'): \App\Models\User
 {
-    // ..
+    $adminRole = \App\Models\Role::firstOrCreate(['slug' => 'admin'], ['name' => 'Admin']);
+    $user = \App\Models\User::firstOrCreate(
+        ['email' => $email],
+        ['name' => $name, 'password' => bcrypt('password'), 'is_active' => true]
+    );
+    if (! $user->hasRole('admin')) {
+        $user->roles()->attach($adminRole);
+    }
+    return $user;
+}
+
+function createSurveyorUser(string $email = 'surveyor-test@cirebon-rtlh.test', string $name = 'Surveyor Test'): \App\Models\User
+{
+    $surveyorRole = \App\Models\Role::firstOrCreate(['slug' => 'surveyor'], ['name' => 'Surveyor']);
+    $user = \App\Models\User::firstOrCreate(
+        ['email' => $email],
+        ['name' => $name, 'password' => bcrypt('password'), 'is_active' => true]
+    );
+    if (! $user->hasRole('surveyor')) {
+        $user->roles()->attach($surveyorRole);
+    }
+    return $user;
+}
+
+function getTestVillage(string $code = '32.74.01.1001', string $name = 'Kesenden'): \App\Models\Region
+{
+    return \App\Models\Region::firstOrCreate(
+        ['code' => $code],
+        ['name' => $name, 'type' => 'village', 'level' => 2, 'is_active' => true]
+    );
 }

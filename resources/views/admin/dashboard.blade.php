@@ -1,4 +1,4 @@
-<x-layouts.app title="Admin Command Center">
+<x-app-layout title="Admin Command Center">
 
     <div class="pagehead">
         <div>
@@ -109,6 +109,10 @@
                 <i class="fa-solid fa-clipboard-check"></i> Proses Review & Publikasi
             </a>
 
+            <a class="btn" href="{{ route('houses.map') }}">
+                <i class="fa-solid fa-earth-asia"></i> Peta Sebaran Realisasi
+            </a>
+
             <a class="btn" href="{{ route('houses.index') }}">
                 <i class="fa-solid fa-list-check"></i> Kelola Semua Data RTLH
             </a>
@@ -142,9 +146,14 @@
                     </h3>
                     <p class="muted" style="font-size:12px; margin-top:2px;">Rasio unit yang telah rampung mendapatkan realisasi bantuan.</p>
                 </div>
-                <span class="badge" style="background:var(--slate-100); color:var(--slate-700); font-weight:700;">
-                    {{ number_format($total) }} Unit
-                </span>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <a href="{{ route('houses.map') }}" class="btn small" style="font-size:11.5px;" title="Lihat Peta Sebaran Realisasi">
+                        <i class="fa-solid fa-map-location-dot"></i> Peta Sebaran &rarr;
+                    </a>
+                    <span class="badge" style="background:var(--slate-100); color:var(--slate-700); font-weight:700;">
+                        {{ number_format($total) }} Unit
+                    </span>
+                </div>
             </div>
 
             <div style="position: relative; width: 100%; height: 260px; display:flex; align-items:center; justify-content:center;">
@@ -345,4 +354,4 @@
         });
     </script>
 
-</x-layouts.app>
+</x-app-layout>

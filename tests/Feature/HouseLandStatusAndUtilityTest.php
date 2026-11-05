@@ -9,42 +9,9 @@ use App\Models\Role;
 use App\Models\User;
 
 beforeEach(function () {
-    $adminRole = Role::firstOrCreate(['slug' => 'admin'], ['name' => 'Admin']);
-    $surveyorRole = Role::firstOrCreate(['slug' => 'surveyor'], ['name' => 'Surveyor']);
-
-    $this->admin = User::firstOrCreate(
-        ['email' => 'admin-land-utility@cirebon-rtlh.test'],
-        [
-            'name' => 'Admin Land Utility Test',
-            'password' => bcrypt('password'),
-            'is_active' => true,
-        ]
-    );
-    if (!$this->admin->hasRole('admin')) {
-        $this->admin->roles()->attach($adminRole);
-    }
-
-    $this->surveyor = User::firstOrCreate(
-        ['email' => 'surveyor-land-utility@cirebon-rtlh.test'],
-        [
-            'name' => 'Surveyor Land Utility Test',
-            'password' => bcrypt('password'),
-            'is_active' => true,
-        ]
-    );
-    if (!$this->surveyor->hasRole('surveyor')) {
-        $this->surveyor->roles()->attach($surveyorRole);
-    }
-
-    $this->region = Region::firstOrCreate(
-        ['code' => '32.74.01.1001'],
-        [
-            'name' => 'Kesenden',
-            'type' => 'village',
-            'level' => 2,
-            'is_active' => true,
-        ]
-    );
+    $this->admin = createAdminUser('admin-land-utility@cirebon-rtlh.test', 'Admin Land Utility Test');
+    $this->surveyor = createSurveyorUser('surveyor-land-utility@cirebon-rtlh.test', 'Surveyor Land Utility Test');
+    $this->region = getTestVillage();
 });
 
 test('land status master values include milik sendiri, saudara, anak, and orang tua', function () {

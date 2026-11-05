@@ -1,4 +1,4 @@
-<x-layouts.app title="Review & Verifikasi RTLH">
+<x-app-layout title="Review & Verifikasi RTLH">
 
     <div class="pagehead">
         <div>
@@ -280,4 +280,4 @@
     </script>
     @endpush
 
-</x-layouts.app>
+</x-app-layout>

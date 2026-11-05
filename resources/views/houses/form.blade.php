@@ -1,4 +1,4 @@
-<x-layouts.app title="{{ $house->exists ? 'Edit Data RTLH' : 'Tambah Data RTLH' }}">
+<x-app-layout title="{{ $house->exists ? 'Edit Data RTLH' : 'Tambah Data RTLH' }}">
 
     @push('head')
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
@@ -1139,7 +1139,7 @@
                 {{-- DOKUMEN BERKAS ADMINISTRASI TERPISAH (KK, AKTE, SURAT TANAH, PROPOSAL) --}}
                 <div style="margin-top: 10px; margin-bottom: 24px;">
                     <label style="font-size:14px; font-weight:800; color:var(--slate-800); display:block; margin-bottom:4px;">
-                        Berkas Dokumen Administrasi & Kepemilikan (Terpisah)
+                        Berkas Dokumen Administrasi & Kepemilikan 
                     </label>
                     <p class="muted" style="font-size:12px; margin-bottom:16px;">
                         Unggah masing-masing dokumen secara terpisah dalam format PDF, DOCX, ZIP, atau Gambar scan (Maks. 10 MB per berkas).
@@ -1839,4 +1839,4 @@
         </script>
     @endpush
 
-</x-layouts.app>
+</x-app-layout>

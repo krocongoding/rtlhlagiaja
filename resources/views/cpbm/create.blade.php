@@ -1,4 +1,4 @@
-<x-layouts.app title="Tambah CPBM Baru | Teras Rutilahu Cirebon">
+<x-app-layout title="Tambah CPBM Baru | Teras Rutilahu Cirebon">
 
     <div class="pagehead">
         <div>
@@ -142,4 +142,4 @@
     </script>
     @endpush
 
-</x-layouts.app>
+</x-app-layout>

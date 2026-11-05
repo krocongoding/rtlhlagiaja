@@ -7,42 +7,9 @@ use App\Models\Role;
 use App\Models\User;
 
 beforeEach(function () {
-    $adminRole = Role::firstOrCreate(['slug' => 'admin'], ['name' => 'Admin']);
-    $surveyorRole = Role::firstOrCreate(['slug' => 'surveyor'], ['name' => 'Surveyor']);
-
-    $this->admin = User::firstOrCreate(
-        ['email' => 'admin-cpbm-test@cirebon-rtlh.test'],
-        [
-            'name' => 'Admin CPBM Test',
-            'password' => bcrypt('password'),
-            'is_active' => true,
-        ]
-    );
-    if (!$this->admin->hasRole('admin')) {
-        $this->admin->roles()->attach($adminRole);
-    }
-
-    $this->surveyor = User::firstOrCreate(
-        ['email' => 'surveyor-cpbm-test@cirebon-rtlh.test'],
-        [
-            'name' => 'Surveyor CPBM Test',
-            'password' => bcrypt('password'),
-            'is_active' => true,
-        ]
-    );
-    if (!$this->surveyor->hasRole('surveyor')) {
-        $this->surveyor->roles()->attach($surveyorRole);
-    }
-
-    $this->region = Region::firstOrCreate(
-        ['code' => '32.74.01.1001'],
-        [
-            'name' => 'Kesenden',
-            'type' => 'village',
-            'level' => 2,
-            'is_active' => true,
-        ]
-    );
+    $this->admin = createAdminUser('admin-cpbm-test@cirebon-rtlh.test', 'Admin CPBM Test');
+    $this->surveyor = createSurveyorUser('surveyor-cpbm-test@cirebon-rtlh.test', 'Surveyor CPBM Test');
+    $this->region = getTestVillage();
 });
 
 test('admin and surveyor can view cpbm index page', function () {

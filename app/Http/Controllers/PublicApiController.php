@@ -50,12 +50,15 @@ class PublicApiController extends Controller
                 'cpbm',
             ]);
 
-        if (auth()->check()) {
-            $query->where(function ($q) {
-                $q->where('is_public', true)
-                    ->orWhereIn('status', ['submitted', 'verified', 'published']);
-            });
+        $user = auth()->user() ?? auth('sanctum')->user();
+
+        if ($user && $user->hasAnyRole(['admin', 'surveyor'])) {
+            // Petugas (Admin & Surveyor) dapat melihat seluruh rumah yang telah di-input
+            // (draft, submitted, verified, revision, maupun published) agar bisa memantau
+            // sebaran realisasi tanpa harus menunggu data di-publish.
         } else {
+            // Pengunjung publik / viewer hanya dapat melihat rumah yang telah dipublikasikan oleh admin.
+            // Rumah yang belum terealisasi tetap dapat dilihat publik jika admin mempublikasikannya.
             $query->where('is_public', true)
                 ->where('status', 'published');
         } 
@@ -126,8 +129,8 @@ class PublicApiController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        if ($request->boolean('mine') && auth()->check()) {
-            $query->where('created_by', auth()->id());
+        if ($request->boolean('mine') && $user) {
+            $query->where('created_by', $user->id);
         }
 
         /*
@@ -158,9 +161,10 @@ class PublicApiController extends Controller
      */
     public function show(House $house)
     {
+        $user = auth()->user() ?? auth('sanctum')->user();
         abort_unless(
             ($house->is_public && $house->status === 'published') ||
-            auth()->check(),
+            ($user && $user->hasAnyRole(['admin', 'surveyor'])),
             404
         );
 
@@ -339,8 +343,11 @@ class PublicApiController extends Controller
         $lng = $coordinate ? (float) $coordinate->lng : ($house->longitude !== null ? (float) $house->longitude : null);
         $lat = $coordinate ? (float) $coordinate->lat : ($house->latitude !== null ? (float) $house->latitude : null);
 
+        $user = auth()->user() ?? auth('sanctum')->user();
+        $isOfficer = $user && $user->hasAnyRole(['admin', 'surveyor']);
+
         // Jika pengunjung publik (bukan petugas yang login), samarkan koordinat GPS (~50-80m) untuk perlindungan privasi hunian warga
-        if ($lng !== null && $lat !== null && ! auth()->check()) {
+        if ($lng !== null && $lat !== null && ! $isOfficer) {
             [$lat, $lng] = DataMasker::fuzzCoordinate($lat, $lng, $house->id);
         }
 
@@ -374,7 +381,7 @@ class PublicApiController extends Controller
                 : null,
         ];
 
-        if (auth()->check()) {
+        if ($isOfficer) {
             $data['head_of_household_name'] = $house->head_of_household_name ?: ($house->cpbm?->name ?? 'Penerima Bantuan');
             $data['created_by'] = $house->created_by;
             $data['address'] = $house->address;
@@ -394,7 +401,7 @@ class PublicApiController extends Controller
         */
 
         if ($detail) {
-            if (auth()->check()) {
+            if ($isOfficer) {
                 $data['address'] = $house->address;
                 $data['block'] = $house->block;
                 $data['rt'] = $house->rt;

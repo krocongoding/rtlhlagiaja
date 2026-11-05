@@ -3,9 +3,9 @@
 use App\Http\Controllers\Api\AuthApiController;
 use App\Http\Controllers\Api\HousePhotoApiController;
 use App\Http\Controllers\Api\SurveyorApiController;
+use App\Http\Controllers\Api\SurveyorCpbmApiController;
 use App\Http\Controllers\Api\SyncApiController;
 use App\Http\Controllers\PublicApiController;
-use App\Http\Controllers\Api\V1\MobileAuthController;
 use App\Http\Controllers\Api\V1\MobileMasterController;
 use Illuminate\Support\Facades\Route;
 
@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 
-Route::prefix('v1/public')->group(function () {
+Route::prefix('v1/public')->middleware(['web'])->group(function () {
 
     Route::get('/regions', [PublicApiController::class, 'regions'])
         ->name('api.public.regions');
@@ -53,7 +53,7 @@ Route::prefix('v1/auth')->middleware(['throttle:6,1'])->group(function () {
 Route::prefix('v1/mobile')->group(function () {
 
     Route::post('/auth/login', [
-        MobileAuthController::class,
+        AuthApiController::class,
         'login'
     ])->middleware(['throttle:6,1'])->name('api.mobile.login');
 
@@ -70,12 +70,12 @@ Route::prefix('v1/mobile')->group(function () {
     Route::middleware('auth:sanctum')->group(function () {
 
         Route::get('/auth/me', [
-            MobileAuthController::class,
+            AuthApiController::class,
             'me'
         ])->name('api.mobile.me');
 
         Route::post('/auth/logout', [
-            MobileAuthController::class,
+            AuthApiController::class,
             'logout'
         ])->name('api.mobile.logout');
 
@@ -107,6 +107,12 @@ Route::prefix('v1')->middleware(['auth:sanctum'])->group(function () {
         Route::get('/regions', [SyncApiController::class, 'regions'])
             ->name('api.sync.regions');
 
+    });
+
+    // CPBM mobile surveyor
+    Route::prefix('surveyor/cpbm')->group(function () {
+        Route::get('/search', [SurveyorCpbmApiController::class, 'search'])->name('api.surveyor.cpbm.search');
+        Route::post('/', [SurveyorCpbmApiController::class, 'store'])->name('api.surveyor.cpbm.store');
     });
 
     // CRUD rumah

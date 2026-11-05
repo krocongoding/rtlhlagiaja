@@ -12,16 +12,18 @@ use Illuminate\Validation\ValidationException;
 class AuthApiController extends Controller
 {
     /**
-     * Login surveyor, kembalikan token Sanctum.
+     * Login surveyor / petugas, kembalikan token Sanctum.
      *
      * POST /api/v1/auth/login
-     * Body: { email, password }
+     * POST /api/v1/mobile/auth/login
+     * Body: { email, password, device_name? }
      */
     public function login(Request $request): JsonResponse
     {
         $request->validate([
-            'email'    => ['required', 'email'],
-            'password' => ['required', 'string'],
+            'email'       => ['required', 'email'],
+            'password'    => ['required', 'string'],
+            'device_name' => ['nullable', 'string', 'max:100'],
         ]);
 
         $user = User::with('roles')
@@ -49,20 +51,28 @@ class AuthApiController extends Controller
             ], 403);
         }
 
-        // Hapus token lama dengan nama yang sama (biar tidak numpuk)
-        $user->tokens()->where('name', 'rtlh-mobile')->delete();
+        $deviceName = $request->input('device_name', 'rtlh-mobile');
 
-        $token = $user->createToken('rtlh-mobile')->plainTextToken;
+        // Hapus token lama dengan nama yang sama (biar tidak numpuk)
+        $user->tokens()->where('name', $deviceName)->delete();
+
+        $abilities = $user->hasRole('admin') ? ['*'] : ['mobile:surveyor', 'surveyor'];
+        $token = $user->createToken($deviceName, $abilities)->plainTextToken;
+
+        $primaryRole = $user->roles->first()?->slug ?? 'surveyor';
+        $userData = [
+            'id'    => $user->id,
+            'name'  => $user->name,
+            'email' => $user->email,
+            'role'  => $primaryRole,
+            'roles' => $user->roles->pluck('slug'),
+        ];
 
         return response()->json([
             'message' => 'Login berhasil.',
             'token'   => $token,
-            'user'    => [
-                'id'    => $user->id,
-                'name'  => $user->name,
-                'email' => $user->email,
-                'roles' => $user->roles->pluck('slug'),
-            ],
+            'user'    => $userData,
+            'data'    => $userData,
         ]);
     }
 
@@ -70,11 +80,12 @@ class AuthApiController extends Controller
      * Logout — cabut token yang sedang dipakai.
      *
      * POST /api/v1/auth/logout
+     * POST /api/v1/mobile/auth/logout
      * Header: Authorization: Bearer {token}
      */
     public function logout(Request $request): JsonResponse
     {
-        $request->user()->currentAccessToken()->delete();
+        $request->user()->currentAccessToken()?->delete();
 
         return response()->json([
             'message' => 'Logout berhasil.',
@@ -85,19 +96,25 @@ class AuthApiController extends Controller
      * Info user yang sedang login.
      *
      * GET /api/v1/auth/me
+     * GET /api/v1/mobile/auth/me
      * Header: Authorization: Bearer {token}
      */
     public function me(Request $request): JsonResponse
     {
         $user = $request->user()->load('roles');
+        $primaryRole = $user->roles->first()?->slug ?? 'surveyor';
+
+        $userData = [
+            'id'    => $user->id,
+            'name'  => $user->name,
+            'email' => $user->email,
+            'role'  => $primaryRole,
+            'roles' => $user->roles->pluck('slug'),
+        ];
 
         return response()->json([
-            'data' => [
-                'id'    => $user->id,
-                'name'  => $user->name,
-                'email' => $user->email,
-                'roles' => $user->roles->pluck('slug'),
-            ],
+            'data' => $userData,
+            'user' => $userData,
         ]);
     }
 }

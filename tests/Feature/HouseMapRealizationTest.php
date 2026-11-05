@@ -6,54 +6,10 @@ use App\Models\Role;
 use App\Models\User;
 
 beforeEach(function () {
-    $adminRole = Role::firstOrCreate(['slug' => 'admin'], ['name' => 'Admin']);
-    $surveyorRole = Role::firstOrCreate(['slug' => 'surveyor'], ['name' => 'Surveyor']);
-
-    $this->admin = User::firstOrCreate(
-        ['email' => 'admin-map-test@cirebon-rtlh.test'],
-        [
-            'name' => 'Admin Map Test',
-            'password' => bcrypt('password'),
-            'is_active' => true,
-        ]
-    );
-    if (!$this->admin->hasRole('admin')) {
-        $this->admin->roles()->attach($adminRole);
-    }
-
-    $this->surveyor = User::firstOrCreate(
-        ['email' => 'surveyor-map-test@cirebon-rtlh.test'],
-        [
-            'name' => 'Surveyor Map Test',
-            'password' => bcrypt('password'),
-            'is_active' => true,
-        ]
-    );
-    if (!$this->surveyor->hasRole('surveyor')) {
-        $this->surveyor->roles()->attach($surveyorRole);
-    }
-
-    $this->surveyorOther = User::firstOrCreate(
-        ['email' => 'surveyor-other-map@cirebon-rtlh.test'],
-        [
-            'name' => 'Surveyor Other Map Test',
-            'password' => bcrypt('password'),
-            'is_active' => true,
-        ]
-    );
-    if (!$this->surveyorOther->hasRole('surveyor')) {
-        $this->surveyorOther->roles()->attach($surveyorRole);
-    }
-
-    $this->region = Region::firstOrCreate(
-        ['code' => '32.74.01.1001'],
-        [
-            'name' => 'Kesenden',
-            'type' => 'village',
-            'level' => 2,
-            'is_active' => true,
-        ]
-    );
+    $this->admin = createAdminUser('admin-map-test@cirebon-rtlh.test', 'Admin Map Test');
+    $this->surveyor = createSurveyorUser('surveyor-map-test@cirebon-rtlh.test', 'Surveyor Map Test');
+    $this->surveyorOther = createSurveyorUser('surveyor-other-map@cirebon-rtlh.test', 'Surveyor Other Map Test');
+    $this->region = getTestVillage();
 });
 
 test('unauthenticated guest cannot access officer map and is redirected to login', function () {
@@ -189,4 +145,73 @@ test('topbar notification bell renders revision badge when user has houses in re
     $response->assertSee('gov-notif-badge');
     $response->assertSee('REV-BELL-01');
     $response->assertSee($notes);
+
+    // Notifikasi HANYA dikirim langsung ke user yang direvisi:
+    // 1. Admin yang mereview tidak mendapatkan lonceng notifikasi revisi
+    $adminResponse = $this->actingAs($this->admin)->get(route('admin.dashboard'));
+    $adminResponse->assertOk();
+    $adminResponse->assertDontSee('gov-notif-badge');
+
+    // 2. Surveyor lain yang bukan pembuat data juga tidak mendapatkan lonceng notifikasi
+    $otherSurveyorResponse = $this->actingAs($this->surveyorOther)->get(route('surveyor.dashboard'));
+    $otherSurveyorResponse->assertOk();
+    $otherSurveyorResponse->assertDontSee('gov-notif-badge');
+});
+
+test('officers can view all inputted houses on map without publish status while public viewers only view published', function () {
+    // 1. Rumah draft belum dipublish (tapi sudah diinput koordinatnya)
+    $draftHouse = House::create([
+        'house_code' => 'MAP-DRAFT-01',
+        'region_id' => $this->region->id,
+        'nik' => '3274010101990055',
+        'head_of_household_name' => 'Warga Input Draft',
+        'survey_year' => 2026,
+        'status' => 'draft',
+        'is_public' => false,
+        'realization_status' => 'not_realized',
+        'latitude' => -6.7110,
+        'longitude' => 108.5510,
+        'created_by' => $this->surveyor->id,
+        'updated_by' => $this->surveyor->id,
+    ]);
+
+    // 2. Rumah belum terealisasi tapi sudah dipublish oleh admin
+    $publishedUnrealizedHouse = House::create([
+        'house_code' => 'MAP-PUB-UNREAL-01',
+        'region_id' => $this->region->id,
+        'nik' => '3274010101990056',
+        'head_of_household_name' => 'Warga Publik Belum Realisasi',
+        'survey_year' => 2026,
+        'status' => 'published',
+        'is_public' => true,
+        'realization_status' => 'not_realized',
+        'latitude' => -6.7120,
+        'longitude' => 108.5520,
+        'created_by' => $this->surveyor->id,
+        'updated_by' => $this->surveyor->id,
+    ]);
+
+    // Admin dapat melihat semua rumah yang sudah diinput di peta tanpa harus dipublish
+    $adminRes = $this->actingAs($this->admin)->getJson('/api/v1/public/rtlh');
+    $adminRes->assertOk();
+    $adminCodes = collect($adminRes->json('data'))->pluck('house_code');
+    expect($adminCodes)->toContain('MAP-DRAFT-01');
+    expect($adminCodes)->toContain('MAP-PUB-UNREAL-01');
+
+    // Surveyor juga dapat melihat data rumah yang sudah diinput di sebaran peta
+    $surveyorRes = $this->actingAs($this->surveyor)->getJson('/api/v1/public/rtlh');
+    $surveyorRes->assertOk();
+    $surveyorCodes = collect($surveyorRes->json('data'))->pluck('house_code');
+    expect($surveyorCodes)->toContain('MAP-DRAFT-01');
+    expect($surveyorCodes)->toContain('MAP-PUB-UNREAL-01');
+
+    // Viewer publik tanpa login:
+    // - BISA melihat rumah yang belum terealisasi jika SUDAH dipublish
+    // - TIDAK BISA melihat rumah draft yang belum dipublish
+    $this->app['auth']->forgetGuards();
+    $guestRes = $this->getJson('/api/v1/public/rtlh');
+    $guestRes->assertOk();
+    $guestCodes = collect($guestRes->json('data'))->pluck('house_code');
+    expect($guestCodes)->toContain('MAP-PUB-UNREAL-01');
+    expect($guestCodes)->not->toContain('MAP-DRAFT-01');
 });

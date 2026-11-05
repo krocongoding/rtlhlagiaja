@@ -232,6 +232,9 @@ class SurveyorApiController extends Controller
         return [
             'id'          => $house->id,
             'house_code'  => $house->house_code,
+            'cpbm_id'     => $house->cpbm_id,
+            'nik'         => $house->nik,
+            'head_of_household_name' => $house->head_of_household_name,
             'address'     => $house->address,
             'region'      => $house->region
                 ? $house->region->only(['id', 'name', 'code'])
@@ -259,6 +262,15 @@ class SurveyorApiController extends Controller
         return [
             'id'                      => $house->id,
             'house_code'              => $house->house_code,
+            'cpbm_id'                 => $house->cpbm_id,
+            'nik'                     => $house->nik,
+            'head_of_household_name'  => $house->head_of_household_name,
+            'cpbm'                    => $house->cpbm ? [
+                'id' => $house->cpbm->id,
+                'name' => $house->cpbm->name,
+                'nik' => $house->cpbm->nik,
+                'phone' => $house->cpbm->phone,
+            ] : null,
             'address'                 => $house->address,
             'block'                   => $house->block,
             'rt'                      => $house->rt,
@@ -347,6 +359,9 @@ class SurveyorApiController extends Controller
     {
         return $request->validate([
             // Data utama
+            'cpbm_id'                => ['nullable', 'integer', 'exists:cpbms,id'],
+            'nik'                    => ['nullable', 'string', 'max:20'],
+            'head_of_household_name' => ['nullable', 'string', 'max:255'],
             'region_id'               => ['required', 'integer', 'exists:regions,id'],
             'address'                 => ['required', 'string', 'max:500'],
             'block'                   => ['nullable', 'string', 'max:50'],
@@ -421,7 +436,7 @@ class SurveyorApiController extends Controller
     private function extractMainFields(array $data): array
     {
         $keys = [
-            'region_id', 'address', 'block', 'rt', 'rw', 'area_m2',
+            'cpbm_id', 'nik', 'head_of_household_name', 'region_id', 'address', 'block', 'rt', 'rw', 'area_m2',
             'occupant_count', 'household_count', 'survey_year',
             'settlement_condition_id', 'room_function_id',
             'ownership_status_id', 'land_status_id',

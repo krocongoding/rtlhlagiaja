@@ -397,7 +397,7 @@
         {{-- GRID 4 DOKUMEN TERPISAH: KK, AKTE, SURAT TANAH, PROPOSAL --}}
         <div style="margin-top: 8px;">
             <div style="font-size:12px; font-weight:800; text-transform:uppercase; color:var(--slate-700); letter-spacing:0.5px; margin-bottom:10px;">
-                Berkas Dokumen Administrasi & Kepemilikan (Terpisah)
+                Berkas Dokumen Administrasi & Kepemilikan 
             </div>
 
             <div class="grid4" style="gap:14px;">

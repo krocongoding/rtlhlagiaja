@@ -242,19 +242,6 @@ Route::middleware('auth')->group(function () {
         ->name('regions.store');
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | DEVELOPMENT / TEST ROUTES
-    |--------------------------------------------------------------------------
-    */
-
-    Route::get('/test-admin', function () {
-        return 'Admin OK';
-    })->middleware('role:admin');
-
-    Route::get('/test-surveyor', function () {
-        return 'Surveyor OK';
-    })->middleware('role:surveyor');
 });
 
 

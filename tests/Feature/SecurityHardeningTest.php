@@ -7,37 +7,10 @@ use App\Models\User;
 use App\Support\DataMasker;
 
 beforeEach(function () {
-    $adminRole = Role::firstOrCreate(['slug' => 'admin'], ['name' => 'Admin']);
-    $surveyorRole = Role::firstOrCreate(['slug' => 'surveyor'], ['name' => 'Surveyor']);
-
-    $this->admin = User::firstOrCreate(
-        ['email' => 'admin-sec-test@cirebon-rtlh.test'],
-        ['name' => 'Admin Sec', 'password' => bcrypt('password'), 'is_active' => true]
-    );
-    if (!$this->admin->hasRole('admin')) {
-        $this->admin->roles()->attach($adminRole);
-    }
-
-    $this->surveyorA = User::firstOrCreate(
-        ['email' => 'surveyor-a-sec@cirebon-rtlh.test'],
-        ['name' => 'Surveyor A', 'password' => bcrypt('password'), 'is_active' => true]
-    );
-    if (!$this->surveyorA->hasRole('surveyor')) {
-        $this->surveyorA->roles()->attach($surveyorRole);
-    }
-
-    $this->surveyorB = User::firstOrCreate(
-        ['email' => 'surveyor-b-sec@cirebon-rtlh.test'],
-        ['name' => 'Surveyor B', 'password' => bcrypt('password'), 'is_active' => true]
-    );
-    if (!$this->surveyorB->hasRole('surveyor')) {
-        $this->surveyorB->roles()->attach($surveyorRole);
-    }
-
-    $this->region = Region::firstOrCreate(
-        ['code' => '32.74.01.1002'],
-        ['name' => 'Sukapura', 'type' => 'village', 'level' => 2, 'is_active' => true]
-    );
+    $this->admin = createAdminUser('admin-sec-test@cirebon-rtlh.test', 'Admin Sec');
+    $this->surveyorA = createSurveyorUser('surveyor-a-sec@cirebon-rtlh.test', 'Surveyor A');
+    $this->surveyorB = createSurveyorUser('surveyor-b-sec@cirebon-rtlh.test', 'Surveyor B');
+    $this->region = getTestVillage('32.74.01.1002', 'Sukapura');
 });
 
 test('data masker masks 16-digit NIK and phone correctly', function () {
